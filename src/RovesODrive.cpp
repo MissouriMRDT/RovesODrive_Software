@@ -27,6 +27,63 @@ void writeODrive(Stream& mySerial, bool write_request, char id[MAX_STRING_CHARS]
 	Serial.println(string);
 }
 
+
+bool RovesODriveMotor::speedLow(uint16_t speed)
+{
+	return(abs(speed) < vel_shutoff_threshold);
+}
+
+void RovesODriveMotor::setControlMode(uint8_t mode)
+{
+	switch(mode)
+	{
+		case CTRL_MODE_SENSORLESS_VELOCITY_CONTROL:
+			control_mode = CTRL_MODE_SENSORLESS_VELOCITY_CONTROL;
+			writeControlMode(CTRL_MODE_VELOCITY_CONTROL);
+			writePMFluxLinkage(PM_FLUX_LINKAGE_CONST/(motor_pole_pairs*motor_kv));
+	}
+}
+
+void RovesODriveMotor::setSpeed(int speed)
+{
+  switch(state)
+  {
+	  case CTRL_MODE_SENSORLESS_VELOCITY_CONTROL:
+	  	static int last_speed = 0;
+
+		//Serial.println(speed);
+		
+		writeVelrampEnable(TRUE);
+
+		if(speedLow(speed)
+		{
+			speed = 0;
+		}
+		writeVelRampTarget(speed);  
+
+		if(speedLow(last_speed) && !speedLow(speed))  //If speeding up from low speed
+		{
+			if(speed>0) 
+			{
+			writeSpinUpTargetVel(spin_up_target_vel);
+			}
+			else
+			{
+			writeSpinUpTargetVel(-spin_up_target_vel);
+			}
+			writeState(AXIS_STATE_IDLE);
+			writeState(AXIS_STATE_SENSORLESS_CONTROL);
+		}
+
+		last_speed = speed;
+  }
+  
+}
+
+
+
+
+
 void RovesODriveMotor::writeState(uint8_t state)
 {
 	writeODrive(m_serial, WRITE, SET_CURRENT_STATE_TAG, state);

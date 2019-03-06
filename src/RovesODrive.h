@@ -116,8 +116,8 @@ class RovesODriveMotor
 
 		void writeSpinUpAcceleration(uint16_t acceleration);
 		void requestSpinUpAcceleration();
-		void writeSpinUpTarrequestVel(uint16_t speed);
-		void requestSpinUpTarrequestVel();
+		void writeSpinUpTargetVel(uint16_t speed);
+		void requestSpinUpTargetVel();
 		void writeSpinUpCurrent(uint16_t current);
 		void requestSpinUpCurrent();
 		
@@ -170,10 +170,11 @@ class RovesODriveMotor
 		
 		//Spin Up parameters
 		uint16_t spin_up_acceleration;
-		uint16_t spin_up_target_vel;
+		uint16_t spin_up_target_vel = 200;
 		
 		//Ramp Parameters
 		uint16_t vel_ramp_target;
+		uint16_t vel_ramp_rate;
 		
 		//Motor Parameters
 		uint8_t pole_pairs;
