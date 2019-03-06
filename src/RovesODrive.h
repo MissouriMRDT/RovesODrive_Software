@@ -12,6 +12,52 @@
 #define WRITE	true
 #define	READ 	false
 
+//Axis Data Tags
+//configs
+#define GET_CURRENT_STATE_TAG			"current_state"							//int
+#define SET_CURRENT_STATE_TAG			"requested_state"						//int
+#define STARTUP_CLOSED_LOOP_TAG 		"config.startup_closed_loop_control"	//bool
+#define STARTUP_SENSORLESS_TAG 			"config.startup_sensorless_control"		//bool
+#define STARTUP_MOTOR_CALBRATION_TAG	"config.startup_motor_calibration"		//bool
+
+//Spinup Config
+#define SPINUP_TARGET_VEL_TAG 			"config.spin_up_target_vel"				//float
+#define SPINUP_TARGET_ACCEL_TAG 		"config.spin_up_acceleration"			//float
+#define SPINUP_CURRENT_TAG		 		"config.spin_up_current"				//float
+
+//Velocity Ramp
+#define VELOCITY_SETPOINT_TAG	 		"controller.vel_setpoint"				//float
+#define VELOCITY_RAMP_ENABLE_TAG		"controller.vel_ramp_enable"			//bool
+#define VELOCITY_RAMP_TARGET_TAG		"controller.vel_ramp_target"			//float
+#define VELOCITY_RAMP_RATE_TAG			"controller.config.vel_ramp_rate"		//float
+
+//Velocity COnfig
+#define VELOCITY_INTEGRATOR_TAG			"controller.config.vel_integrator_gain"	//float
+#define VELOCITY_GAIN_TAG				"controller.config.vel_gain"			//float
+#define CONTROL_MODE_TAG				"controller.config.control_mode"		//int
+#define VELOCITY_LIMIT_TAG				"controller.config.vel_limit"			//float
+
+//Error
+#define ERROR_TAG						"controller.error"						//int
+#define DRV_FAULT_TAG					"motor.gate_driver.drv_fault"			//int
+
+//current
+#define CURRENT_IGAIN_TAG				"motor.current_control.i_gain"			//float
+#define CURRENT_PGAIN_TAG				"motor.current_control.p_gain"			//float
+#define BUS_CURRENT_TAG					"motor.current_control.Ibus"			//float
+#define MAX_ALLOWED_CURRENT_TAG			"motor.current_control.max_allowed_current"	//float
+#define PHASE_B_IMEAS	
+
+#define PRE_CALIBRATED_TAG				"motor.config.pre_calibrated"			//bool
+#define IS_CALIBRATED_TAG				"motor.is_calibrated"					//bool
+#define POLE_PAIRS_TAG					"motor.confog.pole_pairs"				//int				"motor.current_meas_phB"				//float
+#define PM_FLIX_LINKAGE_TAG				"sensorless_estimator.config.pm_flux_linkage"	//float
+
+
+//Controller Data Tags
+#define SAVE_CONFIGURATION_TAG	"save_configuration"
+#define REBOOT_TAG				"reboot"
+
 //Axis states
 #define AXIS_STATE_IDLE 						1
 #define AXIS_STATE_STARTUP_SEQUENCE  			2
@@ -29,8 +75,7 @@
 
 #define PM_FLUX_LINKAGE 	5.51328895422 
 
-
-void writeODrive(Stream& mySerial, bool write_read, String id, int value = 0);
+void writeODrive(Stream& mySerial, bool write_read, String id, int value);
 
 
 struct ODrivePacket()
