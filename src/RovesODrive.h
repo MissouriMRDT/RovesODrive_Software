@@ -7,7 +7,7 @@
 #include <Energia.h>
 #include <Stream.h>
 
-#define MAX_STRING_CHARS 50
+#define MAX_STRING_CHARS 255
 
 #define WRITE	true
 #define	READ 	false
@@ -26,12 +26,12 @@
 #define SPINUP_CURRENT_TAG		 		"config.spin_up_current"				//float
 
 //Velocity Ramp
-#define VELOCITY_SETPOINT_TAG	 		"controller.vel_setpoint"				//float
 #define VELOCITY_RAMP_ENABLE_TAG		"controller.vel_ramp_enable"			//bool
 #define VELOCITY_RAMP_TARGET_TAG		"controller.vel_ramp_target"			//float
 #define VELOCITY_RAMP_RATE_TAG			"controller.config.vel_ramp_rate"		//float
 
-//Velocity COnfig
+//Velocity Config
+#define VELOCITY_SETPOINT_TAG	 		"controller.vel_setpoint"				//float
 #define VELOCITY_INTEGRATOR_TAG			"controller.config.vel_integrator_gain"	//float
 #define VELOCITY_GAIN_TAG				"controller.config.vel_gain"			//float
 #define CONTROL_MODE_TAG				"controller.config.control_mode"		//int
@@ -50,7 +50,8 @@
 
 #define PRE_CALIBRATED_TAG				"motor.config.pre_calibrated"			//bool
 #define IS_CALIBRATED_TAG				"motor.is_calibrated"					//bool
-#define POLE_PAIRS_TAG					"motor.confog.pole_pairs"				//int				"motor.current_meas_phB"				//float
+#define POLE_PAIRS_TAG					"motor.confog.pole_pairs"				//int				
+#define PHASE_B_CURRENT					"motor.current_meas_phB"				//float
 #define PM_FLIX_LINKAGE_TAG				"sensorless_estimator.config.pm_flux_linkage"	//float
 
 
@@ -75,7 +76,9 @@
 
 #define PM_FLUX_LINKAGE 	5.51328895422 
 
-void writeODrive(Stream& mySerial, bool write_read, String id, int value);
+void writeODrive(Stream& mySerial, bool write_read, char id[MAX_STRING_CHARS], int value = 0);
+void writeODrive(Stream& mySerial, bool write_read, char id[MAX_STRING_CHARS], float value = 0.0);
+void writeODrive(Stream& mySerial, bool write_read, char id[MAX_STRING_CHARS], bool value = TRUE);
 
 
 struct ODrivePacket()
@@ -94,17 +97,35 @@ class RovesODriveMotor
 		
 	private:
 		bool speedLow(uint16_t speed);
-		
-		
+
+		//Startup and states
+		void setState(uint8_t state);
+		uint8_t  getState();
+		void setControlMode(uint8_t mode);
+		uint8_t  getControlMode();
+		void setStartupClosedLoop(bool b_startup);
+		bool  getStartupClosedLoop();
+		void setStartupSensorless(bool b_startup);
+		bool  getStartupSensorless();
+		void setStartupCalibrate(bool b_startup);
+		bool  getStartupCalibrate();
+
 		void setSpinUpAcceleration(uint16_t acceleration);
 		uint16_t getSpinUpAcceleration();
 		void setSpinUpTargetVel(uint16_t speed);
 		uint16_t getSpinUpTargetVel();
+		void setSpinUpCurrent(uint16_t current);
+		uint16_t getSpinUpCurrent();
 		
 		void setVelRampTarget(uint16_t target);
 		uint16_t getVelRampTarget();
+		void setVelRampRate(uint16_t rate);
+		uint16_t getVelRampRate();
 		void setVelrampEnable(bool target);
 		bool getVelrampEnable();
+
+		void setVelSetpoint(uint16_t setpoint);
+		uint16_t getVelSetpoint();
 		
 		void setPolepairs(uint8_t kv);
 		uint8_t getPolepairs();
@@ -115,6 +136,26 @@ class RovesODriveMotor
 		float getVelocityGain();
 		void setVelocityIntegratorGain(float gain);
 		float getVelocityIntegratorGain();
+		void setVelocityLimit(float limit);
+		float getVelocityLimit();
+
+		void setCurrentGain(float gain);
+		float getCurrentGain();
+		void setCurrentIntegratorGain(float gain);
+		float getCurrentIntegratorGain();
+		void setCurrentLimit(float limit);
+		float getCurrentLimit();
+
+		float getPhaseCurrent();
+		float getBusCurrent();
+
+		void setPMFluxLinkage(float linkage);
+		float setPMFluxLinkage();
+
+		uint16_t getError();
+		uint16_t getDRVError();
+		bool getIsPreCalibrated();
+		bool getIsCalibrated();
 		
 		//Member Vars
 		uint8_t motor_number;
@@ -156,8 +197,6 @@ class RovesODrive()
 	private:
 		void saveConfiguration();
 		void eraseConfiguration();
-		void setState(int state);
-		int  getState();
 		void ping();
 		
 		parsePacket(ODrivePacket packet);
