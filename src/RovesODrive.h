@@ -10,7 +10,7 @@
 #define MAX_STRING_CHARS 255
 
 #define WRITE	true
-#define	READ 	false
+#define	REQUEST	false
 
 //Axis Data Tags
 //configs
