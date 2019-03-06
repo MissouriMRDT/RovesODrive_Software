@@ -51,7 +51,7 @@
 #define PRE_CALIBRATED_TAG				"motor.config.pre_calibrated"			//bool
 #define IS_CALIBRATED_TAG				"motor.is_calibrated"					//bool
 #define POLE_PAIRS_TAG					"motor.confog.pole_pairs"				//int				
-#define PHASE_B_CURRENT					"motor.current_meas_phB"				//float
+#define PHASE_B_CURRENT_TAG					"motor.current_meas_phB"			//float
 #define PM_FLIX_LINKAGE_TAG				"sensorless_estimator.config.pm_flux_linkage"	//float
 
 
@@ -99,69 +99,68 @@ class RovesODriveMotor
 		bool speedLow(uint16_t speed);
 
 		//Startup and states
-		void setState(uint8_t state);
-		uint8_t  getState();
-		void setControlMode(uint8_t mode);
-		uint8_t  getControlMode();
-		void setStartupClosedLoop(bool b_startup);
-		bool  getStartupClosedLoop();
-		void setStartupSensorless(bool b_startup);
-		bool  getStartupSensorless();
-		void setStartupCalibrate(bool b_startup);
-		bool  getStartupCalibrate();
+		void writeState(uint8_t state);
+		void  requestState();
+		void writeControlMode(uint8_t mode);
+		void  requestControlMode();
+		void writeStartupClosedLoop(bool b_startup);
+		void  requestStartupClosedLoop();
+		void writeStartupSensorless(bool b_startup);
+		void  requestStartupSensorless();
+		void writeStartupCalibrate(bool b_startup);
+		void  requestStartupCalibrate();
 
-		void setSpinUpAcceleration(uint16_t acceleration);
-		uint16_t getSpinUpAcceleration();
-		void setSpinUpTargetVel(uint16_t speed);
-		uint16_t getSpinUpTargetVel();
-		void setSpinUpCurrent(uint16_t current);
-		uint16_t getSpinUpCurrent();
+		void writeSpinUpAcceleration(uint16_t acceleration);
+		void requestSpinUpAcceleration();
+		void writeSpinUpTarrequestVel(uint16_t speed);
+		void requestSpinUpTarrequestVel();
+		void writeSpinUpCurrent(uint16_t current);
+		void requestSpinUpCurrent();
 		
-		void setVelRampTarget(uint16_t target);
-		uint16_t getVelRampTarget();
-		void setVelRampRate(uint16_t rate);
-		uint16_t getVelRampRate();
-		void setVelrampEnable(bool target);
-		bool getVelrampEnable();
+		void writeVelRampTarrequest(uint16_t tarrequest);
+		void requestVelRampTarrequest();
+		void writeVelRampRate(uint16_t rate);
+		void requestVelRampRate();
+		void writeVelrampEnable(bool tarrequest);
+		void requestVelrampEnable();
 
-		void setVelSetpoint(uint16_t setpoint);
-		uint16_t getVelSetpoint();
+		void writeVelSetpoint(uint16_t writepoint);
+		void requestVelSetpoint();
 		
-		void setPolepairs(uint8_t kv);
-		uint8_t getPolepairs();
-		void setKV(uint16_t kv);
-		uint16_t getKV();
+		void writePolepairs(uint8_t kv);
+		void requestPolepairs();
+		void writeKV(uint16_t kv);
+		void requestKV();
 		
-		void setVelocityGain(float gain);
-		float getVelocityGain();
-		void setVelocityIntegratorGain(float gain);
-		float getVelocityIntegratorGain();
-		void setVelocityLimit(float limit);
-		float getVelocityLimit();
+		void writeVelocityGain(float gain);
+		void requestVelocityGain();
+		void writeVelocityIntegratorGain(float gain);
+		void requestVelocityIntegratorGain();
+		void writeVelocityLimit(float limit);
+		void requestVelocityLimit();
 
-		void setCurrentGain(float gain);
-		float getCurrentGain();
-		void setCurrentIntegratorGain(float gain);
-		float getCurrentIntegratorGain();
-		void setCurrentLimit(float limit);
-		float getCurrentLimit();
+		void writeCurrentGain(float gain);
+		void requestCurrentGain();
+		void writeCurrentIntegratorGain(float gain);
+		void requestCurrentIntegratorGain();
+		void writeCurrentLimit(float limit);
+		void requestCurrentLimit();
 
-		float getPhaseCurrent();
-		float getBusCurrent();
+		void requestPhaseCurrent();
+		void requestBusCurrent();
 
-		void setPMFluxLinkage(float linkage);
-		float setPMFluxLinkage();
+		void writePMFluxLinkage(float linkage);
+		void requestPMFluxLinkage();
 
-		uint16_t getError();
-		uint16_t getDRVError();
-		bool getIsPreCalibrated();
-		bool getIsCalibrated();
+		void requestError();
+		void requestDRVError();
+		bool requestIsPreCalibrated();
+		bool requestIsCalibrated();
 		
 		//Member Vars
 		uint8_t motor_number;
 		String motor_name;
 		uint16_t vel_shutoff_threshold = 100;
-		
 		
 		uint16_t vel_setpoint;
 		
@@ -171,16 +170,12 @@ class RovesODriveMotor
 		
 		//Ramp Parameters
 		uint16_t vel_ramp_target;
-		bool vel_ramp_enable;
 		
 		//Motor Parameters
 		uint8_t pole_pairs;
 		uint16_t motor_kv;
-		
-		//Velocity Parameters
-		float vel_gain;
-		float vel_integrator_gain;
-		
+
+		Stream& m_serial;
 		
 		parsePacket(ODrivePacket packet);
 };
@@ -199,6 +194,7 @@ class RovesODrive()
 		void eraseConfiguration();
 		void ping();
 		
+		Stream& m_serial;
 		parsePacket(ODrivePacket packet);
 };
 
