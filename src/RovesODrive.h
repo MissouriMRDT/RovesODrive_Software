@@ -98,8 +98,6 @@ class RovesODriveMotor
 
 		void calibrate();
 		void writeData();
-
-		void parseODrivePacket(ODrivePacket packet)
 		
 	private:
 		bool speedLow(uint16_t speed);
@@ -123,14 +121,14 @@ class RovesODriveMotor
 		void writeSpinUpCurrent(uint16_t current);
 		void requestSpinUpCurrent();
 		
-		void writeVelRampTarrequest(uint16_t tarrequest);
-		void requestVelRampTarrequest();
+		void writeVelRampTarget(uint16_t target);
+		void requestVelRampTarget();
 		void writeVelRampRate(uint16_t rate);
 		void requestVelRampRate();
-		void writeVelrampEnable(bool tarrequest);
+		void writeVelrampEnable(bool enabled);
 		void requestVelrampEnable();
 
-		void writeVelSetpoint(uint16_t writepoint);
+		void writeVelSetpoint(uint16_t setpoint);
 		void requestVelSetpoint();
 		
 		void writePolepairs(uint8_t kv);
