@@ -91,24 +91,30 @@ class RovesODriveMotor
 {
 	public:
 		RovesODriveMotor(Stream& mySerial, uint8_t motor_number);
-		void begin(int baud);
+		void begin();
+		void setControlMode(uint8_t mode);
 		void setSpeed(uint16_t speed);
 		uint16_t getSpeed();
+
+		void calibrate();
+		void writeData();
+
+		void parseODrivePacket(ODrivePacket packet)
 		
 	private:
 		bool speedLow(uint16_t speed);
 
 		//Startup and states
 		void writeState(uint8_t state);
-		void  requestState();
+		void requestState();
 		void writeControlMode(uint8_t mode);
-		void  requestControlMode();
+		void requestControlMode();
 		void writeStartupClosedLoop(bool b_startup);
-		void  requestStartupClosedLoop();
+		void requestStartupClosedLoop();
 		void writeStartupSensorless(bool b_startup);
-		void  requestStartupSensorless();
+		void requestStartupSensorless();
 		void writeStartupCalibrate(bool b_startup);
-		void  requestStartupCalibrate();
+		void requestStartupCalibrate();
 
 		void writeSpinUpAcceleration(uint16_t acceleration);
 		void requestSpinUpAcceleration();
