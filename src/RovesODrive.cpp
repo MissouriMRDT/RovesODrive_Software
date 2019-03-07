@@ -46,13 +46,11 @@ void RovesODriveMotor::setControlMode(uint8_t mode)
 
 void RovesODriveMotor::setSpeed(int speed)
 {
-  switch(state)
+  switch(control_mode)
   {
 	  case CTRL_MODE_SENSORLESS_VELOCITY_CONTROL:
 	  	static int last_speed = 0;
 
-		//Serial.println(speed);
-		
 		writeVelrampEnable(TRUE);
 
 		if(speedLow(speed)
