@@ -90,7 +90,7 @@ void RovesODriveMotor::setControlMode(uint8_t mode)
 	switch(mode)
 	{
 		case CTRL_MODE_SENSORLESS_VELOCITY_CONTROL:
-			control_mode = CTRL_MODE_SENSORLESS_VELOCITY_CONTROL;
+			m_control_mode = CTRL_MODE_SENSORLESS_VELOCITY_CONTROL;
 			writeControlMode(CTRL_MODE_VELOCITY_CONTROL);
 			writePMFluxLinkage(PM_FLUX_LINKAGE_CONST/(motor_pole_pairs*motor_kv));
 	}
@@ -98,10 +98,9 @@ void RovesODriveMotor::setControlMode(uint8_t mode)
 
 void RovesODriveMotor::setSpeed(int speed)
 {
-  switch(control_mode)
+  switch(m_control_mode)
   {
 	  case CTRL_MODE_SENSORLESS_VELOCITY_CONTROL:
-	  	static int last_speed = 0;
 
 		writeVelrampEnable(TRUE);
 
@@ -111,7 +110,7 @@ void RovesODriveMotor::setSpeed(int speed)
 		}
 		writeVelRampTarget(speed);  
 
-		if(speedLow(last_speed) && !speedLow(speed))  //If speeding up from low speed
+		if(speedLow(vel_setpoint) && !speedLow(speed))  //If speeding up from low speed
 		{
 			if(speed>0) 
 			{
@@ -125,17 +124,48 @@ void RovesODriveMotor::setSpeed(int speed)
 			writeState(AXIS_STATE_SENSORLESS_CONTROL);
 		}
 
-		last_speed = speed;
+		vel_setpoint = speed;
   }
   
 }
 
-uint16_t RovesODriveMotor::getSpeed()
+PacketStatus RovesODriveMotor::getSpeed(uint16_t $speed)
 {
 	requestVelRampTarget();
 	char[] input;
 	getSerial(input);
 	return((uint16*)charToInt(input));
+}
+
+SerialStatus checkSerial()
+{
+	switch(m_control_mode)
+	{
+		case CTRL_MODE_SENSORLESS_VELOCITY_CONTROL:
+			uint16_t speed;
+			if(getSpeed(speed) != ValidPacket)
+			{
+				return(SerialFault);
+			}
+			else if(speed != vel_setpoint)
+			{
+				return(SerialFault);
+			}
+		break;
+	}
+
+	return(SerialGood);
+}
+
+void writeConfig()
+{
+	switch(m_control_mode)
+	{
+		case CTRL_MODE_SENSORLESS_VELOCITY_CONTROL:
+			writeSpinUpAcceleration(spin_up_acceleration);
+			writeVelRampRate(vel_ramp_rate);
+		break;
+	}
 }
 
 void RovesODriveMotor::writeState(uint8_t state)

@@ -34,7 +34,7 @@
 #define VELOCITY_SETPOINT_TAG	 		"controller.vel_setpoint"				//float
 #define VELOCITY_INTEGRATOR_TAG			"controller.config.vel_integrator_gain"	//float
 #define VELOCITY_GAIN_TAG				"controller.config.vel_gain"			//float
-#define CONTROL_MODE_TAG				"controller.config.control_mode"		//int
+#define CONTROL_MODE_TAG				"controller.config.m_control_mode"		//int
 #define VELOCITY_LIMIT_TAG				"controller.config.vel_limit"			//float
 
 //Error
@@ -78,9 +78,17 @@
 
 #define PM_FLUX_LINKAGE_CONST 	5.51328895422 
 
+enum PacketStatus {ValidPacket, InvalidPacket, NoPacket};
+enum SerialStatus {SerialGood, SerialFault};
+
+int charToInt(char[] input);
+float charToFloat(char[] input);
+bool charToBool(char[] input);
+
 void writeODrive(Stream& mySerial, bool write_read, char id[MAX_STRING_CHARS], int value = 0);
 void writeODrive(Stream& mySerial, bool write_read, char id[MAX_STRING_CHARS], float value = 0.0);
 void writeODrive(Stream& mySerial, bool write_read, char id[MAX_STRING_CHARS], bool value = TRUE);
+
 
 
 struct ODrivePacket()
@@ -94,15 +102,20 @@ class RovesODriveMotor
 	public:
 		RovesODriveMotor(Stream& mySerial, uint8_t motor_number);
 		void begin();
+		PacketStatus getSerial(char packet[]);
+
+		SerialStatus checkSerial();
+
 		void setControlMode(uint8_t mode);
 		void setSpeed(uint16_t speed);
 		uint16_t getSpeed();
 
 		void calibrate();
-		void writeData();
+
+		bool speedLow(uint16_t speed);
 		
 	private:
-		bool speedLow(uint16_t speed);
+		
 
 		//Startup and states
 		void writeState(uint8_t state);
@@ -164,13 +177,13 @@ class RovesODriveMotor
 		bool requestIsCalibrated();
 		
 		//State vars
-		uint8_t control_mode;
+		uint8_t m_control_mode;
 		//Member Vars
 		uint8_t motor_number;
 		String motor_name;
 		uint16_t vel_shutoff_threshold = 100;
 		
-		uint16_t vel_setpoint;
+		uint16_t vel_setpoint = 0;
 		
 		//Spin Up parameters
 		uint16_t spin_up_acceleration;
