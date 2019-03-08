@@ -2,6 +2,43 @@
 #include <Energia.h>
 #include <Stream.h>
 
+int charToInt(char[] input)
+{
+	int value = 0;
+	int i = 0;
+	while(input[i] != '\0')
+	{
+		value *= 10;
+		value += input[i] - '0';
+		i++;
+	}
+	return(value);
+}
+
+float charToFloat(char[] input)
+{
+	float value = 0;
+	int i = 0;
+	while(input[i] != '.')
+	{
+		value *= 10;
+		value += input[i] - '0';
+		i++;
+	}
+	int j = i++;
+	while(input[i] != '\0')
+	{
+		value *= 10;
+		value += input[i] - '0';
+		i++;
+	}
+	return(value/(10*(i-j));
+}
+
+bool charToBool(char[] input)
+{
+	return(1);
+}
 
 void writeODrive(Stream& mySerial, bool write_request, char id[MAX_STRING_CHARS], int value)
 {
@@ -27,6 +64,21 @@ void writeODrive(Stream& mySerial, bool write_request, char id[MAX_STRING_CHARS]
 	Serial.println(string);
 }
 
+PacketStatus RovesODriveMotor::getSerial(char packet[])
+{
+	if!(m_serial->available())
+	{
+		return NoPacket;
+	}
+	uint8_t count = 0
+	while(m_serial->available())
+	{
+		packet[count] = m_serial->read();
+		count ++;
+	}
+	packet[count] = '\0';
+	return(ValidPacket);
+}
 
 bool RovesODriveMotor::speedLow(uint16_t speed)
 {
@@ -78,9 +130,13 @@ void RovesODriveMotor::setSpeed(int speed)
   
 }
 
-
-
-
+uint16_t RovesODriveMotor::getSpeed()
+{
+	requestVelRampTarget();
+	char[] input;
+	getSerial(input);
+	return((uint16*)charToInt(input));
+}
 
 void RovesODriveMotor::writeState(uint8_t state)
 {
