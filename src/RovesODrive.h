@@ -112,6 +112,8 @@ class RovesODriveMotor
 
 		void calibrate();
 
+		void writeConfig();
+
 		bool speedLow(uint16_t speed);
 		
 	private:
