@@ -51,7 +51,7 @@
 #define PRE_CALIBRATED_TAG				"motor.config.pre_calibrated"			//bool
 #define IS_CALIBRATED_TAG				"motor.is_calibrated"					//bool
 #define POLE_PAIRS_TAG					"motor.confog.pole_pairs"				//int				
-#define PHASE_B_CURRENT_TAG					"motor.current_meas_phB"			//float
+#define PHASE_B_CURRENT_TAG				"motor.current_meas_phB"				//float
 #define PM_FLIX_LINKAGE_TAG				"sensorless_estimator.config.pm_flux_linkage"	//float
 
 
@@ -63,18 +63,20 @@
 #define AXIS_STATE_IDLE 						1
 #define AXIS_STATE_STARTUP_SEQUENCE  			2
 #define AXIS_STATE_FULL_CALIBRATION_SEQUENCE  	3
-#define AXIS_STATE_SENSORLESS_CONTROL   		4
-#define AXIS_STATE_ENCODER_INDEX_SEARCH   		5
-#define AXIS_STATE_ENCODER_OFFSET_CALIBRATION	6
-#define AXIS_STATE_CLOSED_LOOP_CONTROL  		7
+#define AXIS_STATE_MOTOR_CALIBRATION_SEQUENCE  	4
+#define AXIS_STATE_SENSORLESS_CONTROL   		5
+#define AXIS_STATE_ENCODER_INDEX_SEARCH   		6
+#define AXIS_STATE_ENCODER_OFFSET_CALIBRATION	7
+#define AXIS_STATE_CLOSED_LOOP_CONTROL  		8
 
 //Control modes
-#define CTRL_MODE_POSITION_CONTROL	1
-#define CTRL_MODE_VELOCITY_CONTROL	2
-#define CTRL_MODE_CURRENT_CONTROL	3
-#define CTRL_MODE_VOLTAGE_CONTROL 	4
+#define CTRL_MODE_POSITION_CONTROL				1
+#define CTRL_MODE_VELOCITY_CONTROL				2
+#define CTRL_MODE_CURRENT_CONTROL				3
+#define CTRL_MODE_VOLTAGE_CONTROL 				4
+#define CTRL_MODE_SENSORLESS_VELOCITY_CONTROL 	5
 
-#define PM_FLUX_LINKAGE 	5.51328895422 
+#define PM_FLUX_LINKAGE_CONST 	5.51328895422 
 
 void writeODrive(Stream& mySerial, bool write_read, char id[MAX_STRING_CHARS], int value = 0);
 void writeODrive(Stream& mySerial, bool write_read, char id[MAX_STRING_CHARS], float value = 0.0);
@@ -161,6 +163,8 @@ class RovesODriveMotor
 		bool requestIsPreCalibrated();
 		bool requestIsCalibrated();
 		
+		//State vars
+		uint8_t control_mode;
 		//Member Vars
 		uint8_t motor_number;
 		String motor_name;
@@ -177,7 +181,7 @@ class RovesODriveMotor
 		uint16_t vel_ramp_rate;
 		
 		//Motor Parameters
-		uint8_t pole_pairs;
+		uint8_t motor_pole_pairs;
 		uint16_t motor_kv;
 
 		Stream& m_serial;
