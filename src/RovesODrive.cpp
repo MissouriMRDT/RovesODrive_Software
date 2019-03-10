@@ -1,8 +1,8 @@
 #include "RovesODrive.h"
 #include <Energia.h>
-#include <Stream.h>
+#include <HardwareSerial.h>
 
-int charToInt(char[] input)
+int charToInt(char input[])
 {
 	int value = 0;
 	int i = 0;
@@ -15,7 +15,7 @@ int charToInt(char[] input)
 	return(value);
 }
 
-float charToFloat(char[] input)
+float charToFloat(char input[])
 {
 	float value = 0;
 	int i = 0;
@@ -32,45 +32,53 @@ float charToFloat(char[] input)
 		value += input[i] - '0';
 		i++;
 	}
-	return(value/(10*(i-j));
+	return(value/(10*(i-j)));
 }
 
-bool charToBool(char[] input)
+bool charToBool(char input[])
 {
 	return(1);
 }
 
-void writeODrive(Stream& mySerial, bool write_request, char id[MAX_STRING_CHARS], int value)
+void writeODrive(HardwareSerial* mySerial, bool write_request, char id[MAX_STRING_CHARS], int value)
 {
 	char string[MAX_STRING_CHARS];
 	sprintf(string, "%c %s %d\n", (write_request == WRITE)? 'w':'r', id, value);
-	mySerial.write(string);
+	mySerial->write(string);
 	Serial.println(string);
 }
 
-void writeODrive(Stream& mySerial, bool write_request, char id[MAX_STRING_CHARS], float value = 0.0)
+void writeODrive(HardwareSerial* mySerial, bool write_request, char id[MAX_STRING_CHARS], float value)
 {
 	char string[MAX_STRING_CHARS];
 	sprintf(string, "%c %s %f\n", (write_request == WRITE)? 'w':'r', id, value);
-	mySerial.write(string);
+	mySerial->write(string);
 	Serial.println(string);
 }
 
-void writeODrive(Stream& mySerial, bool write_request, char id[MAX_STRING_CHARS], bool value = TRUE)
+void writeODrive(HardwareSerial* mySerial, bool write_request, char id[MAX_STRING_CHARS], bool value)
 {
 	char string[MAX_STRING_CHARS];
 	sprintf(string, "%c %s %d\n", (write_request == WRITE)? 'w':'r', id, value);
-	mySerial.write(string);
+	mySerial->write(string);
+	Serial.println(string);
+}
+
+void writeODrive(HardwareSerial* mySerial, bool write_request, char id[MAX_STRING_CHARS])
+{
+	char string[MAX_STRING_CHARS];
+	sprintf(string, "%c %s\n", (write_request == WRITE)? 'w':'r', id);
+	mySerial->write(string);
 	Serial.println(string);
 }
 
 PacketStatus RovesODriveMotor::getSerial(char packet[])
 {
-	if!(m_serial->available())
+	if(!m_serial->available())
 	{
 		return NoPacket;
 	}
-	uint8_t count = 0
+	uint8_t count = 0;
 	while(m_serial->available())
 	{
 		packet[count] = m_serial->read();
@@ -96,15 +104,15 @@ void RovesODriveMotor::setControlMode(uint8_t mode)
 	}
 }
 
-void RovesODriveMotor::setSpeed(int speed)
+void RovesODriveMotor::setSpeed(uint16_t speed)
 {
   switch(m_control_mode)
   {
 	  case CTRL_MODE_SENSORLESS_VELOCITY_CONTROL:
 
-		writeVelrampEnable(TRUE);
+		writeVelrampEnable(true);
 
-		if(speedLow(speed)
+		if(speedLow(speed))
 		{
 			speed = 0;
 		}
@@ -129,15 +137,16 @@ void RovesODriveMotor::setSpeed(int speed)
   
 }
 
-PacketStatus RovesODriveMotor::getSpeed(uint16_t $speed)
+PacketStatus RovesODriveMotor::getSpeed(uint16_t &speed)
 {
 	requestVelRampTarget();
-	char[] input;
+	char input[5];
 	getSerial(input);
-	return((uint16*)charToInt(input));
+	charToInt(input);
+	return(ValidPacket);
 }
 
-SerialStatus checkSerial()
+SerialStatus RovesODriveMotor::checkSerial()
 {
 	switch(m_control_mode)
 	{
@@ -157,7 +166,7 @@ SerialStatus checkSerial()
 	return(SerialGood);
 }
 
-void writeConfig()
+void RovesODriveMotor::writeConfig()
 {
 	switch(m_control_mode)
 	{
@@ -166,6 +175,11 @@ void writeConfig()
 			writeVelRampRate(vel_ramp_rate);
 		break;
 	}
+}
+
+void RovesODrive::begin()
+{
+	m_serial->begin(115200);
 }
 
 void RovesODriveMotor::writeState(uint8_t state)

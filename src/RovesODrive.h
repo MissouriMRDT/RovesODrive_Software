@@ -1,11 +1,9 @@
 #ifndef _RovesODrive_h
 #define _RovesODrive_h
 
-
-#include "ODriveArduino.h"
 #include <stdio.h>
 #include <Energia.h>
-#include <Stream.h>
+#include <HardwareSerial.h>
 
 #define MAX_STRING_CHARS 255
 
@@ -46,7 +44,7 @@
 #define CURRENT_PGAIN_TAG				"motor.current_control.p_gain"			//float
 #define BUS_CURRENT_TAG					"motor.current_control.Ibus"			//float
 #define MAX_ALLOWED_CURRENT_TAG			"motor.current_control.max_allowed_current"	//float
-#define PHASE_B_IMEAS	
+#define PHASE_B_IMEAS					"motor.TODO"
 
 #define PRE_CALIBRATED_TAG				"motor.config.pre_calibrated"			//bool
 #define IS_CALIBRATED_TAG				"motor.is_calibrated"					//bool
@@ -81,34 +79,39 @@
 enum PacketStatus {ValidPacket, InvalidPacket, NoPacket};
 enum SerialStatus {SerialGood, SerialFault};
 
-int charToInt(char[] input);
-float charToFloat(char[] input);
-bool charToBool(char[] input);
+int charToInt(char input[]);
+float charToFloat(char input[]);
+bool charToBool(char input[]);
 
-void writeODrive(Stream& mySerial, bool write_read, char id[MAX_STRING_CHARS], int value = 0);
-void writeODrive(Stream& mySerial, bool write_read, char id[MAX_STRING_CHARS], float value = 0.0);
-void writeODrive(Stream& mySerial, bool write_read, char id[MAX_STRING_CHARS], bool value = TRUE);
+void writeODrive(HardwareSerial* mySerial, bool write_read, char id[MAX_STRING_CHARS], int value);
+void writeODrive(HardwareSerial* mySerial, bool write_read, char id[MAX_STRING_CHARS], float value);
+void writeODrive(HardwareSerial* mySerial, bool write_read, char id[MAX_STRING_CHARS], bool value);
+void writeODrive(HardwareSerial* mySerial, bool write_read, char id[MAX_STRING_CHARS]);
 
 
 
-struct ODrivePacket()
+struct ODrivePacket
 {
-	uint8_t length
+	uint8_t length;
 	String data[];
-}
+};
 	
 class RovesODriveMotor
 {
 	public:
-		RovesODriveMotor(Stream& mySerial, uint8_t motor_number);
-		void begin();
+		RovesODriveMotor(HardwareSerial *mySerial, uint8_t motornum)
+		{
+			m_serial = mySerial;
+			motor_number = motornum;
+		}
+
 		PacketStatus getSerial(char packet[]);
 
 		SerialStatus checkSerial();
 
 		void setControlMode(uint8_t mode);
 		void setSpeed(uint16_t speed);
-		uint16_t getSpeed();
+		PacketStatus getSpeed(uint16_t &speed);
 
 		void calibrate();
 
@@ -175,14 +178,13 @@ class RovesODriveMotor
 
 		void requestError();
 		void requestDRVError();
-		bool requestIsPreCalibrated();
-		bool requestIsCalibrated();
+		void requestIsPreCalibrated();
+		void requestIsCalibrated();
 		
 		//State vars
 		uint8_t m_control_mode;
 		//Member Vars
 		uint8_t motor_number;
-		String motor_name;
 		uint16_t vel_shutoff_threshold = 100;
 		
 		uint16_t vel_setpoint = 0;
@@ -199,27 +201,33 @@ class RovesODriveMotor
 		uint8_t motor_pole_pairs;
 		uint16_t motor_kv;
 
-		Stream& m_serial;
-		
-		parsePacket(ODrivePacket packet);
+		HardwareSerial* m_serial;
 };
 
-class RovesODrive()
+class RovesODrive
 {
 	public:
-		RovesODrive(Stream& mySerial);
-		void begin(int baud);
+		RovesODrive(HardwareSerial* mySerial)
+		{
+			m_serial = mySerial;
+		}
+
+		void begin();
 		void read();
 		bool isConnected();
 		
-		RovesODriveMotor motor[2];
+		RovesODriveMotor motor[2] = 
+		{
+			RovesODriveMotor(m_serial, 0),
+			RovesODriveMotor(m_serial, 1)
+		};
+
 	private:
 		void saveConfiguration();
 		void eraseConfiguration();
 		void ping();
 		
-		Stream& m_serial;
-		parsePacket(ODrivePacket packet);
+		HardwareSerial* m_serial;
 };
 
 #endif
