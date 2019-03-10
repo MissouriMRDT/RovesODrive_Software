@@ -40,36 +40,65 @@ bool charToBool(char input[])
 	return(1);
 }
 
-void writeODrive(HardwareSerial* mySerial, bool write_request, char id[MAX_STRING_CHARS], int value)
+void intToChar(char* output, int value)
 {
-	char string[MAX_STRING_CHARS];
-	sprintf(string, "%c %s %d\n", (write_request == WRITE)? 'w':'r', id, value);
-	mySerial->write(string);
-	Serial.println(string);
+	sprintf(output, "%d", value);
 }
 
-void writeODrive(HardwareSerial* mySerial, bool write_request, char id[MAX_STRING_CHARS], float value)
+void boolToChar(char* output, bool value)
 {
-	char string[MAX_STRING_CHARS];
-	sprintf(string, "%c %s %f\n", (write_request == WRITE)? 'w':'r', id, value);
-	mySerial->write(string);
-	Serial.println(string);
+	sprintf(output, "%d", value);
 }
 
-void writeODrive(HardwareSerial* mySerial, bool write_request, char id[MAX_STRING_CHARS], bool value)
+void floatToChar(char* output, float value, uint8_t precision)
 {
-	char string[MAX_STRING_CHARS];
-	sprintf(string, "%c %s %d\n", (write_request == WRITE)? 'w':'r', id, value);
-	mySerial->write(string);
-	Serial.println(string);
+	float frac_part, int_part;
+	frac_part = modf(value, &int_part);
+	
+	sprintf(output, "%d.", (int)int_part);
+
+	for(int i = 0; i<precision; i++)
+	{
+		frac_part *= 10;
+		frac_part = modf(frac_part, &int_part);
+		sprintf(output, "%s%d", output, (int)int_part);
+	}
 }
 
-void writeODrive(HardwareSerial* mySerial, bool write_request, char id[MAX_STRING_CHARS])
+void writeODrive(HardwareSerial* mySerial, bool write_read, char* id, char* value, uint8_t axis)
 {
-	char string[MAX_STRING_CHARS];
-	sprintf(string, "%c %s\n", (write_request == WRITE)? 'w':'r', id);
-	mySerial->write(string);
-	Serial.println(string);
+	Serial.print("Value: ");
+	Serial.println(value);
+
+	mySerial->write((write_read == WRITE)? 'w':'r');
+	Serial.print((write_read == WRITE)? 'w':'r');
+
+	mySerial->write(" ");
+	Serial.print(" ");
+
+	if(axis != 3)
+	{
+		mySerial->write("axis");
+		Serial.print("axis");
+
+		mySerial->write(axis);
+		Serial.print(axis);
+
+		mySerial->write(".");
+		Serial.print(".");
+	}
+
+	mySerial->write(id);
+	Serial.print(id);
+
+	mySerial->write(" ");
+	Serial.print(" ");
+
+	mySerial->write(value);
+	Serial.print(value);
+
+	mySerial->write("\n");
+	Serial.print("\n");
 }
 
 PacketStatus RovesODriveMotor::getSerial(char packet[])
@@ -100,6 +129,7 @@ void RovesODriveMotor::setControlMode(uint8_t mode)
 		case CTRL_MODE_SENSORLESS_VELOCITY_CONTROL:
 			m_control_mode = CTRL_MODE_SENSORLESS_VELOCITY_CONTROL;
 			writeControlMode(CTRL_MODE_VELOCITY_CONTROL);
+			Serial.println(1);
 			writePMFluxLinkage(PM_FLUX_LINKAGE_CONST/(motor_pole_pairs*motor_kv));
 	}
 }
@@ -190,238 +220,115 @@ void RovesODriveMotor::setKV(uint16_t KV)
 void RovesODrive::begin()
 {
 	m_serial->begin(115200);
+	delay(10);
+	m_serial->write("\n");
+	Serial.println("Drive Serial Init");
 }
 
 
 ///////////////////////////////////////////////////////////////
 void RovesODriveMotor::writeState(uint8_t state)
 {
-	writeODrive(m_serial, WRITE, SET_CURRENT_STATE_TAG, state);
+	char data[2];
+	intToChar(data, state);
+	writeODrive(m_serial, WRITE, SET_CURRENT_STATE_TAG, data, motor_number);
 }
 
 void RovesODriveMotor::requestState()
 {
-	writeODrive(m_serial, REQUEST, GET_CURRENT_STATE_TAG);
+	writeODrive(m_serial, REQUEST, GET_CURRENT_STATE_TAG, "", motor_number);
 }
 
 void RovesODriveMotor::writeControlMode(uint8_t mode)
 {
-	writeODrive(m_serial, WRITE, CONTROL_MODE_TAG, mode);
-}
-
-void RovesODriveMotor::requestControlMode()
-{
-	writeODrive(m_serial, REQUEST, CONTROL_MODE_TAG);
+	char data[2];
+	intToChar(data, mode);
+	writeODrive(m_serial, WRITE, CONTROL_MODE_TAG, data, motor_number);
 }
 
 void RovesODriveMotor::writeStartupClosedLoop(bool b_startup)
 {
-	writeODrive(m_serial, WRITE, STARTUP_CLOSED_LOOP_TAG, b_startup);
+	char data[2];
+	boolToChar(data, b_startup);
+	writeODrive(m_serial, WRITE, STARTUP_CLOSED_LOOP_TAG, data, motor_number);
 }
 
 void RovesODriveMotor::requestStartupClosedLoop()
 {
-	writeODrive(m_serial, REQUEST, STARTUP_CLOSED_LOOP_TAG);
+	writeODrive(m_serial, REQUEST, STARTUP_CLOSED_LOOP_TAG, "", motor_number);
 }
 
 void RovesODriveMotor::writeStartupSensorless(bool b_startup)
 {
-	writeODrive(m_serial, WRITE, STARTUP_SENSORLESS_TAG, b_startup);
-}
-
-void RovesODriveMotor::requestStartupSensorless()
-{
-	writeODrive(m_serial, REQUEST, STARTUP_SENSORLESS_TAG);
-}
-
-void RovesODriveMotor::writeStartupCalibrate(bool b_startup)
-{
-	writeODrive(m_serial, WRITE, STARTUP_MOTOR_CALBRATION_TAG, b_startup);
-}
-
-void RovesODriveMotor::requestStartupCalibrate()
-{
-	writeODrive(m_serial, REQUEST, STARTUP_MOTOR_CALBRATION_TAG);
+	char data[2];
+	boolToChar(data, b_startup);
+	writeODrive(m_serial, WRITE, STARTUP_SENSORLESS_TAG, data, motor_number);
 }
 
 void RovesODriveMotor::writeSpinUpAcceleration(uint16_t acceleration)
 {
-	writeODrive(m_serial, WRITE, SPINUP_TARGET_ACCEL_TAG, acceleration);
-}
-
-void RovesODriveMotor::requestSpinUpAcceleration()
-{
-	writeODrive(m_serial, REQUEST, SPINUP_TARGET_ACCEL_TAG);
+	char data[6];
+	intToChar(data, acceleration);
+	writeODrive(m_serial, WRITE, SPINUP_TARGET_ACCEL_TAG, data, motor_number);
 }
 
 void RovesODriveMotor::writeSpinUpTargetVel(uint16_t speed)
 {
-	writeODrive(m_serial, WRITE, SPINUP_TARGET_VEL_TAG, speed);
+	char data[6];
+	intToChar(data, speed);
+	writeODrive(m_serial, WRITE, SPINUP_TARGET_VEL_TAG, data, motor_number);
 }
 
 void RovesODriveMotor::requestSpinUpTargetVel()
 {
-	writeODrive(m_serial, REQUEST, SPINUP_TARGET_VEL_TAG);
-}
-
-void RovesODriveMotor::writeSpinUpCurrent(uint16_t current)
-{
-	writeODrive(m_serial, WRITE, SPINUP_CURRENT_TAG, current);
-}
-
-void RovesODriveMotor::requestSpinUpCurrent()
-{
-	writeODrive(m_serial, REQUEST, SPINUP_CURRENT_TAG);
+	writeODrive(m_serial, REQUEST, SPINUP_TARGET_VEL_TAG, "", motor_number);
 }
 
 void RovesODriveMotor::writeVelRampTarget(uint16_t target)
 {
-	writeODrive(m_serial, WRITE, VELOCITY_RAMP_TARGET_TAG, target);
-}
-
-void RovesODriveMotor::requestVelRampTarget()
-{
-	writeODrive(m_serial, REQUEST, VELOCITY_RAMP_TARGET_TAG);
+	char data[6];
+	intToChar(data, target);
+	writeODrive(m_serial, WRITE, VELOCITY_RAMP_TARGET_TAG, data, motor_number);
 }
 
 void RovesODriveMotor::writeVelRampRate(uint16_t rate)
 {
-	writeODrive(m_serial, WRITE, VELOCITY_RAMP_RATE_TAG, rate);
-}
-
-void RovesODriveMotor::requestVelRampRate()
-{
-	writeODrive(m_serial, REQUEST, VELOCITY_RAMP_RATE_TAG);
+	char data[6];
+	intToChar(data, rate);
+	writeODrive(m_serial, WRITE, VELOCITY_RAMP_RATE_TAG, data, motor_number);
 }
 
 void RovesODriveMotor::writeVelrampEnable(bool enable)
 {
-	writeODrive(m_serial, WRITE, VELOCITY_RAMP_ENABLE_TAG, enable);
-}
-
-void RovesODriveMotor::requestVelrampEnable()
-{
-	writeODrive(m_serial, REQUEST, VELOCITY_RAMP_ENABLE_TAG);
+	char data[2];
+	boolToChar(data, enable);
+	writeODrive(m_serial, WRITE, VELOCITY_RAMP_ENABLE_TAG, data, motor_number);
 }
 
 void RovesODriveMotor::writeVelSetpoint(uint16_t setpoint)
 {
-	writeODrive(m_serial, WRITE, VELOCITY_SETPOINT_TAG, setpoint);
+	char data[6];
+	intToChar(data, setpoint);
+	writeODrive(m_serial, WRITE, VELOCITY_SETPOINT_TAG, data, motor_number);
 }
 
 void RovesODriveMotor::requestVelSetpoint()
 {
-	writeODrive(m_serial, REQUEST, VELOCITY_SETPOINT_TAG);
+	writeODrive(m_serial, REQUEST, VELOCITY_SETPOINT_TAG, "", motor_number);
 }
 
 void RovesODriveMotor::writePolepairs(uint8_t polepairs)
 {
-	writeODrive(m_serial, WRITE, POLE_PAIRS_TAG, polepairs);
-}
-
-void RovesODriveMotor::requestPolepairs()
-{
-	writeODrive(m_serial, REQUEST, POLE_PAIRS_TAG);
-}
-
-void RovesODriveMotor::writeVelocityGain(float gain)
-{
-	writeODrive(m_serial, WRITE, VELOCITY_GAIN_TAG, gain);
-}
-
-void RovesODriveMotor::requestVelocityGain()
-{
-	writeODrive(m_serial, REQUEST, VELOCITY_GAIN_TAG);
-}
-
-void RovesODriveMotor::writeVelocityIntegratorGain(float gain)
-{
-	writeODrive(m_serial, WRITE, VELOCITY_INTEGRATOR_TAG, gain);
-}
-
-void RovesODriveMotor::requestVelocityIntegratorGain()
-{
-	writeODrive(m_serial, REQUEST, VELOCITY_INTEGRATOR_TAG);
-}
-
-void RovesODriveMotor::writeVelocityLimit(float limit)
-{
-	writeODrive(m_serial, WRITE, VELOCITY_LIMIT_TAG, limit);
-}
-
-void RovesODriveMotor::requestVelocityLimit()
-{
-	writeODrive(m_serial, REQUEST, VELOCITY_LIMIT_TAG);
-}
-
-void RovesODriveMotor::writeCurrentGain(float gain)
-{
-	writeODrive(m_serial, WRITE, CURRENT_PGAIN_TAG, gain);
-}
-
-void RovesODriveMotor::requestCurrentGain()
-{
-	writeODrive(m_serial, REQUEST, CURRENT_PGAIN_TAG);
-}
-
-void RovesODriveMotor::writeCurrentIntegratorGain(float gain)
-{
-	writeODrive(m_serial, WRITE, CURRENT_IGAIN_TAG, gain);
-}
-
-void RovesODriveMotor::requestCurrentIntegratorGain()
-{
-	writeODrive(m_serial, REQUEST, CURRENT_IGAIN_TAG);
-}
-
-void RovesODriveMotor::writeCurrentLimit(float limit)
-{
-	writeODrive(m_serial, WRITE, MAX_ALLOWED_CURRENT_TAG, limit);
-}
-
-void RovesODriveMotor::requestCurrentLimit()
-{
-	writeODrive(m_serial, REQUEST, MAX_ALLOWED_CURRENT_TAG);
-}
-
-void RovesODriveMotor::requestPhaseCurrent()
-{
-	writeODrive(m_serial, REQUEST, PHASE_B_IMEAS);
-}
-
-void RovesODriveMotor::requestBusCurrent()
-{
-	writeODrive(m_serial, REQUEST, BUS_CURRENT_TAG);
+	char data[2];
+	intToChar(data, polepairs);
+	writeODrive(m_serial, WRITE, POLE_PAIRS_TAG, data, motor_number);
 }
 
 void RovesODriveMotor::writePMFluxLinkage(float linkage)
 {
-	writeODrive(m_serial, WRITE, PM_FLIX_LINKAGE_TAG, linkage);
-}
-
-void RovesODriveMotor::requestPMFluxLinkage()
-{
-	writeODrive(m_serial, REQUEST, PM_FLIX_LINKAGE_TAG);
-}
-
-void RovesODriveMotor::requestError()
-{
-	writeODrive(m_serial, REQUEST, ERROR_TAG);
-}
-
-void RovesODriveMotor::requestDRVError()
-{	
-	writeODrive(m_serial, REQUEST, DRV_FAULT_TAG);
-}
-
-void RovesODriveMotor::requestIsPreCalibrated()
-{
-	writeODrive(m_serial, REQUEST, PRE_CALIBRATED_TAG);
-}
-
-void RovesODriveMotor::requestIsCalibrated()
-{
-	writeODrive(m_serial, REQUEST, IS_CALIBRATED_TAG);
+	char data[22];
+	floatToChar(data, linkage, 22);
+	writeODrive(m_serial, WRITE, PM_FLIX_LINKAGE_TAG, data, motor_number);
 }
 
 

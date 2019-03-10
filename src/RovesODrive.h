@@ -82,11 +82,11 @@ enum SerialStatus {SerialGood, SerialFault};
 int charToInt(char input[]);
 float charToFloat(char input[]);
 bool charToBool(char input[]);
+void intToChar(char* output, int value);
+void boolToChar(char* output, int value);
+void floatToChar(char* output, int value, uint8_t precision);
 
-void writeODrive(HardwareSerial* mySerial, bool write_read, char id[MAX_STRING_CHARS], int value);
-void writeODrive(HardwareSerial* mySerial, bool write_read, char id[MAX_STRING_CHARS], float value);
-void writeODrive(HardwareSerial* mySerial, bool write_read, char id[MAX_STRING_CHARS], bool value);
-void writeODrive(HardwareSerial* mySerial, bool write_read, char id[MAX_STRING_CHARS]);
+void writeODrive(HardwareSerial* mySerial, bool write_request, char* id, char* value, uint8_t axis);
 
 
 
@@ -99,12 +99,6 @@ struct ODrivePacket
 class RovesODriveMotor
 {
 	public:
-		RovesODriveMotor(HardwareSerial *mySerial, uint8_t motornum)
-		{
-			m_serial = mySerial;
-			motor_number = motornum;
-		}
-
 		PacketStatus getSerial(char packet[]);
 
 		SerialStatus checkSerial();
@@ -120,6 +114,9 @@ class RovesODriveMotor
 		void writeConfig();
 
 		bool speedLow(uint16_t speed);
+
+		uint8_t motor_number;
+		HardwareSerial* m_serial;
 		
 	private:
 		
@@ -186,7 +183,7 @@ class RovesODriveMotor
 		//State vars
 		uint8_t m_control_mode;
 		//Member Vars
-		uint8_t motor_number;
+		
 		uint16_t vel_shutoff_threshold = 100;
 		
 		uint16_t vel_setpoint = 0;
@@ -203,7 +200,7 @@ class RovesODriveMotor
 		uint8_t motor_pole_pairs;
 		uint16_t motor_kv;
 
-		HardwareSerial* m_serial;
+		
 };
 
 class RovesODrive
@@ -212,17 +209,17 @@ class RovesODrive
 		RovesODrive(HardwareSerial* mySerial)
 		{
 			m_serial = mySerial;
+			this->motor[0].motor_number = 0;
+			this->motor[0].m_serial = mySerial;
+			this->motor[1].motor_number = 1;
+			this->motor[1].m_serial = mySerial;
 		}
 
 		void begin();
 		void read();
 		bool isConnected();
 		
-		RovesODriveMotor motor[2] = 
-		{
-			RovesODriveMotor(m_serial, 0),
-			RovesODriveMotor(m_serial, 1)
-		};
+		RovesODriveMotor motor[2];
 
 	private:
 		void saveConfiguration();
