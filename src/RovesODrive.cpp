@@ -69,36 +69,19 @@ void writeODrive(HardwareSerial* mySerial, bool write_read, char* id, char* valu
 {
 	Serial.print("Value: ");
 	Serial.println(value);
+	char output[255];
 
-	mySerial->write((write_read == WRITE)? 'w':'r');
-	Serial.print((write_read == WRITE)? 'w':'r');
-
-	mySerial->write(" ");
-	Serial.print(" ");
+	sprintf(output, "%s ", (write_read == WRITE)? "w":"r");
 
 	if(axis != 3)
 	{
-		mySerial->write("axis");
-		Serial.print("axis");
-
-		mySerial->write(axis);
-		Serial.print(axis);
-
-		mySerial->write(".");
-		Serial.print(".");
+		sprintf(output, "%s%s%d.", output, "axis", axis);
 	}
 
-	mySerial->write(id);
-	Serial.print(id);
+	sprintf(output, "%s%s %s\n", output, id, value);
 
-	mySerial->write(" ");
-	Serial.print(" ");
-
-	mySerial->write(value);
-	Serial.print(value);
-
-	mySerial->write("\n");
-	Serial.print("\n");
+	mySerial->write(output);
+	Serial.println(output);
 }
 
 PacketStatus RovesODriveMotor::getSerial(char packet[])

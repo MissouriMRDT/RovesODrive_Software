@@ -21,4 +21,8 @@ void loop()
     {
         Serial.write(Serial7.read());
     }
+    Serial.print(".");
+    Serial7.write("w axis0.config.spin_up_acceleration 100\n");
+    Serial7.write("r axis0.config.spin_up_acceleration\n");
+    delay(1000);
 }
