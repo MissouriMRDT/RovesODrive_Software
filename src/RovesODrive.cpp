@@ -177,11 +177,23 @@ void RovesODriveMotor::writeConfig()
 	}
 }
 
+void RovesODriveMotor::setPolePairs(uint8_t pole_pairs)
+{
+	motor_pole_pairs = pole_pairs;
+}
+
+void RovesODriveMotor::setKV(uint16_t KV)
+{
+	motor_kv = KV;
+}
+
 void RovesODrive::begin()
 {
 	m_serial->begin(115200);
 }
 
+
+///////////////////////////////////////////////////////////////
 void RovesODriveMotor::writeState(uint8_t state)
 {
 	writeODrive(m_serial, WRITE, SET_CURRENT_STATE_TAG, state);

@@ -112,6 +112,8 @@ class RovesODriveMotor
 		void setControlMode(uint8_t mode);
 		void setSpeed(uint16_t speed);
 		PacketStatus getSpeed(uint16_t &speed);
+		void setPolePairs(uint8_t pole_pairs);
+		void setKV(uint16_t KV);
 
 		void calibrate();
 
