@@ -32,7 +32,7 @@
 #define VELOCITY_SETPOINT_TAG	 		"controller.vel_setpoint"				//float
 #define VELOCITY_INTEGRATOR_TAG			"controller.config.vel_integrator_gain"	//float
 #define VELOCITY_GAIN_TAG				"controller.config.vel_gain"			//float
-#define CONTROL_MODE_TAG				"controller.config.m_control_mode"		//int
+#define CONTROL_MODE_TAG				"controller.config.control_mode"		//int
 #define VELOCITY_LIMIT_TAG				"controller.config.vel_limit"			//float
 
 //Error
@@ -104,8 +104,8 @@ class RovesODriveMotor
 		SerialStatus checkSerial();
 
 		void setControlMode(uint8_t mode);
-		void setSpeed(uint16_t speed);
-		PacketStatus getSpeed(uint16_t &speed);
+		void setSpeed(int16_t speed);
+		PacketStatus getSpeed(int16_t &speed);
 		void setPolePairs(uint8_t pole_pairs);
 		void setKV(uint16_t KV);
 
@@ -113,17 +113,19 @@ class RovesODriveMotor
 
 		void writeConfig();
 
-		bool speedLow(uint16_t speed);
+		bool speedLow(int16_t speed);
 
 		uint8_t motor_number;
 		HardwareSerial* m_serial;
+
+		void requestState();
 		
 	private:
 		
 
 		//Startup and states
 		void writeState(uint8_t state);
-		void requestState();
+		
 		void writeControlMode(uint8_t mode);
 		void requestControlMode();
 		void writeStartupClosedLoop(bool b_startup);
@@ -133,21 +135,21 @@ class RovesODriveMotor
 		void writeStartupCalibrate(bool b_startup);
 		void requestStartupCalibrate();
 
-		void writeSpinUpAcceleration(uint16_t acceleration);
+		void writeSpinUpAcceleration(int16_t acceleration);
 		void requestSpinUpAcceleration();
-		void writeSpinUpTargetVel(uint16_t speed);
+		void writeSpinUpTargetVel(int16_t speed);
 		void requestSpinUpTargetVel();
 		void writeSpinUpCurrent(uint16_t current);
 		void requestSpinUpCurrent();
 		
-		void writeVelRampTarget(uint16_t target);
+		void writeVelRampTarget(int16_t target);
 		void requestVelRampTarget();
-		void writeVelRampRate(uint16_t rate);
+		void writeVelRampRate(int16_t rate);
 		void requestVelRampRate();
 		void writeVelrampEnable(bool enabled);
 		void requestVelrampEnable();
 
-		void writeVelSetpoint(uint16_t setpoint);
+		void writeVelSetpoint(int16_t setpoint);
 		void requestVelSetpoint();
 		
 		void writePolepairs(uint8_t kv);
@@ -184,17 +186,17 @@ class RovesODriveMotor
 		uint8_t m_control_mode;
 		//Member Vars
 		
-		uint16_t vel_shutoff_threshold = 100;
+		int16_t vel_shutoff_threshold = 100;
 		
-		uint16_t vel_setpoint = 0;
+		int16_t vel_setpoint = 0;
 		
 		//Spin Up parameters
-		uint16_t spin_up_acceleration;
-		uint16_t spin_up_target_vel = 200;
+		int16_t spin_up_acceleration;
+		int16_t spin_up_target_vel = 200;
 		
 		//Ramp Parameters
-		uint16_t vel_ramp_target;
-		uint16_t vel_ramp_rate;
+		int16_t vel_ramp_target;
+		int16_t vel_ramp_rate;
 		
 		//Motor Parameters
 		uint8_t motor_pole_pairs;

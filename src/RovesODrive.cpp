@@ -67,8 +67,8 @@ void floatToChar(char* output, float value, uint8_t precision)
 
 void writeODrive(HardwareSerial* mySerial, bool write_read, char* id, char* value, uint8_t axis)
 {
-	Serial.print("Value: ");
-	Serial.println(value);
+	//Serial.print("Value: ");
+	//Serial.println(value);
 	char output[255];
 
 	sprintf(output, "%s ", (write_read == WRITE)? "w":"r");
@@ -81,7 +81,7 @@ void writeODrive(HardwareSerial* mySerial, bool write_read, char* id, char* valu
 	sprintf(output, "%s%s %s\n", output, id, value);
 
 	mySerial->write(output);
-	Serial.println(output);
+	//Serial.println(output);
 }
 
 PacketStatus RovesODriveMotor::getSerial(char packet[])
@@ -100,7 +100,7 @@ PacketStatus RovesODriveMotor::getSerial(char packet[])
 	return(ValidPacket);
 }
 
-bool RovesODriveMotor::speedLow(uint16_t speed)
+bool RovesODriveMotor::speedLow(int16_t speed)
 {
 	return(abs(speed) < vel_shutoff_threshold);
 }
@@ -117,7 +117,7 @@ void RovesODriveMotor::setControlMode(uint8_t mode)
 	}
 }
 
-void RovesODriveMotor::setSpeed(uint16_t speed)
+void RovesODriveMotor::setSpeed(int16_t speed)
 {
   switch(m_control_mode)
   {
@@ -133,6 +133,7 @@ void RovesODriveMotor::setSpeed(uint16_t speed)
 
 		if(speedLow(vel_setpoint) && !speedLow(speed))  //If speeding up from low speed
 		{
+			Serial.println("IN RAMPUP");
 			if(speed>0) 
 			{
 			writeSpinUpTargetVel(spin_up_target_vel);
@@ -150,7 +151,7 @@ void RovesODriveMotor::setSpeed(uint16_t speed)
   
 }
 
-PacketStatus RovesODriveMotor::getSpeed(uint16_t &speed)
+PacketStatus RovesODriveMotor::getSpeed(int16_t &speed)
 {
 	requestVelRampTarget();
 	char input[5];
@@ -164,7 +165,7 @@ SerialStatus RovesODriveMotor::checkSerial()
 	switch(m_control_mode)
 	{
 		case CTRL_MODE_SENSORLESS_VELOCITY_CONTROL:
-			uint16_t speed;
+			int16_t speed;
 			if(getSpeed(speed) != ValidPacket)
 			{
 				return(SerialFault);
@@ -248,14 +249,14 @@ void RovesODriveMotor::writeStartupSensorless(bool b_startup)
 	writeODrive(m_serial, WRITE, STARTUP_SENSORLESS_TAG, data, motor_number);
 }
 
-void RovesODriveMotor::writeSpinUpAcceleration(uint16_t acceleration)
+void RovesODriveMotor::writeSpinUpAcceleration(int16_t acceleration)
 {
 	char data[6];
 	intToChar(data, acceleration);
 	writeODrive(m_serial, WRITE, SPINUP_TARGET_ACCEL_TAG, data, motor_number);
 }
 
-void RovesODriveMotor::writeSpinUpTargetVel(uint16_t speed)
+void RovesODriveMotor::writeSpinUpTargetVel(int16_t speed)
 {
 	char data[6];
 	intToChar(data, speed);
@@ -267,14 +268,14 @@ void RovesODriveMotor::requestSpinUpTargetVel()
 	writeODrive(m_serial, REQUEST, SPINUP_TARGET_VEL_TAG, "", motor_number);
 }
 
-void RovesODriveMotor::writeVelRampTarget(uint16_t target)
+void RovesODriveMotor::writeVelRampTarget(int16_t target)
 {
 	char data[6];
 	intToChar(data, target);
 	writeODrive(m_serial, WRITE, VELOCITY_RAMP_TARGET_TAG, data, motor_number);
 }
 
-void RovesODriveMotor::writeVelRampRate(uint16_t rate)
+void RovesODriveMotor::writeVelRampRate(int16_t rate)
 {
 	char data[6];
 	intToChar(data, rate);
@@ -288,7 +289,7 @@ void RovesODriveMotor::writeVelrampEnable(bool enable)
 	writeODrive(m_serial, WRITE, VELOCITY_RAMP_ENABLE_TAG, data, motor_number);
 }
 
-void RovesODriveMotor::writeVelSetpoint(uint16_t setpoint)
+void RovesODriveMotor::writeVelSetpoint(int16_t setpoint)
 {
 	char data[6];
 	intToChar(data, setpoint);
