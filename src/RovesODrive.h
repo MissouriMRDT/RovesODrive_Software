@@ -76,7 +76,7 @@
 
 #define PM_FLUX_LINKAGE_CONST 	5.51328895422 
 
-enum PacketStatus {ValidPacket, InvalidPacket, NoPacket};
+enum PacketStatus {ValidPacket, InvalidPacket, NoPacket, OverflowPacket};
 enum SerialStatus {SerialGood, SerialFault};
 
 int charToInt(char input[]);
@@ -106,6 +106,8 @@ class RovesODriveMotor
 		void setControlMode(uint8_t mode);
 		void setSpeed(int16_t speed);
 		PacketStatus getSpeed(int16_t &speed);
+		int16_t getSpeed();
+		void setRampValue(int16_t value);
 		void setPolePairs(uint8_t pole_pairs);
 		void setKV(uint16_t KV);
 
@@ -191,12 +193,12 @@ class RovesODriveMotor
 		int16_t vel_setpoint = 0;
 		
 		//Spin Up parameters
-		int16_t spin_up_acceleration;
+		int16_t spin_up_acceleration = 200;
 		int16_t spin_up_target_vel = 200;
 		
 		//Ramp Parameters
 		int16_t vel_ramp_target;
-		int16_t vel_ramp_rate;
+		int16_t vel_ramp_rate = 200;
 		
 		//Motor Parameters
 		uint8_t motor_pole_pairs;

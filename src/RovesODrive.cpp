@@ -81,21 +81,27 @@ void writeODrive(HardwareSerial* mySerial, bool write_read, char* id, char* valu
 	sprintf(output, "%s%s %s\n", output, id, value);
 
 	mySerial->write(output);
-	//Serial.println(output);
+	Serial.println(output);
 }
 
 PacketStatus RovesODriveMotor::getSerial(char packet[])
 {
+	Serial.print("Read:");
 	if(!m_serial->available())
 	{
+		Serial.println("No Packet");
 		return NoPacket;
 	}
+	Serial.print("Packet-");
 	uint8_t count = 0;
 	while(m_serial->available())
 	{
 		packet[count] = m_serial->read();
+		Serial.print(packet[count]);
 		count ++;
+		if(count > sizeof(packet)) return(OverflowPacket);
 	}
+	Serial.println("");
 	packet[count] = '\0';
 	return(ValidPacket);
 }
@@ -112,7 +118,6 @@ void RovesODriveMotor::setControlMode(uint8_t mode)
 		case CTRL_MODE_SENSORLESS_VELOCITY_CONTROL:
 			m_control_mode = CTRL_MODE_SENSORLESS_VELOCITY_CONTROL;
 			writeControlMode(CTRL_MODE_VELOCITY_CONTROL);
-			Serial.println(1);
 			writePMFluxLinkage(PM_FLUX_LINKAGE_CONST/(motor_pole_pairs*motor_kv));
 	}
 }
@@ -151,13 +156,30 @@ void RovesODriveMotor::setSpeed(int16_t speed)
   
 }
 
+int16_t RovesODriveMotor::getSpeed()
+{
+	int16_t speed = 0;
+	getSpeed(speed);
+	return(speed);
+}
+
 PacketStatus RovesODriveMotor::getSpeed(int16_t &speed)
 {
 	requestVelRampTarget();
-	char input[5];
-	getSerial(input);
-	charToInt(input);
-	return(ValidPacket);
+	char input[10];
+	PacketStatus status = getSerial(input);
+	if(status = ValidPacket)
+	{
+		speed = charToInt(input);
+		Serial.println(speed);
+	}
+	return(status);
+	
+}
+
+void RovesODriveMotor::setRampValue(int16_t value)
+{
+	vel_ramp_rate = value;
 }
 
 SerialStatus RovesODriveMotor::checkSerial()
@@ -273,6 +295,11 @@ void RovesODriveMotor::writeVelRampTarget(int16_t target)
 	char data[6];
 	intToChar(data, target);
 	writeODrive(m_serial, WRITE, VELOCITY_RAMP_TARGET_TAG, data, motor_number);
+}
+
+void RovesODriveMotor::requestVelRampTarget()
+{
+	writeODrive(m_serial, REQUEST, VELOCITY_RAMP_TARGET_TAG, "", motor_number);
 }
 
 void RovesODriveMotor::writeVelRampRate(int16_t rate)
