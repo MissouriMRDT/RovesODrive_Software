@@ -81,27 +81,27 @@ void writeODrive(HardwareSerial* mySerial, bool write_read, char* id, char* valu
 	sprintf(output, "%s%s %s\n", output, id, value);
 
 	mySerial->write(output);
-	Serial.println(output);
+	//Serial.println(output);
 }
 
 PacketStatus RovesODriveMotor::getSerial(char packet[])
 {
-	Serial.print("Read:");
+	//Serial.print("Read:");
 	if(!m_serial->available())
 	{
 		Serial.println("No Packet");
 		return NoPacket;
 	}
-	Serial.print("Packet-");
+	//Serial.print("Packet-");
 	uint8_t count = 0;
 	while(m_serial->available())
 	{
 		packet[count] = m_serial->read();
-		Serial.print(packet[count]);
+		//Serial.print(packet[count]);
 		count ++;
 		if(count > sizeof(packet)) return(OverflowPacket);
 	}
-	Serial.println("");
+	//Serial.println("");
 	packet[count] = '\0';
 	return(ValidPacket);
 }
@@ -221,6 +221,24 @@ void RovesODriveMotor::setPolePairs(uint8_t pole_pairs)
 void RovesODriveMotor::setKV(uint16_t KV)
 {
 	motor_kv = KV;
+}
+
+void RovesODriveMotor::setRamp(uint16_t rate)
+{
+	constrain(rate, MAX_VELOCITY_RAMP_RATE, -MAX_VELOCITY_RAMP_RATE);
+
+	setSpinupAccleleration(rate);
+	setRampRate(rate);
+}
+
+void RovesODriveMotor::setSpinupAccleleration(uint16_t acceleration)
+{
+	spin_up_acceleration = acceleration;
+}
+
+void RovesODriveMotor::setRampRate(uint16_t rate)
+{
+	vel_ramp_rate = rate;
 }
 
 void RovesODrive::begin()

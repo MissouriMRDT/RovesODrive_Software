@@ -10,6 +10,8 @@
 #define WRITE	true
 #define	REQUEST	false
 
+#define MAX_VELOCITY_RAMP_RATE 10000
+
 //Axis Data Tags
 //configs
 #define GET_CURRENT_STATE_TAG			"current_state"							//int
@@ -121,6 +123,12 @@ class RovesODriveMotor
 		HardwareSerial* m_serial;
 
 		void requestState();
+
+		void setRamp(uint16_t rate);
+
+		void setSpinupAccleleration(uint16_t acceleration);
+
+		void setRampRate(uint16_t rate);
 		
 	private:
 		
