@@ -24,6 +24,7 @@
 #define SPINUP_TARGET_VEL_TAG 			"config.spin_up_target_vel"				//float
 #define SPINUP_TARGET_ACCEL_TAG 		"config.spin_up_acceleration"			//float
 #define SPINUP_CURRENT_TAG		 		"config.spin_up_current"				//float
+#define SPINUP_TIME_TAG					"config.ramp_up_time"					//float
 
 //Velocity Ramp
 #define VELOCITY_RAMP_ENABLE_TAG		"controller.vel_ramp_enable"			//bool
@@ -53,6 +54,9 @@
 #define POLE_PAIRS_TAG					"motor.confog.pole_pairs"				//int				
 #define PHASE_B_CURRENT_TAG				"motor.current_meas_phB"				//float
 #define PM_FLIX_LINKAGE_TAG				"sensorless_estimator.config.pm_flux_linkage"	//float
+
+#define CURRENT_SETPOINT_TAG			"controller.current_setpoint"		//float
+#define DIRECTION_TAG					"motor.config.direction"			//int
 
 
 //Controller Data Tags
@@ -129,9 +133,11 @@ class RovesODriveMotor
 		void setSpinupAccleleration(uint16_t acceleration);
 
 		void setRampRate(uint16_t rate);
+
+		
 		
 	private:
-		
+		void setDirection(int8_t direction);
 
 		//Startup and states
 		void writeState(uint8_t state);
@@ -151,6 +157,11 @@ class RovesODriveMotor
 		void requestSpinUpTargetVel();
 		void writeSpinUpCurrent(uint16_t current);
 		void requestSpinUpCurrent();
+		void writeSpinUpTime(float time);
+
+		void writeDirection(int8_t value);
+
+		void writeCurrentSetopint(uint16_t setpoint);
 		
 		void writeVelRampTarget(int16_t target);
 		void requestVelRampTarget();
@@ -194,6 +205,8 @@ class RovesODriveMotor
 		
 		//State vars
 		uint8_t m_control_mode;
+
+		int8_t m_direction = 1;
 		//Member Vars
 		
 		int16_t vel_shutoff_threshold = 100;
@@ -203,6 +216,8 @@ class RovesODriveMotor
 		//Spin Up parameters
 		int16_t spin_up_acceleration = 200;
 		int16_t spin_up_target_vel = 200;
+		int16_t spin_up_current = 20;
+		int16_t current_setpoint = 10;
 		
 		//Ramp Parameters
 		int16_t vel_ramp_target;
