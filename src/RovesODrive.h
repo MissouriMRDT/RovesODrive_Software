@@ -217,7 +217,15 @@ class RovesODriveMotor
 		int16_t spin_up_acceleration = 200;
 		int16_t spin_up_target_vel = 200;
 		int16_t spin_up_current = 20;
-		int16_t current_setpoint = 10;
+
+		int16_t current_setpoint = 100;
+
+		bool do_current_ramp = true;
+		int16_t current_ramp_start = 30;
+		int16_t current_ramp_end = 100;
+		int16_t current_ramp_inc = 5;
+
+		int16_t idle_current = 20;
 		
 		//Ramp Parameters
 		int16_t vel_ramp_target;

@@ -48,6 +48,7 @@ if(text == 'y') or (text == 'Y'):
 	
 	odrv0.axis0.config.spin_up_acceleration = 1000
 	odrv0.axis0.config.ramp_up_time = .1
+	odrv0.axis0.controller.current_setpoint = 20
 	odrv0.axis0.config.spin_up_target_vel = 200
 	odrv0.axis0.config.spin_up_current = 20
 	odrv0.axis0.motor.config.current_lim = 27
