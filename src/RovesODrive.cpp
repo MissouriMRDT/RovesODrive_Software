@@ -146,24 +146,8 @@ void RovesODriveMotor::setSpeed(int16_t speed)
 
 			writeState(AXIS_STATE_IDLE);
 			writeState(AXIS_STATE_SENSORLESS_CONTROL);
-			if(do_current_ramp) current_setpoint = current_ramp_start;
 			writeCurrentSetopint(current_setpoint);
-		}
-
-		if(speed)
-		{
-			if(do_current_ramp)
-			{
-				if(current_setpoint<current_ramp_end) writeCurrentSetopint(current_setpoint+=current_ramp_inc);
-			}
-			Serial.print("Current Setpoint:");
-			Serial.println(current_setpoint);
-		}
-		else
-		{
-			writeCurrentSetopint(idle_current);
-		}
-		
+		}	
 
 		writeVelRampTarget(m_direction*speed);  
 
@@ -257,6 +241,11 @@ void RovesODriveMotor::setSpinupAccleleration(uint16_t acceleration)
 void RovesODriveMotor::setRampRate(uint16_t rate)
 {
 	vel_ramp_rate = rate;
+}
+
+void RovesODriveMotor::setCurrentRampEnd(uint16_t value)
+{
+	current_ramp_end = value;
 }
 
 void RovesODrive::begin()

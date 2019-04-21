@@ -134,6 +134,8 @@ class RovesODriveMotor
 
 		void setRampRate(uint16_t rate);
 
+		void setCurrentRampEnd(uint16_t value);
+
 		
 		
 	private:
@@ -218,14 +220,14 @@ class RovesODriveMotor
 		int16_t spin_up_target_vel = 200;
 		int16_t spin_up_current = 20;
 
-		int16_t current_setpoint = 100;
+		int16_t current_setpoint = 200;
 
 		bool do_current_ramp = true;
 		int16_t current_ramp_start = 30;
 		int16_t current_ramp_end = 100;
 		int16_t current_ramp_inc = 5;
 
-		int16_t idle_current = 20;
+		int16_t idle_current = 50;
 		
 		//Ramp Parameters
 		int16_t vel_ramp_target;
