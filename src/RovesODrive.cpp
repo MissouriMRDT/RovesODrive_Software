@@ -82,20 +82,25 @@ void writeODrive(HardwareSerial* mySerial, bool write_read, char* id, char* valu
 
 PacketStatus RovesODriveMotor::getSerial(char packet[])
 {
-	//Serial.print("Read:");
+	//Serial.print("Read:"); Serial.print(sizeof(packet));
 	if(!m_serial->available())
 	{
-		//Serial.println("No Packet");
+		Serial.println("No Packet");
 		return NoPacket;
 	}
-	//Serial.print("Packet-");
+	//Serial.print("Packet:");
 	uint8_t count = 0;
 	while(m_serial->available())
 	{
 		packet[count] = m_serial->read();
-		//Serial.print(packet[count]);
+		//Serial.print(packet[count], HEX);
 		count ++;
-		if(count > sizeof(packet)) return(OverflowPacket);
+		//Serial.print(count); Serial.print(sizeof(packet));
+		if(count > sizeof(packet)) 
+		{
+			Serial.println("OV");
+			return(OverflowPacket);
+		}
 	}
 	//Serial.println("");
 	packet[count] = '\0';
@@ -258,10 +263,11 @@ void RovesODriveMotor::setCurrentRampEnd(uint16_t value)
 	current_ramp_end = value;
 }
 
-uint8_t RovesODriveMotor::getMotorErrorCode()
+uint16_t RovesODriveMotor::getMotorErrorCode()
 {
 	requestMotorErrorCode();
-	char input[10];
+	char input[50];
+	delay(10); //Serial.print(sizeof(input));
 	PacketStatus status = getSerial(input);
 	if(status = ValidPacket)
 	{

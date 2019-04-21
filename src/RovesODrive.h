@@ -136,7 +136,7 @@ class RovesODriveMotor
 
 		void setCurrentRampEnd(uint16_t value);
 
-		uint8_t getMotorErrorCode();
+		uint16_t getMotorErrorCode();
 
 		void idleMotor();
 		
@@ -241,7 +241,7 @@ class RovesODriveMotor
 		uint8_t motor_pole_pairs;
 		uint16_t motor_kv;
 
-		uint8_t motor_error_code;
+		uint16_t motor_error_code;
 
 		
 };
