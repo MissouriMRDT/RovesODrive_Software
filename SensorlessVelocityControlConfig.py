@@ -111,16 +111,16 @@ if(text == 'y') or (text == 'Y'):
 	
 	odrv0.axis1.config.spin_up_acceleration = 1000
 	odrv0.axis1.config.ramp_up_time = .1
-	odrv0.axis1.controller.current_setpoint = 20
 	odrv0.axis1.config.spin_up_target_vel = 200
 	odrv0.axis1.config.spin_up_current = 20
 	odrv0.axis1.motor.config.current_lim = 27
 	
-	odrv0.axis0.motor.config.current_control_bandwidth = 1000
 	odrv0.axis1.motor.current_control.p_gain = .015 #.015
 	odrv0.axis1.motor.current_control.i_gain = 102 #102
+	
+	odrv0.axis1.motor.config.current_control_bandwidth = 1000
 	odrv0.axis1.controller.config.vel_gain = 0.1 #0.1
-	odrv0.axis1.controller.config.vel_integrator_gain = 1 #0.1 
+	odrv0.axis1.controller.config.vel_integrator_gain = 0.1 #0.1 
 
 
 	while(1):
