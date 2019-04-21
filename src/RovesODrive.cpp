@@ -248,6 +248,19 @@ void RovesODriveMotor::setCurrentRampEnd(uint16_t value)
 	current_ramp_end = value;
 }
 
+uint8_t RovesODriveMotor::getMotorErrorCode()
+{
+	requestMotorErrorCode();
+	char input[10];
+	PacketStatus status = getSerial(input);
+	if(status = ValidPacket)
+	{
+		motor_error_code = charToInt(input);
+		Serial.println(motor_error_code);
+	}
+	return(motor_error_code);
+}
+
 void RovesODrive::begin()
 {
 	m_serial->begin(115200);
@@ -406,4 +419,8 @@ void RovesODriveMotor::writePMFluxLinkage(float linkage)
 	writeODrive(m_serial, WRITE, PM_FLIX_LINKAGE_TAG, data, motor_number);
 }
 
+void RovesODriveMotor::requestMotorErrorCode()
+{
+	writeODrive(m_serial, REQUEST, GET_CURRENT_STATE_TAG, "", motor_number);
+}
 

@@ -204,6 +204,8 @@ class RovesODriveMotor
 		void requestDRVError();
 		void requestIsPreCalibrated();
 		void requestIsCalibrated();
+
+		void requestMotorErrorCode();
 		
 		//State vars
 		uint8_t m_control_mode;
@@ -236,6 +238,8 @@ class RovesODriveMotor
 		//Motor Parameters
 		uint8_t motor_pole_pairs;
 		uint16_t motor_kv;
+
+		uint8_t motor_error_code;
 
 		
 };
