@@ -149,6 +149,16 @@ void RovesODriveMotor::setSpeed(int16_t speed)
 			writeCurrentSetopint(current_setpoint);
 		}	
 
+		if(speed)
+		{
+			writeCurrentSetopint(current_setpoint);
+		}
+		else
+		{
+			writeCurrentSetopint(idle_current);
+		}
+		
+
 		writeVelRampTarget(m_direction*speed);  
 
 		vel_setpoint = speed;
@@ -259,6 +269,11 @@ uint8_t RovesODriveMotor::getMotorErrorCode()
 		Serial.println(motor_error_code);
 	}
 	return(motor_error_code);
+}
+
+void RovesODriveMotor::idleMotor()
+{
+	writeState(AXIS_STATE_IDLE);
 }
 
 void RovesODrive::begin()

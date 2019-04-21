@@ -136,7 +136,9 @@ class RovesODriveMotor
 
 		void setCurrentRampEnd(uint16_t value);
 
-		
+		uint8_t getMotorErrorCode();
+
+		void idleMotor();
 		
 	private:
 		void setDirection(int8_t direction);
