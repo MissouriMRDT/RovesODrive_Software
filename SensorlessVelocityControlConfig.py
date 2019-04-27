@@ -138,7 +138,7 @@ if(text == 'y') or (text == 'Y'):
 	odrv0.axis1.controller.vel_ramp_target = 0
 
 
-text = input("Save configuration{y/n]:")
+text = input("Save configuration[y/n]:")
 if(text == 'y') or (text == 'Y'):
 	odrv0.save_configuration()
 

@@ -82,25 +82,20 @@ void writeODrive(HardwareSerial* mySerial, bool write_read, char* id, char* valu
 
 PacketStatus RovesODriveMotor::getSerial(char packet[])
 {
-	//Serial.print("Read:"); Serial.print(sizeof(packet));
+	//Serial.print("Read:");
 	if(!m_serial->available())
 	{
-		Serial.println("No Packet");
+		//Serial.println("No Packet");
 		return NoPacket;
 	}
-	//Serial.print("Packet:");
+	//Serial.print("Packet-");
 	uint8_t count = 0;
 	while(m_serial->available())
 	{
 		packet[count] = m_serial->read();
-		//Serial.print(packet[count], HEX);
+		//Serial.print(packet[count]);
 		count ++;
-		//Serial.print(count); Serial.print(sizeof(packet));
-		if(count > sizeof(packet)) 
-		{
-			Serial.println("OV");
-			return(OverflowPacket);
-		}
+		if(count > sizeof(packet)) return(OverflowPacket);
 	}
 	//Serial.println("");
 	packet[count] = '\0';
@@ -151,12 +146,18 @@ void RovesODriveMotor::setSpeed(int16_t speed)
 
 			writeState(AXIS_STATE_IDLE);
 			writeState(AXIS_STATE_SENSORLESS_CONTROL);
+			if(do_current_ramp) current_setpoint = current_ramp_start;
 			writeCurrentSetopint(current_setpoint);
-		}	
+		}
 
 		if(speed)
 		{
-			writeCurrentSetopint(current_setpoint);
+			if(do_current_ramp)
+			{
+				if(current_setpoint<current_ramp_end) writeCurrentSetopint(current_setpoint+=current_ramp_inc);
+			}
+			Serial.print("Current Setpoint:");
+			Serial.println(current_setpoint);
 		}
 		else
 		{
@@ -256,25 +257,6 @@ void RovesODriveMotor::setSpinupAccleleration(uint16_t acceleration)
 void RovesODriveMotor::setRampRate(uint16_t rate)
 {
 	vel_ramp_rate = rate;
-}
-
-void RovesODriveMotor::setCurrentRampEnd(uint16_t value)
-{
-	current_ramp_end = value;
-}
-
-uint16_t RovesODriveMotor::getMotorErrorCode()
-{
-	requestMotorErrorCode();
-	char input[50];
-	delay(10); //Serial.print(sizeof(input));
-	PacketStatus status = getSerial(input);
-	if(status = ValidPacket)
-	{
-		motor_error_code = charToInt(input);
-		Serial.println(motor_error_code);
-	}
-	return(motor_error_code);
 }
 
 void RovesODriveMotor::idleMotor()
@@ -440,8 +422,4 @@ void RovesODriveMotor::writePMFluxLinkage(float linkage)
 	writeODrive(m_serial, WRITE, PM_FLIX_LINKAGE_TAG, data, motor_number);
 }
 
-void RovesODriveMotor::requestMotorErrorCode()
-{
-	writeODrive(m_serial, REQUEST, GET_CURRENT_STATE_TAG, "", motor_number);
-}
 

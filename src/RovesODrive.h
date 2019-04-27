@@ -134,11 +134,9 @@ class RovesODriveMotor
 
 		void setRampRate(uint16_t rate);
 
-		void setCurrentRampEnd(uint16_t value);
-
-		uint16_t getMotorErrorCode();
-
 		void idleMotor();
+
+		
 		
 	private:
 		void setDirection(int8_t direction);
@@ -206,8 +204,6 @@ class RovesODriveMotor
 		void requestDRVError();
 		void requestIsPreCalibrated();
 		void requestIsCalibrated();
-
-		void requestMotorErrorCode();
 		
 		//State vars
 		uint8_t m_control_mode;
@@ -224,14 +220,14 @@ class RovesODriveMotor
 		int16_t spin_up_target_vel = 200;
 		int16_t spin_up_current = 20;
 
-		int16_t current_setpoint = 200;
+		int16_t current_setpoint = 100;
 
 		bool do_current_ramp = true;
 		int16_t current_ramp_start = 30;
 		int16_t current_ramp_end = 100;
 		int16_t current_ramp_inc = 5;
 
-		int16_t idle_current = 50;
+		int16_t idle_current = 20;
 		
 		//Ramp Parameters
 		int16_t vel_ramp_target;
@@ -240,8 +236,6 @@ class RovesODriveMotor
 		//Motor Parameters
 		uint8_t motor_pole_pairs;
 		uint16_t motor_kv;
-
-		uint16_t motor_error_code;
 
 		
 };
