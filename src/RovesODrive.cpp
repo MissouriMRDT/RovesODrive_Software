@@ -422,4 +422,11 @@ void RovesODriveMotor::writePMFluxLinkage(float linkage)
 	writeODrive(m_serial, WRITE, PM_FLIX_LINKAGE_TAG, data, motor_number);
 }
 
+void RovesODriveMotor::setTrapTarget(int32_t target)
+{
+	char data[12];
+	intToChar(data, target, 12);
+	writeODrive(m_serial, WRITE, PM_FLIX_LINKAGE_TAG, data, motor_number);
+}
+
 

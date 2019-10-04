@@ -17,19 +17,7 @@
 #define GET_CURRENT_STATE_TAG			"current_state"							//int
 #define SET_CURRENT_STATE_TAG			"requested_state"						//int
 #define STARTUP_CLOSED_LOOP_TAG 		"config.startup_closed_loop_control"	//bool
-#define STARTUP_SENSORLESS_TAG 			"config.startup_sensorless_control"		//bool
 #define STARTUP_MOTOR_CALBRATION_TAG	"config.startup_motor_calibration"		//bool
-
-//Spinup Config
-#define SPINUP_TARGET_VEL_TAG 			"config.spin_up_target_vel"				//float
-#define SPINUP_TARGET_ACCEL_TAG 		"config.spin_up_acceleration"			//float
-#define SPINUP_CURRENT_TAG		 		"config.spin_up_current"				//float
-#define SPINUP_TIME_TAG					"config.ramp_up_time"					//float
-
-//Velocity Ramp
-#define VELOCITY_RAMP_ENABLE_TAG		"controller.vel_ramp_enable"			//bool
-#define VELOCITY_RAMP_TARGET_TAG		"controller.vel_ramp_target"			//float
-#define VELOCITY_RAMP_RATE_TAG			"controller.config.vel_ramp_rate"		//float
 
 //Velocity Config
 #define VELOCITY_SETPOINT_TAG	 		"controller.vel_setpoint"				//float
@@ -42,48 +30,60 @@
 #define ERROR_TAG						"controller.error"						//int
 #define DRV_FAULT_TAG					"motor.gate_driver.drv_fault"			//int
 
-//current
-#define CURRENT_IGAIN_TAG				"motor.current_control.i_gain"			//float
-#define CURRENT_PGAIN_TAG				"motor.current_control.p_gain"			//float
-#define BUS_CURRENT_TAG					"motor.current_control.Ibus"			//float
-#define MAX_ALLOWED_CURRENT_TAG			"motor.current_control.max_allowed_current"	//float
-#define PHASE_B_IMEAS					"motor.TODO"
-
 #define PRE_CALIBRATED_TAG				"motor.config.pre_calibrated"			//bool
 #define IS_CALIBRATED_TAG				"motor.is_calibrated"					//bool
-#define POLE_PAIRS_TAG					"motor.confog.pole_pairs"				//int				
-#define PHASE_B_CURRENT_TAG				"motor.current_meas_phB"				//float
-#define PM_FLIX_LINKAGE_TAG				"sensorless_estimator.config.pm_flux_linkage"	//float
-
-#define CURRENT_SETPOINT_TAG			"controller.current_setpoint"		//float
-#define DIRECTION_TAG					"motor.config.direction"			//int
-
+#define POLE_PAIRS_TAG					"motor.config.pole_pairs"				//int				
 
 //Controller Data Tags
 #define SAVE_CONFIGURATION_TAG	"save_configuration"
 #define REBOOT_TAG				"reboot"
 
-//Axis states
-#define AXIS_STATE_IDLE 						1
-#define AXIS_STATE_STARTUP_SEQUENCE  			2
-#define AXIS_STATE_FULL_CALIBRATION_SEQUENCE  	3
-#define AXIS_STATE_MOTOR_CALIBRATION_SEQUENCE  	4
-#define AXIS_STATE_SENSORLESS_CONTROL   		5
-#define AXIS_STATE_ENCODER_INDEX_SEARCH   		6
-#define AXIS_STATE_ENCODER_OFFSET_CALIBRATION	7
-#define AXIS_STATE_CLOSED_LOOP_CONTROL  		8
-
-//Control modes
-#define CTRL_MODE_POSITION_CONTROL				1
-#define CTRL_MODE_VELOCITY_CONTROL				2
-#define CTRL_MODE_CURRENT_CONTROL				3
-#define CTRL_MODE_VOLTAGE_CONTROL 				4
-#define CTRL_MODE_SENSORLESS_VELOCITY_CONTROL 	5
+//Trap Trajectory
+ #define VELOCITY_LIMIT  				"trap_traj.config.vel_limit" //float
+ #define ACCELERATION_LIMIT				"trap_traj.config.accel_limit" //float
+ #define DECELERATION_LIMIT				"trap_traj.config.decel_limit" //float
+ #define ACCELERATION_PER_COUNTS		"trap_traj.config.A_per_css" //float
+ #define CURRENT_LIMIT					"motor.config.current_lim" //float
+ #define VELOCITY_LIMIT_CONFIG			"controller.config.vel_limit" //float
+ #define MOVE_TO_POSITION				"controller.move_to_pos" //int
+ #define MOVE_INCREMENTAL				"controller.move_incremental" //int
 
 #define PM_FLUX_LINKAGE_CONST 	5.51328895422 
 
-enum PacketStatus {ValidPacket, InvalidPacket, NoPacket, OverflowPacket};
-enum SerialStatus {SerialGood, SerialFault};
+enum Axis_State
+	{
+	AXIS_STATE_IDLE,
+	AXIS_STATE_STARTUP_SEQUENCE,
+	AXIS_STATE_FULL_CALIBRATION_SEQUENCE,
+	AXIS_STATE_MOTOR_CALIBRATION_SEQUENCE,
+	AXIS_STATE_SENSORLESS_CONTROL,
+	AXIS_STATE_ENCODER_INDEX_SEARCH,
+	AXIS_STATE_ENCODER_OFFSET_CALIBRATION,
+	AXIS_STATE_CLOSED_LOOP_CONTROL	
+	};
+
+enum Control_Mode
+	{
+	CTRL_MODE_POSITION_CONTROL,
+	CTRL_MODE_VELOCITY_CONTROL,
+	CTRL_MODE_CURRENT_CONTROL,
+	CTRL_MODE_VOLTAGE_CONTROL,
+	CTRL_MODE_SENSORLESS_VELOCITY_CONTROL
+	};
+
+enum PacketStatus 
+	{
+	ValidPacket, 
+	InvalidPacket, 
+	NoPacket, 
+	OverflowPacket
+	};
+
+enum SerialStatus 
+	{
+	SerialGood, 
+	SerialFault
+	};
 
 int charToInt(char input[]);
 float charToFloat(char input[]);
@@ -110,6 +110,7 @@ class RovesODriveMotor
 		SerialStatus checkSerial();
 
 		void setControlMode(uint8_t mode);
+		void setTrapTarget(int32_t target);
 		void setSpeed(int16_t speed);
 		PacketStatus getSpeed(int16_t &speed);
 		int16_t getSpeed();
