@@ -87,9 +87,10 @@ void writeODriveCommand(HardwareSerial* mySerial, char* id, char* value, uint8_t
 	sprintf(output, "%s ", id);
 	if(axis != 3)
 	{
-		sprintf(output, "%s%d", output, axis);
+		sprintf(output, "%s %d", output, axis);
 	}
-	sprintf(output, "%s%s \n", output, value);
+	sprintf(output, "%s %s \n", output, value);
+	Serial.println(output);
 	mySerial->write(output);
 }
 
@@ -279,6 +280,7 @@ void RovesODriveMotor::idleMotor()
 
 void RovesODrive::begin()
 {
+	Serial.println("Beginning");
 	m_serial->begin(115200);
 	delay(10);
 	m_serial->write("\n");
