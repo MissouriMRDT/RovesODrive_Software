@@ -104,20 +104,18 @@ struct ODrivePacket
 class RovesODriveMotor
 {
 	public:
-		PacketStatus getSerial(char packet[]);
+		Packet_Status getSerial(char packet[]);
 
-		SerialStatus checkSerial();
+		Serial_Status checkSerial();
 
 		void setControlMode(Control_Mode mode);
 		void setTrapTarget(int32_t target);
 		void setSpeed(int16_t speed);
-		PacketStatus getSpeed(int16_t &speed);
+		Packet_Status getSpeed(int16_t &speed);
 		int16_t getSpeed();
 		void setRampValue(int16_t value);
 		void setPolePairs(uint8_t pole_pairs);
 		void setKV(uint16_t KV);
-
-		void setTrapTarget(int32_t target);
 		
 		void calibrate();
 
@@ -132,7 +130,7 @@ class RovesODriveMotor
 
 		void setRamp(uint16_t rate);
 
-		void setSpinupAccleleration(uint32_t pos);
+		void setSpinupAccleleration(uint16_t pos);
 
 		void setRampRate(uint16_t rate);
 

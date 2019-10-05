@@ -9,9 +9,9 @@ void setup()
     Drive1.begin();
 
     delay(100);
-    Drive1.requestState(AXIS_STATE_CLOSED_LOOP_CONTROL);
-    delay(100);
+    Serial7.write("w axis0.requested_state AXIS_STATE_CLOSED_LOOP_CONTROL\n");
     Serial.println("Initialised");
+    delay(100);
 }
 
 void loop()
@@ -36,7 +36,7 @@ void loop()
     {
         Serial.println(targetString);  
         int command = targetString.toInt();  
-        Drive1.motor[0].setTrapTarget(n);
+        Drive1.motor[0].setTrapTarget(command);
         targetString = "";
     }
 }
