@@ -1,8 +1,8 @@
-#include "RoveComm.h"
 #include "RovesODrive.h"
 
 RovesODrive Drive1(&Serial7);
-RoveCommEthernetUdp RoveComm;
+String targetString;
+
 void setup()
 {
     Serial.begin(115200);
@@ -10,9 +10,7 @@ void setup()
 
     delay(100);
     Drive1.requestState(AXIS_STATE_CLOSED_LOOP_CONTROL);
-    //Drive1.motor[0].writeConfig();
     delay(100);
-    RoveComm.begin(RC_DRIVEBOARD_FOURTHOCTET);
     Serial.println("Initialised");
 }
 
@@ -27,11 +25,18 @@ void loop()
         }
     }
 
-    if(Serial.available())
+    while (Serial.available()) 
     {
-        while(Serial.available())
-        {
-            Drive1.motor[0]Serial.write(Serial.read());
-        }
+        char c = Serial.read();  
+        targetString += c; 
+        delay(2);  
+    }
+
+    if (targetString.length() >0) 
+    {
+        Serial.println(targetString);  
+        int command = targetString.toInt();  
+        Drive1.motor[0].setTrapTarget(n);
+        targetString = "";
     }
 }

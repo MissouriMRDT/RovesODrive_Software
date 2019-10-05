@@ -45,8 +45,6 @@
  #define ACCELERATION_PER_COUNTS		"trap_traj.config.A_per_css" //float
  #define CURRENT_LIMIT					"motor.config.current_lim" //float
  #define VELOCITY_LIMIT_CONFIG			"controller.config.vel_limit" //float
- #define MOVE_TO_POSITION				"controller.move_to_pos" //int
- #define MOVE_INCREMENTAL				"controller.move_incremental" //int
 
 #define PM_FLUX_LINKAGE_CONST 	5.51328895422 
 
@@ -71,7 +69,7 @@ enum Control_Mode
 	CTRL_MODE_SENSORLESS_VELOCITY_CONTROL
 	};
 
-enum PacketStatus 
+enum Packet_Status 
 	{
 	ValidPacket, 
 	InvalidPacket, 
@@ -79,7 +77,7 @@ enum PacketStatus
 	OverflowPacket
 	};
 
-enum SerialStatus 
+enum Serial_Status 
 	{
 	SerialGood, 
 	SerialFault
@@ -92,7 +90,8 @@ void intToChar(char* output, int value);
 void boolToChar(char* output, int value);
 void floatToChar(char* output, int value, uint8_t precision);
 
-void writeODrive(HardwareSerial* mySerial, bool write_request, char* id, char* value, uint8_t axis);
+void writeODriveConfig(HardwareSerial* mySerial, bool write_request, char* id, char* value, uint8_t axis);
+void writeODriveCommand(HardwareSerial* mySerial, char* id, char* value, uint8_t axis);
 
 
 
@@ -109,7 +108,7 @@ class RovesODriveMotor
 
 		SerialStatus checkSerial();
 
-		void setControlMode(uint8_t mode);
+		void setControlMode(Control_Mode mode);
 		void setTrapTarget(int32_t target);
 		void setSpeed(int16_t speed);
 		PacketStatus getSpeed(int16_t &speed);
@@ -118,6 +117,8 @@ class RovesODriveMotor
 		void setPolePairs(uint8_t pole_pairs);
 		void setKV(uint16_t KV);
 
+		void setTrapTarget(int32_t target);
+		
 		void calibrate();
 
 		void writeConfig();
@@ -131,7 +132,7 @@ class RovesODriveMotor
 
 		void setRamp(uint16_t rate);
 
-		void setSpinupAccleleration(uint16_t acceleration);
+		void setSpinupAccleleration(uint32_t pos);
 
 		void setRampRate(uint16_t rate);
 
@@ -143,7 +144,7 @@ class RovesODriveMotor
 		void setDirection(int8_t direction);
 
 		//Startup and states
-		void writeState(uint8_t state);
+		void writeState(Axis_State state);
 		
 		void writeControlMode(uint8_t mode);
 		void requestControlMode();
@@ -207,7 +208,7 @@ class RovesODriveMotor
 		void requestIsCalibrated();
 		
 		//State vars
-		uint8_t m_control_mode;
+		Control_Mode m_control_mode;
 
 		int8_t m_direction = 1;
 		//Member Vars
