@@ -51,4 +51,6 @@ void loop()
         Drive1.motor[0].setTrapTarget(command);
         targetString = "";
     }
+    Drive1.motor[0].requestPosEstimate();
+    //Drive1.motor[0].requestErrors();
 }

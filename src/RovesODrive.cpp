@@ -84,7 +84,7 @@ void writeODriveCommand(HardwareSerial* mySerial, char* id, char* value, uint8_t
 {
 	char output[255];
 
-	sprintf(output, "%s ", id);
+	sprintf(output, "%s", id);
 	if(axis != 3)
 	{
 		sprintf(output, "%s %d", output, axis);
@@ -352,4 +352,12 @@ void RovesODriveMotor::setTrapTarget(int32_t target)
 	writeODriveCommand(m_serial, "t", data, motor_number);
 }
 
+void RovesODriveMotor::requestPosEstimate()
+{
+	Serial7.write("r encoder.pos_estimate \n");
+}
 
+//void RovesODriveMotor::requestErrors()
+//{
+
+//}

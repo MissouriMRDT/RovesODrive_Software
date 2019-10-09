@@ -110,6 +110,8 @@ class RovesODriveMotor
 
 		void setControlMode(Control_Mode mode);
 		void setTrapTarget(int32_t target);
+		void requestPosEstimate();
+		//void requestErrors();
 		void setSpeed(int16_t speed);
 		Packet_Status getSpeed(int16_t &speed);
 		int16_t getSpeed();
