@@ -83,6 +83,50 @@ enum Serial_Status
 	SerialFault
 	};
 
+enum Error_Axis
+{
+	ERROR_NONE,
+    ERROR_INVALID_STATE, 
+    ERROR_DC_BUS_UNDER_VOLTAGE,
+    ERROR_DC_BUS_OVER_VOLTAGE,
+    ERROR_CURRENT_MEASUREMENT_TIMEOUT,
+    ERROR_BRAKE_RESISTOR_DISARMED, 
+    ERROR_MOTOR_DISARMED, 
+    ERROR_MOTOR_FAILED, 
+    ERROR_SENSORLESS_ESTIMATOR_FAILED,
+    ERROR_ENCODER_FAILED, 
+    ERROR_CONTROLLER_FAILED
+};
+
+enum Error_Motor
+{
+	ERROR_NONE,
+    ERROR_PHASE_RESISTANCE_OUT_OF_RANGE,
+    ERROR_PHASE_INDUCTANCE_OUT_OF_RANGE,
+    ERROR_ADC_FAILED,
+    ERROR_DRV_FAULT,
+    ERROR_CONTROL_DEADLINE_MISSED,
+    ERROR_NOT_IMPLEMENTED_MOTOR_TYPE,
+    ERROR_BRAKE_CURRENT_OUT_OF_RANGE,
+    ERROR_MODULATION_MAGNITUDE,
+    ERROR_BRAKE_DEADTIME_VIOLATION,
+    ERROR_UNEXPECTED_TIMER_CALLBACK,
+    ERROR_CURRENT_SENSE_SATURATION,
+    ERROR_INVERTER_OVER_TEMP,
+    ERROR_CURRENT_UNSTABLE
+};
+
+enum Error_Encoder
+{
+	ERROR_NONE,
+    ERROR_UNSTABLE_GAIN,
+    ERROR_CPR_OUT_OF_RANGE,
+    ERROR_NO_RESPONSE,
+    ERROR_UNSUPPORTED_ENCODER_MODE,
+    ERROR_ILLEGAL_HALL_STATE,
+    ERROR_INDEX_NOT_FOUND_YET
+};
+
 int charToInt(char input[]);
 float charToFloat(char input[]);
 bool charToBool(char input[]);
@@ -110,8 +154,9 @@ class RovesODriveMotor
 
 		void setControlMode(Control_Mode mode);
 		void setTrapTarget(int32_t target);
-		void requestPosEstimate();
-		//void requestErrors();
+		float requestPosEstimate(HardwareSerial* mySerial);
+		//float requestPosEstimate2(HardwareSerial* mySerial);
+		int checkErrors(const int check);
 		void setSpeed(int16_t speed);
 		Packet_Status getSpeed(int16_t &speed);
 		int16_t getSpeed();

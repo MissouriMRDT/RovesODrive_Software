@@ -352,12 +352,25 @@ void RovesODriveMotor::setTrapTarget(int32_t target)
 	writeODriveCommand(m_serial, "t", data, motor_number);
 }
 
-void RovesODriveMotor::requestPosEstimate()
+float RovesODriveMotor::requestPosEstimate(HardwareSerial* mySerial)
 {
-	Serial7.write("r encoder.pos_estimate \n");
+	char data[12];
+	float estimate;
+	data = mySerial.write("r encoder.pos_estimate \n");
+	return charToFloat(estimate, data);
 }
 
-//void RovesODriveMotor::requestErrors()
-//{
+/*float RovesODriveMotor::requestPosEstimate2(HardwareSerial* mySerial)
+{
+	return mySerial.write("r motor_number \n");
+};*/
 
-//}
+int RovesODriveMotor::checkErrors(const int check)
+{
+	int c_state;
+	c_state = this->motor[0]::requestState();
+	if (c_state != check)
+		return Error_Axis[1];
+	else
+		return Error_Axis[0];
+}

@@ -2,6 +2,7 @@
 
 RovesODrive Drive1(&Serial7);
 String targetString;
+float pos_est;
 
 void setup()
 {
@@ -51,6 +52,9 @@ void loop()
         Drive1.motor[0].setTrapTarget(command);
         targetString = "";
     }
-    Drive1.motor[0].requestPosEstimate();
-    //Drive1.motor[0].requestErrors();
+    pos_est = Drive1.motor[0].requestPosEstimate(Drive1.m_serial);
+    Serial.printin(pos_est);
+    /*pos_est = Drive1.motor[0].requestPosEstimate2(Drive1.m_serial);
+    Serial.printin(pos_est);*/
+    Drive1.motor[0].checkErrors();
 }
