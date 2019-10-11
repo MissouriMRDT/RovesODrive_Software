@@ -9,8 +9,7 @@ void setup()
     Serial.begin(115200);
     Drive1.begin();
 
-    while (!Serial) ; // wait for Arduino Serial Monitor to open
-	    
+    while (!Serial) ; // wait for Arduino Serial Monitor to open   
     
     char output[255];
 
@@ -42,33 +41,24 @@ void loop()
     if (targetString.length() >0) 
     {
         Serial.println(targetString);
-        if(targetString == "reboot")
-        {
-            Serial.println("Rebooting");
-            Serial7.write("sr \n");
-        }  
-        else if(targetString == "position")
-        {
-           pos_est =  Drive1.motor[0].requestPosEstimate();
-           Serial.println(pos_est);
-        }
+
+        Drive1.motor[0].reboot(targetString); 
+
+        pos_est =  Drive1.motor[0].requestPosEstimate(targetString);
+    
         else
         {
             int command = targetString.toInt();  
             char output[255];
+
             //wait for it, to send a new move command, 
             //we disable the closed loop state which causes the command to stop
             //then we renable closed loop and give it a new set point
             Serial7.write("w axis0.requested_state 1 \n");
             Serial7.write("w axis0.requested_state 8 \n");
+
             Drive1.motor[0].setTrapTarget(command);
-            targetString = "";
         }
         targetString = "";
     }
-    //pos_est = Drive1.motor[0].requestPosEstimate();
-    //Serial.printin(pos_est);
-    /*pos_est = Drive1.motor[0].requestPosEstimate2(Drive1.m_serial);
-    Serial.printin(pos_est);*/
-    //Drive1.motor[0].checkErrors();
 }

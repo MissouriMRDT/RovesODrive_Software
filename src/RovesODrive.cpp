@@ -212,26 +212,6 @@ void RovesODriveMotor::setRampValue(int16_t value)
 	vel_ramp_rate = value;
 }
 
-Serial_Status RovesODriveMotor::checkSerial()
-{
-	/*
-	switch(m_control_mode)
-	{
-		case CTRL_MODE_SENSORLESS_VELOCITY_CONTROL:
-			int16_t speed;
-			if(getSpeed(speed) != ValidPacket)
-			{
-				return(SerialFault);
-			}
-			else if(speed != vel_setpoint)
-			{
-				return(SerialFault);
-			}
-		break;
-	}
-	*/
-	return(SerialGood);
-}
 
 void RovesODriveMotor::writeConfig()
 {
@@ -305,7 +285,7 @@ void RovesODriveMotor::writeState(Axis_State state)
 
 void RovesODriveMotor::requestState()
 {
-	writeODriveConfig(m_serial, REQUEST, GET_CURRENT_STATE_TAG, "", motor_number);
+	writeODriveConfig(m_serial, READ, GET_CURRENT_STATE_TAG, "", motor_number);
 }
 
 void RovesODriveMotor::writeControlMode(uint8_t mode)
@@ -324,7 +304,7 @@ void RovesODriveMotor::writeStartupClosedLoop(bool b_startup)
 
 void RovesODriveMotor::requestStartupClosedLoop()
 {
-	writeODriveConfig(m_serial, REQUEST, STARTUP_CLOSED_LOOP_TAG, "", motor_number);
+	writeODriveConfig(m_serial, READ, STARTUP_CLOSED_LOOP_TAG, "", motor_number);
 }
 
 void RovesODriveMotor::writeVelSetpoint(int16_t setpoint)
@@ -336,7 +316,7 @@ void RovesODriveMotor::writeVelSetpoint(int16_t setpoint)
 
 void RovesODriveMotor::requestVelSetpoint()
 {
-	writeODriveConfig(m_serial, REQUEST, VELOCITY_SETPOINT_TAG, "", motor_number);
+	writeODriveConfig(m_serial, READ, VELOCITY_SETPOINT_TAG, "", motor_number);
 }
 
 void RovesODriveMotor::writePolepairs(uint8_t polepairs)
@@ -354,27 +334,50 @@ void RovesODriveMotor::setTrapTarget(int32_t target)
 }
 
 
-float RovesODriveMotor::requestPosEstimate()
+float RovesODriveMotor::requestPosEstimate(const string target)
 {
-	String position = "";
-	char input[22];
-	writeODriveConfig(m_serial, REQUEST, "encoder.pos_estimate", "", motor_number);
-	position = getSerial(input);
-	return position.toFloat();
+	if(target == "position")
+	{
+		String position = "";
+		char input[22];
+		writeODriveConfig(m_serial, READ, "encoder.pos_estimate", "", motor_number);
+		position = getSerial(input);
+		return position.toFloat();
+	}
+	else
+	{
+		return 0;
+	}
+	
 	
 }
-/*
-float RovesODriveMotor::requestPosEstimate2(HardwareSerial* mySerial)
-{
-	return mySerial.write("r motor_number \n");
-};
 
-int RovesODriveMotor::checkErrors(const int check)
+void RovesODriveMotor::reboot(const string target)
 {
-	int c_state;
-	c_state = this->motor[0]::requestState();
-	if (c_state != check)
-		return Error_Axis[1];
-	else
-		return Error_Axis[0];
-}*/
+	if(target == "reboot")
+    {
+        Serial.println("Rebooting");
+     	writeODriveCommand(m_serial, "sr", "", motor_number);
+     }
+	return;
+}
+
+void RovesODriveMotor::saveConfig(const string target)
+{
+	if(target == "save_config")
+    {
+        Serial.println("Saving");
+     	writeODriveCommand(m_serial, "ss", "", motor_number);
+     }
+	return;
+}
+
+void RovesODriveMotor::eraseConfig(const string target)
+{
+	if(target == " erase_config")
+    {
+        Serial.println("Erasing");
+     	writeODriveCommand(m_serial, "se", "", motor_number);
+     }
+	return;
+}

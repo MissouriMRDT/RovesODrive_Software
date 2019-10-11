@@ -8,7 +8,7 @@
 #define MAX_STRING_CHARS 255
 
 #define WRITE	true
-#define	REQUEST	false
+#define	READ	false
 
 #define MAX_VELOCITY_RAMP_RATE 10000
 
@@ -33,10 +33,6 @@
 #define PRE_CALIBRATED_TAG				"motor.config.pre_calibrated"			//bool
 #define IS_CALIBRATED_TAG				"motor.is_calibrated"					//bool
 #define POLE_PAIRS_TAG					"motor.config.pole_pairs"				//int				
-
-//Controller Data Tags
-#define SAVE_CONFIGURATION_TAG	"save_configuration"
-#define REBOOT_TAG				"reboot"
 
 //Trap Trajectory
  #define VELOCITY_LIMIT  				"trap_traj.config.vel_limit" //float
@@ -85,7 +81,7 @@ enum Serial_Status
 
 enum Error_Axis
 {
-	//ERROR_NONE,
+	ERROR_NONE_A,
     ERROR_INVALID_STATE, 
     ERROR_DC_BUS_UNDER_VOLTAGE,
     ERROR_DC_BUS_OVER_VOLTAGE,
@@ -100,7 +96,7 @@ enum Error_Axis
 
 enum Error_Motor
 {
-	//ERROR_NONE,
+	ERROR_NONE_M,
     ERROR_PHASE_RESISTANCE_OUT_OF_RANGE,
     ERROR_PHASE_INDUCTANCE_OUT_OF_RANGE,
     ERROR_ADC_FAILED,
@@ -118,7 +114,7 @@ enum Error_Motor
 
 enum Error_Encoder
 {
-	//ERROR_NONE,
+	ERROR_NONE_E,
     ERROR_UNSTABLE_GAIN,
     ERROR_CPR_OUT_OF_RANGE,
     ERROR_NO_RESPONSE,
@@ -128,13 +124,19 @@ enum Error_Encoder
 };
 
 int charToInt(char input[]);
+
 float charToFloat(char input[]);
+
 bool charToBool(char input[]);
+
 void intToChar(char* output, int value);
+
 void boolToChar(char* output, int value);
+
 void floatToChar(char* output, int value, uint8_t precision);
 
 void writeODriveConfig(HardwareSerial* mySerial, bool write_request, char* id, char* value, uint8_t axis);
+
 void writeODriveCommand(HardwareSerial* mySerial, char* id, char* value, uint8_t axis);
 
 
@@ -150,18 +152,28 @@ class RovesODriveMotor
 	public:
 		String getSerial(char packet[]);
 
-		Serial_Status checkSerial();
+		void reboot(const string target);
+
+		void saveConfig(const string target);
+
+		void eraseConfig(const string target);
 
 		void setControlMode(Control_Mode mode);
+
 		void setTrapTarget(int32_t target);
-		float requestPosEstimate();
-		//float requestPosEstimate2(HardwareSerial* mySerial);
-		int checkErrors(const int check);
+
+		float requestPosEstimate(const string target);
+
 		void setSpeed(int16_t speed);
+
 		void getSpeed(int16_t &speed);
+
 		int16_t getSpeed();
+
 		void setRampValue(int16_t value);
+
 		void setPolePairs(uint8_t pole_pairs);
+
 		void setKV(uint16_t KV);
 		
 		void calibrate();
@@ -171,6 +183,7 @@ class RovesODriveMotor
 		bool speedLow(int16_t speed);
 
 		uint8_t motor_number;
+
 		HardwareSerial* m_serial;
 
 		void requestState();
@@ -192,20 +205,33 @@ class RovesODriveMotor
 		void writeState(Axis_State state);
 		
 		void writeControlMode(uint8_t mode);
+
 		void requestControlMode();
+
 		void writeStartupClosedLoop(bool b_startup);
+
 		void requestStartupClosedLoop();
+
 		void writeStartupSensorless(bool b_startup);
+
 		void requestStartupSensorless();
+
 		void writeStartupCalibrate(bool b_startup);
+
 		void requestStartupCalibrate();
 
 		void writeSpinUpAcceleration(int16_t acceleration);
+
 		void requestSpinUpAcceleration();
+
 		void writeSpinUpTargetVel(int16_t speed);
+
 		void requestSpinUpTargetVel();
+
 		void writeSpinUpCurrent(uint16_t current);
+
 		void requestSpinUpCurrent();
+
 		void writeSpinUpTime(float time);
 
 		void writeDirection(int8_t value);
@@ -213,43 +239,67 @@ class RovesODriveMotor
 		void writeCurrentSetopint(uint16_t setpoint);
 		
 		void writeVelRampTarget(int16_t target);
+
 		void requestVelRampTarget();
+
 		void writeVelRampRate(int16_t rate);
+
 		void requestVelRampRate();
+
 		void writeVelrampEnable(bool enabled);
+
 		void requestVelrampEnable();
 
 		void writeVelSetpoint(int16_t setpoint);
+
 		void requestVelSetpoint();
 		
 		void writePolepairs(uint8_t kv);
+
 		void requestPolepairs();
+
 		void writeKV(uint16_t kv);
+
 		void requestKV();
 		
 		void writeVelocityGain(float gain);
+
 		void requestVelocityGain();
+
 		void writeVelocityIntegratorGain(float gain);
+
 		void requestVelocityIntegratorGain();
+
 		void writeVelocityLimit(float limit);
+
 		void requestVelocityLimit();
 
 		void writeCurrentGain(float gain);
+
 		void requestCurrentGain();
+
 		void writeCurrentIntegratorGain(float gain);
+
 		void requestCurrentIntegratorGain();
+
 		void writeCurrentLimit(float limit);
+
 		void requestCurrentLimit();
 
 		void requestPhaseCurrent();
+
 		void requestBusCurrent();
 
 		void writePMFluxLinkage(float linkage);
+
 		void requestPMFluxLinkage();
 
 		void requestError();
+
 		void requestDRVError();
+
 		void requestIsPreCalibrated();
+
 		void requestIsCalibrated();
 		
 		//State vars
@@ -264,24 +314,31 @@ class RovesODriveMotor
 		
 		//Spin Up parameters
 		int16_t spin_up_acceleration = 200;
+
 		int16_t spin_up_target_vel = 200;
+
 		int16_t spin_up_current = 20;
 
 		int16_t current_setpoint = 100;
 
 		bool do_current_ramp = true;
+
 		int16_t current_ramp_start = 30;
+
 		int16_t current_ramp_end = 100;
+
 		int16_t current_ramp_inc = 5;
 
 		int16_t idle_current = 20;
 		
 		//Ramp Parameters
 		int16_t vel_ramp_target;
+
 		int16_t vel_ramp_rate = 200;
 		
 		//Motor Parameters
 		uint8_t motor_pole_pairs;
+
 		uint16_t motor_kv;
 
 		
@@ -300,14 +357,18 @@ class RovesODrive
 		}
 
 		void begin();
+
 		void read();
+
 		bool isConnected();
 		
 		RovesODriveMotor motor[2];
 
 	private:
 		void saveConfiguration();
+
 		void eraseConfiguration();
+
 		void ping();
 		
 		HardwareSerial* m_serial;
