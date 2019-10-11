@@ -94,26 +94,24 @@ void writeODriveCommand(HardwareSerial* mySerial, char* id, char* value, uint8_t
 	mySerial->write(output);
 }
 
-Packet_Status RovesODriveMotor::getSerial(char packet[])
+String RovesODriveMotor::getSerial(char packet[])
 {
-	//Serial.print("Read:");
-	if(!m_serial->available())
+	String str = "";
+    static const unsigned long timeout = 1000;
+    unsigned long timeout_start = millis();
+    while( true ) 
 	{
-		//Serial.println("No Packet");
-		return NoPacket;
-	}
-	//Serial.print("Packet-");
-	uint8_t count = 0;
-	while(m_serial->available())
-	{
-		packet[count] = m_serial->read();
-		//Serial.print(packet[count]);
-		count ++;
-		if(count > sizeof(packet)) return(OverflowPacket);
-	}
-	//Serial.println("");
-	packet[count] = '\0';
-	return(ValidPacket);
+        while (!m_serial->available()) {
+            if (millis() - timeout_start >= timeout) {
+                return str;
+            }
+        }
+        char c = m_serial->read();
+        if (c == '\n')
+            break;
+        str += c;
+    }
+    return str;
 }
 
 bool RovesODriveMotor::speedLow(int16_t speed)
@@ -193,17 +191,19 @@ int16_t RovesODriveMotor::getSpeed()
 	return(speed);
 }
 
-Packet_Status RovesODriveMotor::getSpeed(int16_t &speed)
+void RovesODriveMotor::getSpeed(int16_t &speed)
 {
+	/*
 	requestVelRampTarget();
 	char input[10];
-	Packet_Status status = getSerial(input);
+ = getSerial(input);
 	if(status = ValidPacket)
 	{
 		speed = charToInt(input);
 		Serial.println(speed);
 	}
-	return(status);
+	*/
+	return;
 	
 }
 
@@ -214,6 +214,7 @@ void RovesODriveMotor::setRampValue(int16_t value)
 
 Serial_Status RovesODriveMotor::checkSerial()
 {
+	/*
 	switch(m_control_mode)
 	{
 		case CTRL_MODE_SENSORLESS_VELOCITY_CONTROL:
@@ -228,7 +229,7 @@ Serial_Status RovesODriveMotor::checkSerial()
 			}
 		break;
 	}
-
+	*/
 	return(SerialGood);
 }
 
@@ -352,18 +353,21 @@ void RovesODriveMotor::setTrapTarget(int32_t target)
 	writeODriveCommand(m_serial, "t", data, motor_number);
 }
 
-float RovesODriveMotor::requestPosEstimate(HardwareSerial* mySerial)
-{
-	char data[12];
-	float estimate;
-	data = mySerial.write("r encoder.pos_estimate \n");
-	return charToFloat(estimate, data);
-}
 
-/*float RovesODriveMotor::requestPosEstimate2(HardwareSerial* mySerial)
+float RovesODriveMotor::requestPosEstimate()
+{
+	String position = "";
+	char input[22];
+	writeODriveConfig(m_serial, REQUEST, "encoder.pos_estimate", "", motor_number);
+	position = getSerial(input);
+	return position.toFloat();
+	
+}
+/*
+float RovesODriveMotor::requestPosEstimate2(HardwareSerial* mySerial)
 {
 	return mySerial.write("r motor_number \n");
-};*/
+};
 
 int RovesODriveMotor::checkErrors(const int check)
 {
@@ -373,4 +377,4 @@ int RovesODriveMotor::checkErrors(const int check)
 		return Error_Axis[1];
 	else
 		return Error_Axis[0];
-}
+}*/

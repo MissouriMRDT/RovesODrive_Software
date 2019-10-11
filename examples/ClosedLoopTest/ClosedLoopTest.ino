@@ -31,7 +31,7 @@ void loop()
             Serial.write(Serial7.read());
         }
     }
-
+    
     while (Serial.available()) 
     {
         char c = Serial.read();  
@@ -41,20 +41,34 @@ void loop()
 
     if (targetString.length() >0) 
     {
-        Serial.println(targetString);  
-        int command = targetString.toInt();  
-	    char output[255];
-        //wait for it, to send a new move command, 
-        //we disable the closed loop state which causes the command to stop
-        //then we renable closed loop and give it a new set point
-        Serial7.write("w axis0.requested_state 1 \n");
-        Serial7.write("w axis0.requested_state 8 \n");
-        Drive1.motor[0].setTrapTarget(command);
+        Serial.println(targetString);
+        if(targetString == "reboot")
+        {
+            Serial.println("Rebooting");
+            Serial7.write("sr \n");
+        }  
+        else if(targetString == "position")
+        {
+           pos_est =  Drive1.motor[0].requestPosEstimate();
+           Serial.println(pos_est);
+        }
+        else
+        {
+            int command = targetString.toInt();  
+            char output[255];
+            //wait for it, to send a new move command, 
+            //we disable the closed loop state which causes the command to stop
+            //then we renable closed loop and give it a new set point
+            Serial7.write("w axis0.requested_state 1 \n");
+            Serial7.write("w axis0.requested_state 8 \n");
+            Drive1.motor[0].setTrapTarget(command);
+            targetString = "";
+        }
         targetString = "";
     }
-    pos_est = Drive1.motor[0].requestPosEstimate(Drive1.m_serial);
-    Serial.printin(pos_est);
+    //pos_est = Drive1.motor[0].requestPosEstimate();
+    //Serial.printin(pos_est);
     /*pos_est = Drive1.motor[0].requestPosEstimate2(Drive1.m_serial);
     Serial.printin(pos_est);*/
-    Drive1.motor[0].checkErrors();
+    //Drive1.motor[0].checkErrors();
 }

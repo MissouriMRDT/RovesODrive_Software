@@ -85,7 +85,7 @@ enum Serial_Status
 
 enum Error_Axis
 {
-	ERROR_NONE,
+	//ERROR_NONE,
     ERROR_INVALID_STATE, 
     ERROR_DC_BUS_UNDER_VOLTAGE,
     ERROR_DC_BUS_OVER_VOLTAGE,
@@ -100,7 +100,7 @@ enum Error_Axis
 
 enum Error_Motor
 {
-	ERROR_NONE,
+	//ERROR_NONE,
     ERROR_PHASE_RESISTANCE_OUT_OF_RANGE,
     ERROR_PHASE_INDUCTANCE_OUT_OF_RANGE,
     ERROR_ADC_FAILED,
@@ -118,7 +118,7 @@ enum Error_Motor
 
 enum Error_Encoder
 {
-	ERROR_NONE,
+	//ERROR_NONE,
     ERROR_UNSTABLE_GAIN,
     ERROR_CPR_OUT_OF_RANGE,
     ERROR_NO_RESPONSE,
@@ -148,17 +148,17 @@ struct ODrivePacket
 class RovesODriveMotor
 {
 	public:
-		Packet_Status getSerial(char packet[]);
+		String getSerial(char packet[]);
 
 		Serial_Status checkSerial();
 
 		void setControlMode(Control_Mode mode);
 		void setTrapTarget(int32_t target);
-		float requestPosEstimate(HardwareSerial* mySerial);
+		float requestPosEstimate();
 		//float requestPosEstimate2(HardwareSerial* mySerial);
 		int checkErrors(const int check);
 		void setSpeed(int16_t speed);
-		Packet_Status getSpeed(int16_t &speed);
+		void getSpeed(int16_t &speed);
 		int16_t getSpeed();
 		void setRampValue(int16_t value);
 		void setPolePairs(uint8_t pole_pairs);
