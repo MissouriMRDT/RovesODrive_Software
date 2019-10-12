@@ -184,29 +184,6 @@ void RovesODriveMotor::setSpeed(int16_t speed)
   
 }
 
-int16_t RovesODriveMotor::getSpeed()
-{
-	int16_t speed = 0;
-	getSpeed(speed);
-	return(speed);
-}
-
-void RovesODriveMotor::getSpeed(int16_t &speed)
-{
-	/*
-	requestVelRampTarget();
-	char input[10];
- = getSerial(input);
-	if(status = ValidPacket)
-	{
-		speed = charToInt(input);
-		Serial.println(speed);
-	}
-	*/
-	return;
-	
-}
-
 void RovesODriveMotor::setRampValue(int16_t value)
 {
 	vel_ramp_rate = value;
@@ -357,7 +334,7 @@ void RovesODriveMotor::reboot(const string target)
 	if(target == "reboot")
     {
         Serial.println("Rebooting");
-     	writeODriveCommand(m_serial, "sr", "", motor_number);
+     	writeODriveConfig(m_serial, WRITE, "sr", "", motor_number);
      }
 	return;
 }
@@ -367,7 +344,7 @@ void RovesODriveMotor::saveConfig(const string target)
 	if(target == "save_config")
     {
         Serial.println("Saving");
-     	writeODriveCommand(m_serial, "ss", "", motor_number);
+     	writeODriveConfig(m_serial, WRITE, "ss", "", motor_number);
      }
 	return;
 }
@@ -377,7 +354,7 @@ void RovesODriveMotor::eraseConfig(const string target)
 	if(target == " erase_config")
     {
         Serial.println("Erasing");
-     	writeODriveCommand(m_serial, "se", "", motor_number);
+     	writeODriveConfig(m_serial, WRITE, "se", "", motor_number);
      }
 	return;
 }

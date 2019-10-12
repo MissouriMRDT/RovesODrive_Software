@@ -166,10 +166,6 @@ class RovesODriveMotor
 
 		void setSpeed(int16_t speed);
 
-		void getSpeed(int16_t &speed);
-
-		int16_t getSpeed();
-
 		void setRampValue(int16_t value);
 
 		void setPolePairs(uint8_t pole_pairs);
