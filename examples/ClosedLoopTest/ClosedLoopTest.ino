@@ -40,12 +40,33 @@ void loop()
 
     if (targetString.length() >0) 
     {
-        Serial.println(targetString);
+        Serial.println();
 
-        Drive1.motor[0].reboot(targetString); 
+        if (targetString == "pestimate")
+        {
+            pos_est = Drive1.motor[0].requestPosEstimate();
+        }
 
-        pos_est =  Drive1.motor[0].requestPosEstimate(targetString);
-    
+        else if (targetString == "reboot")
+        {
+            Drive1.motor[0].reboot(); 
+        } 
+
+        else if (targetString == "sconfig")
+        {
+            Drive1.motor[0].saveConfig();
+        }
+
+        else if (targetString == "econfig")
+        {
+            Drive1.motor[0].eraseConfig();
+        }    
+
+        else if (targetString == "errors")
+        {
+            Drive1.motor[0].checkErrors();
+        }
+
         else
         {
             int command = targetString.toInt();  

@@ -94,7 +94,7 @@ void writeODriveCommand(HardwareSerial* mySerial, char* id, char* value, uint8_t
 	mySerial->write(output);
 }
 
-String RovesODriveMotor::getSerial(char packet[])
+String RovesODriveMotor::getSerial()
 {
 	String str = "";
     static const unsigned long timeout = 1000;
@@ -311,50 +311,68 @@ void RovesODriveMotor::setTrapTarget(int32_t target)
 }
 
 
-float RovesODriveMotor::requestPosEstimate(const string target)
+float RovesODriveMotor::requestPosEstimate()
 {
-	if(target == "position")
-	{
-		String position = "";
-		char input[22];
-		writeODriveConfig(m_serial, READ, "encoder.pos_estimate", "", motor_number);
-		position = getSerial(input);
-		return position.toFloat();
-	}
-	else
-	{
-		return 0;
-	}
-	
-	
+	String position = "";
+	writeODriveConfig(m_serial, READ, "encoder.pos_estimate", "", motor_number);
+	position = getSerial();
+	return position.toFloat();
 }
 
-void RovesODriveMotor::reboot(const string target)
+void RovesODriveMotor::reboot()
 {
-	if(target == "reboot")
-    {
-        Serial.println("Rebooting");
-     	writeODriveConfig(m_serial, WRITE, "sr", "", motor_number);
-     }
+    Serial.println("Rebooting");
+    writeODriveConfig(m_serial, WRITE, "sr", "", motor_number);
 	return;
 }
 
-void RovesODriveMotor::saveConfig(const string target)
+void RovesODriveMotor::saveConfig()
 {
-	if(target == "save_config")
-    {
-        Serial.println("Saving");
-     	writeODriveConfig(m_serial, WRITE, "ss", "", motor_number);
-     }
+    Serial.println("Saving");
+ 	writeODriveConfig(m_serial, WRITE, "ss", "", motor_number);
 	return;
 }
 
-void RovesODriveMotor::eraseConfig(const string target)
+void RovesODriveMotor::eraseConfig()
 {
-	if(target == " erase_config")
-    {
-        Serial.println("Erasing");
-     	writeODriveConfig(m_serial, WRITE, "se", "", motor_number);
-     }
+	Serial.println("Erasing");
+ 	writeODriveConfig(m_serial, WRITE, "se", "", motor_number);
+	return;
+}
+
+string RovesODriveMotor::checkAxisError()
+{
+	String error = "";
+	writeODriveConfig(m_serial, READ, "error", "", motor_number);
+	return error = getSerial();
+}
+
+string RovesODriveMotor::checkMotorError()
+{
+	String error = "";
+	writeODriveConfig(m_serial, READ, "motor.error", "", motor_number);
+	return error = getSerial();
+}
+
+string RovesODriveMotor::checkEncoderError()
+{
+	String error = "";
+	writeODriveConfig(m_serial, READ, "encoder.error", "", motor_number);
+	return error = getSerial();
+}
+
+string RovesODriveMotor::checkControllerError()
+{
+	String error = "";
+	writeODriveConfig(m_serial, READ, "controller.error", "", motor_number);
+	return error = getSerial();
+}
+
+void RovesODriveMotor::checkErrors()
+{
+	serial.println(checkAxisError());
+	serial.println(checkMotorError());
+	serial.println(checkEncoderError());
+	serial.println(checkControllerError());
 	return;
 }
