@@ -307,9 +307,11 @@ void RovesODriveMotor::setTrapTarget(int32_t target)
 {
 	char data[12];
 	intToChar(data, target);
+	//writeODriveConfig(m_serial, WRITE, SET_CURRENT_STATE_TAG, "1", motor_number);
+	//writeODriveConfig(m_serial, WRITE, SET_CURRENT_STATE_TAG, "8", motor_number);
 	writeODriveCommand(m_serial, "t", data, motor_number);
+	return;
 }
-
 
 float RovesODriveMotor::requestPosEstimate()
 {
@@ -340,28 +342,28 @@ void RovesODriveMotor::eraseConfig()
 	return;
 }
 
-string RovesODriveMotor::checkAxisError()
+String RovesODriveMotor::checkAxisError()
 {
 	String error = "";
 	writeODriveConfig(m_serial, READ, "error", "", motor_number);
 	return error = getSerial();
 }
 
-string RovesODriveMotor::checkMotorError()
+/*String RovesODriveMotor::checkMotorError()
 {
 	String error = "";
 	writeODriveConfig(m_serial, READ, "motor.error", "", motor_number);
 	return error = getSerial();
 }
 
-string RovesODriveMotor::checkEncoderError()
+String RovesODriveMotor::checkEncoderError()
 {
 	String error = "";
 	writeODriveConfig(m_serial, READ, "encoder.error", "", motor_number);
 	return error = getSerial();
 }
 
-string RovesODriveMotor::checkControllerError()
+String RovesODriveMotor::checkControllerError()
 {
 	String error = "";
 	writeODriveConfig(m_serial, READ, "controller.error", "", motor_number);
@@ -370,9 +372,9 @@ string RovesODriveMotor::checkControllerError()
 
 void RovesODriveMotor::checkErrors()
 {
-	serial.println(checkAxisError());
-	serial.println(checkMotorError());
-	serial.println(checkEncoderError());
-	serial.println(checkControllerError());
+	Serial.println(checkAxisError());
+	Serial.println(checkMotorError());
+	Serial.println(checkEncoderError());
+	Serial.println(checkControllerError());
 	return;
-}
+}*/

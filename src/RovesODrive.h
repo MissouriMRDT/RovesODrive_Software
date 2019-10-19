@@ -155,15 +155,15 @@ class RovesODriveMotor
 
 		void eraseConfig();
 
-		void checkAxisError();
+		String checkAxisError();
 
-		void checkMotorError();
+		//void checkMotorError();
 
-		void checkEncoderError();
+		//void checkEncoderError();
 
-		void checkControllerError();
+		//void checkControllerError();
 
-		void checkErrors();
+		//void checkErrors();
 
 		void setControlMode(Control_Mode mode);
 

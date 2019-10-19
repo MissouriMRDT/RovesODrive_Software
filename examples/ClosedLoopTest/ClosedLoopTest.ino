@@ -45,6 +45,7 @@ void loop()
         if (targetString == "pestimate")
         {
             pos_est = Drive1.motor[0].requestPosEstimate();
+            Serial.println(pos_est);
         }
 
         else if (targetString == "reboot")
@@ -64,7 +65,7 @@ void loop()
 
         else if (targetString == "errors")
         {
-            Drive1.motor[0].checkErrors();
+            Drive1.motor[0].checkAxisError();
         }
 
         else
@@ -77,8 +78,9 @@ void loop()
             //then we renable closed loop and give it a new set point
             Serial7.write("w axis0.requested_state 1 \n");
             Serial7.write("w axis0.requested_state 8 \n");
-
+            
             Drive1.motor[0].setTrapTarget(command);
+
         }
         targetString = "";
     }
