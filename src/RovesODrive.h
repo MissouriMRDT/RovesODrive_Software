@@ -81,6 +81,7 @@ enum Serial_Status
 
 enum Error_Axis
 {
+	ERROR_NONE_A,
     ERROR_INVALID_STATE, 
     ERROR_DC_BUS_UNDER_VOLTAGE,
     ERROR_DC_BUS_OVER_VOLTAGE,
@@ -95,6 +96,7 @@ enum Error_Axis
 
 enum Error_Motor
 {
+	ERROR_NONE_M,
     ERROR_PHASE_RESISTANCE_OUT_OF_RANGE,
     ERROR_PHASE_INDUCTANCE_OUT_OF_RANGE,
     ERROR_ADC_FAILED,
@@ -112,6 +114,7 @@ enum Error_Motor
 
 enum Error_Encoder
 {
+	ERROR_NONE_E,
     ERROR_UNSTABLE_GAIN,
     ERROR_CPR_OUT_OF_RANGE,
     ERROR_NO_RESPONSE,
@@ -149,21 +152,19 @@ class RovesODriveMotor
 	public:
 		String getSerial();
 
+		int checkAxisErrors();
+
+		int checkMotorErrors();
+
+		int checkEncoderErrors();
+
+		int checkControllerErrors();
+
 		void reboot();
 
 		void saveConfig();
 
 		void eraseConfig();
-
-		String checkAxisError();
-
-		//void checkMotorError();
-
-		//void checkEncoderError();
-
-		//void checkControllerError();
-
-		//void checkErrors();
 
 		void setControlMode(Control_Mode mode);
 

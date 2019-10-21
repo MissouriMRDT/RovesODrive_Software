@@ -3,13 +3,14 @@
 RovesODrive Drive1(&Serial7);
 String targetString;
 float pos_est;
+int error;
 
 void setup()
 {
     Serial.begin(115200);
     Drive1.begin();
 
-    while (!Serial) ; // wait for Arduino Serial Monitor to open   
+    while (!Serial); // wait for Arduino Serial Monitor to open   
     
     char output[255];
 
@@ -40,37 +41,53 @@ void loop()
 
     if (targetString.length() >0) 
     {
-        Serial.println();
+        Serial.println(targetString);
 
-        if (targetString == "pestimate")
+        if (targetString == "reboot")
         {
-            pos_est = Drive1.motor[0].requestPosEstimate();
+            Drive1.motor[0].reboot();
+        }
+
+        else if (targetString == "pestimate")
+        {
+            pos_est =  Drive1.motor[0].requestPosEstimate();
             Serial.println(pos_est);
+            pos_est = 0;
         }
 
-        else if (targetString == "reboot")
+        else if (targetString == "Axerror")
         {
-            Drive1.motor[0].reboot(); 
-        } 
-
-        else if (targetString == "sconfig")
-        {
-            Drive1.motor[0].saveConfig();
+            error =  Drive1.motor[0].checkAxisErrors();
+            Serial.println(error);
+            error = 0;
         }
 
-        else if (targetString == "econfig")
+        else if (targetString == "Merror")
         {
-            Drive1.motor[0].eraseConfig();
-        }    
-
-        else if (targetString == "errors")
-        {
-            Drive1.motor[0].checkAxisError();
+            error =  Drive1.motor[0].checkMotorErrors();
+            Serial.println(error);
+            error = 0;
         }
 
-        else
+        else if (targetString == "Enerror")
         {
-            int command = targetString.toInt();  
+            error =  Drive1.motor[0].checkEncoderErrors();
+            Serial.println(error);
+            error = 0;
+        }
+
+        else if (targetString == "Conerror")
+        {
+            error =  Drive1.motor[0].checkControllerErrors();
+            Serial.println(error);
+            error = 0;
+        }
+
+        else if ((targetString.toInt()) >= 0)
+        {
+            int command = targetString.toInt();
+            Serial.println(command);
+              
             char output[255];
 
             //wait for it, to send a new move command, 
@@ -78,9 +95,10 @@ void loop()
             //then we renable closed loop and give it a new set point
             Serial7.write("w axis0.requested_state 1 \n");
             Serial7.write("w axis0.requested_state 8 \n");
-            
+
             Drive1.motor[0].setTrapTarget(command);
 
+            targetString = "";
         }
         targetString = "";
     }
