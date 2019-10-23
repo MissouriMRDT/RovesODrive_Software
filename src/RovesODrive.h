@@ -172,11 +172,11 @@ class RovesODriveMotor
 
 		void eraseConfig();
 
-		void setControlMode(Control_Mode mode);
-
 		void setTrapTarget(int32_t target);
 
 		float requestPosEstimate();
+
+		void setControlMode(Control_Mode mode);
 
 		void setSpeed(int16_t speed);
 

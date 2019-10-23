@@ -62,53 +62,63 @@ void loop()
         {
             axerror =  Drive1.motor[0].checkAxisErrors();
             Serial.println(axerror);
-            axerror = 0;
 
             if(axerror != ERROR_NONE_A)
             {
                 Drive1.motor[0].reboot();
             }
+            axerror = 0;
         }
 
         else if (targetString == "merror")
         {
             merror =  Drive1.motor[0].checkMotorErrors();
             Serial.println(merror);
-            merror = 0;
 
             if(merror != ERROR_NONE_M)
             {
                 Drive1.motor[0].reboot();
             }
+            merror = 0;
         }
 
         else if (targetString == "enerror")
         {
             enerror =  Drive1.motor[0].checkEncoderErrors();
             Serial.println(enerror);
-            enerror = 0;
 
             if(enerror != ERROR_NONE_E)
             {
                 Drive1.motor[0].reboot();
             }
+            enerror = 0;
         }
 
         else if (targetString == "cerror")
         {
             cerror =  Drive1.motor[0].checkControllerErrors();
             Serial.println(cerror);
-            cerror = 0;
+            
             if(cerror != ERROR_NONE_C)
             {
                 Drive1.motor[0].reboot();
             }
+            cerror = 0;
+        }
+
+        else if (targetString == "SaveConfig")
+        {
+            Drive1.motor[0].saveConfig();
+        }
+
+        else if (targetString == "EraseConfig")
+        {
+            Drive1.motor[0].eraseConfig();
         }
 
         else 
         {
             int command = targetString.toInt();
-            Serial.println(command);
               
             char output[255];
 

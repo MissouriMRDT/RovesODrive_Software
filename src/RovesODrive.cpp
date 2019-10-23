@@ -67,8 +67,6 @@ void floatToChar(char* output, float value, uint8_t precision)
 
 void writeODriveConfig(HardwareSerial* mySerial, bool write_read, char* id, char* value, uint8_t axis)
 {
-	//Serial.print("Value: ");
-	//Serial.println(value);
 	char output[255];
 
 	sprintf(output, "%s ", (write_read == WRITE)? "w":"r");
