@@ -3,7 +3,10 @@
 RovesODrive Drive1(&Serial7);
 String targetString;
 float pos_est;
-int error;
+Error_Axis axerror;
+Error_Motor merror;
+Error_Encoder enerror;
+Error_Controller cerror;
 
 void setup()
 {
@@ -55,35 +58,54 @@ void loop()
             pos_est = 0;
         }
 
-        else if (targetString == "Axerror")
+        else if (targetString == "axerror")
         {
-            error =  Drive1.motor[0].checkAxisErrors();
-            Serial.println(error);
-            error = 0;
+            axerror =  Drive1.motor[0].checkAxisErrors();
+            Serial.println(axerror);
+            axerror = 0;
+
+            if(axerror != ERROR_NONE_A)
+            {
+                Drive1.motor[0].reboot();
+            }
         }
 
-        else if (targetString == "Merror")
+        else if (targetString == "merror")
         {
-            error =  Drive1.motor[0].checkMotorErrors();
-            Serial.println(error);
-            error = 0;
+            merror =  Drive1.motor[0].checkMotorErrors();
+            Serial.println(merror);
+            merror = 0;
+
+            if(merror != ERROR_NONE_M)
+            {
+                Drive1.motor[0].reboot();
+            }
         }
 
-        else if (targetString == "Enerror")
+        else if (targetString == "enerror")
         {
-            error =  Drive1.motor[0].checkEncoderErrors();
-            Serial.println(error);
-            error = 0;
+            enerror =  Drive1.motor[0].checkEncoderErrors();
+            Serial.println(enerror);
+            enerror = 0;
+
+            if(enerror != ERROR_NONE_E)
+            {
+                Drive1.motor[0].reboot();
+            }
         }
 
-        else if (targetString == "Conerror")
+        else if (targetString == "cerror")
         {
-            error =  Drive1.motor[0].checkControllerErrors();
-            Serial.println(error);
-            error = 0;
+            cerror =  Drive1.motor[0].checkControllerErrors();
+            Serial.println(cerror);
+            cerror = 0;
+            if(cerror != ERROR_NONE_C)
+            {
+                Drive1.motor[0].reboot();
+            }
         }
 
-        else if ((targetString.toInt()) >= 0)
+        else 
         {
             int command = targetString.toInt();
             Serial.println(command);
@@ -93,8 +115,6 @@ void loop()
             //wait for it, to send a new move command, 
             //we disable the closed loop state which causes the command to stop
             //then we renable closed loop and give it a new set point
-            Serial7.write("w axis0.requested_state 1 \n");
-            Serial7.write("w axis0.requested_state 8 \n");
 
             Drive1.motor[0].setTrapTarget(command);
 

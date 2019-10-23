@@ -307,6 +307,8 @@ void RovesODriveMotor::setTrapTarget(int32_t target)
 {
 	char data[12];
 	intToChar(data, target);
+	writeODriveConfig(m_serial, WRITE, SET_CURRENT_STATE_TAG, "1", motor_number);
+	writeODriveConfig(m_serial, WRITE, SET_CURRENT_STATE_TAG, "8", motor_number);
 	writeODriveCommand(m_serial, "t", data, motor_number);
 }
 
@@ -339,51 +341,34 @@ void RovesODriveMotor::eraseConfig()
 	reboot();
 }
 
-int RovesODriveMotor::checkAxisErrors()
+Error_Axis RovesODriveMotor::checkAxisErrors()
 {
 	String error = "";
-	//int error_num;
 	writeODriveConfig(m_serial, READ, "error", "", motor_number);
 	error = getSerial();
 	return error.toInt();
-	//error_num = error.toInt();
-
-	/*if (error_num == 0)
-	{
-		return Error_Axis[0];
-	}
-	else
-	{
-		return Error_Axis[1];
-	}*/
 }
 
-int RovesODriveMotor::checkMotorErrors()
+Error_Motor RovesODriveMotor::checkMotorErrors()
 {
 	String error = "";
-	//int error_num;
 	writeODriveConfig(m_serial, READ, "motor.error", "", motor_number);
 	error = getSerial();
 	return error.toInt();
-	//error_num = error.toInt();
 }
 
-int RovesODriveMotor::checkEncoderErrors()
+Error_Encoder RovesODriveMotor::checkEncoderErrors()
 {
 	String error = "";
-	//int error_num;
 	writeODriveConfig(m_serial, READ, "encoder.error", "", motor_number);
 	error = getSerial();
 	return error.toInt();
-	//error_num = error.toInt();
 }
 
-int RovesODriveMotor::checkControllerErrors()
+Error_Controller RovesODriveMotor::checkControllerErrors()
 {
 	String error = "";
-	//int error_num;
 	writeODriveConfig(m_serial, READ, "controller.error", "", motor_number);
 	error = getSerial();
 	return error.toInt();
-	//error_num = error.toInt();
 }
