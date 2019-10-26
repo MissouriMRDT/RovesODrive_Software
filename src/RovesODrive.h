@@ -166,6 +166,14 @@ class RovesODriveMotor
 
 		Error_Controller checkControllerErrors();
 
+		void setTrapVelocityLimit(float limit);
+
+		void setTrapAccelerationLimit(float limit);
+
+		void setTrapDecelerationLimit(float limit);
+
+		void setTrapAccelerationPerCounts(float limit);
+
 		void reboot();
 
 		void saveConfig();
@@ -174,43 +182,17 @@ class RovesODriveMotor
 
 		void setTrapTarget(int32_t target);
 
+		void posSetPoint(int32_t target);
+
 		float requestPosEstimate();
-
-		void setControlMode(Control_Mode mode);
-
-		void setSpeed(int16_t speed);
-
-		void setRampValue(int16_t value);
-
-		void setPolePairs(uint8_t pole_pairs);
-
-		void setKV(uint16_t KV);
-		
-		void calibrate();
-
-		void writeConfig();
-
-		bool speedLow(int16_t speed);
 
 		uint8_t motor_number;
 
 		HardwareSerial* m_serial;
 
 		void requestState();
-
-		void setRamp(uint16_t rate);
-
-		void setSpinupAccleleration(uint16_t pos);
-
-		void setRampRate(uint16_t rate);
-
-		void idleMotor();
-
-		
 		
 	private:
-		void setDirection(int8_t direction);
-
 		//Startup and states
 		void writeState(Axis_State state);
 		
@@ -218,41 +200,11 @@ class RovesODriveMotor
 
 		void requestControlMode();
 
-		void writeStartupClosedLoop(bool b_startup);
-
-		void requestStartupClosedLoop();
-
-		void writeStartupSensorless(bool b_startup);
-
-		void requestStartupSensorless();
-
-		void writeStartupCalibrate(bool b_startup);
-
-		void requestStartupCalibrate();
-
-		void writeSpinUpAcceleration(int16_t acceleration);
-
-		void requestSpinUpAcceleration();
-
-		void writeSpinUpTargetVel(int16_t speed);
-
-		void requestSpinUpTargetVel();
-
-		void writeSpinUpCurrent(uint16_t current);
-
-		void requestSpinUpCurrent();
-
-		void writeSpinUpTime(float time);
-
-		void writeDirection(int8_t value);
-
-		void writeCurrentSetopint(uint16_t setpoint);
+		void writeCurrentSetpoint(uint16_t setpoint);
 		
 		void writeVelRampTarget(int16_t target);
 
 		void requestVelRampTarget();
-
-		void writeVelRampRate(int16_t rate);
 
 		void requestVelRampRate();
 
@@ -263,8 +215,6 @@ class RovesODriveMotor
 		void writeVelSetpoint(int16_t setpoint);
 
 		void requestVelSetpoint();
-		
-		void writePolepairs(uint8_t kv);
 
 		void requestPolepairs();
 

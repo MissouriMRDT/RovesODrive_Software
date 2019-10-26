@@ -112,128 +112,6 @@ String RovesODriveMotor::getSerial()
     return str;
 }
 
-bool RovesODriveMotor::speedLow(int16_t speed)
-{
-	return(abs(speed) < vel_shutoff_threshold);
-}
-
-void RovesODriveMotor::setControlMode(Control_Mode mode)
-{
-	switch(mode)
-	{
-		case CTRL_MODE_SENSORLESS_VELOCITY_CONTROL:
-			m_control_mode = CTRL_MODE_SENSORLESS_VELOCITY_CONTROL;
-			writeControlMode(CTRL_MODE_VELOCITY_CONTROL);
-			writePMFluxLinkage(PM_FLUX_LINKAGE_CONST/(motor_pole_pairs*motor_kv));
-	}
-}
-
-void RovesODriveMotor::setSpeed(int16_t speed)
-{
-  switch(m_control_mode)
-  {
-	  case CTRL_MODE_SENSORLESS_VELOCITY_CONTROL:
-
-		writeVelrampEnable(true);
-
-		if(speedLow(speed))
-		{
-			speed = 0;
-		}
-		
-		if(speedLow(vel_setpoint) && !speedLow(speed))  //If speeding up from low speed
-		{
-			Serial.println("IN RAMPUP");
-			if(speed>0) 
-			{
-				setDirection(1);
-			}
-			else
-			{
-				setDirection(-1);
-			}
-			//writeSpinUpTargetVel(spin_up_target_vel);
-
-			writeState(AXIS_STATE_IDLE);
-			writeState(AXIS_STATE_SENSORLESS_CONTROL);
-			if(do_current_ramp) current_setpoint = current_ramp_start;
-			writeCurrentSetopint(current_setpoint);
-		}
-
-		if(speed)
-		{
-			if(do_current_ramp)
-			{
-				if(current_setpoint<current_ramp_end) writeCurrentSetopint(current_setpoint+=current_ramp_inc);
-			}
-			Serial.print("Current Setpoint:");
-			Serial.println(current_setpoint);
-		}
-		else
-		{
-			writeCurrentSetopint(idle_current);
-		}
-		
-
-		writeVelRampTarget(m_direction*speed);  
-
-		vel_setpoint = speed;
-  }
-  
-}
-
-void RovesODriveMotor::setRampValue(int16_t value)
-{
-	vel_ramp_rate = value;
-}
-
-
-void RovesODriveMotor::writeConfig()
-{
-	switch(m_control_mode)
-	{
-		case CTRL_MODE_SENSORLESS_VELOCITY_CONTROL:
-			//writeSpinUpAcceleration(spin_up_acceleration);
-			//writeSpinUpTime(.5);
-			writeVelRampRate(vel_ramp_rate);
-			//writeSpinUpCurrent(spin_up_current);
-		break;
-	}
-}
-
-void RovesODriveMotor::setPolePairs(uint8_t pole_pairs)
-{
-	motor_pole_pairs = pole_pairs;
-}
-
-void RovesODriveMotor::setKV(uint16_t KV)
-{
-	motor_kv = KV;
-}
-
-void RovesODriveMotor::setRamp(uint16_t rate)
-{
-	//constrain(rate, MAX_VELOCITY_RAMP_RATE, -MAX_VELOCITY_RAMP_RATE);
-
-	setSpinupAccleleration(rate);
-	setRampRate(rate);
-}
-
-void RovesODriveMotor::setSpinupAccleleration(uint16_t acceleration)
-{
-	spin_up_acceleration = acceleration;
-}
-
-void RovesODriveMotor::setRampRate(uint16_t rate)
-{
-	vel_ramp_rate = rate;
-}
-
-void RovesODriveMotor::idleMotor()
-{
-	writeState(AXIS_STATE_IDLE);
-}
-
 void RovesODrive::begin()
 {
 	Serial.println("Beginning");
@@ -245,12 +123,6 @@ void RovesODrive::begin()
 
 
 ///////////////////////////////////////////////////////////////
-void RovesODriveMotor::setDirection(int8_t direction)
-{
-	m_direction = direction;
-	writeDirection(m_direction);
-}
-
 void RovesODriveMotor::writeState(Axis_State state)
 {
 	char data[2];
@@ -270,16 +142,9 @@ void RovesODriveMotor::writeControlMode(uint8_t mode)
 	writeODriveConfig(m_serial, WRITE, CONTROL_MODE_TAG, data, motor_number);
 }
 
-void RovesODriveMotor::writeStartupClosedLoop(bool b_startup)
+void RovesODriveMotor::writeControlMode()
 {
-	char data[2];
-	boolToChar(data, b_startup);
-	writeODriveConfig(m_serial, WRITE, STARTUP_CLOSED_LOOP_TAG, data, motor_number);
-}
-
-void RovesODriveMotor::requestStartupClosedLoop()
-{
-	writeODriveConfig(m_serial, READ, STARTUP_CLOSED_LOOP_TAG, "", motor_number);
+	writeODriveConfig(m_serial, WRITE, CONTROL_MODE_TAG, "", motor_number);
 }
 
 void RovesODriveMotor::writeVelSetpoint(int16_t setpoint)
@@ -294,20 +159,60 @@ void RovesODriveMotor::requestVelSetpoint()
 	writeODriveConfig(m_serial, READ, VELOCITY_SETPOINT_TAG, "", motor_number);
 }
 
-void RovesODriveMotor::writePolepairs(uint8_t polepairs)
+void RovesODriveMotor::setTrapVelocityLimit(float limit )
 {
-	char data[2];
-	intToChar(data, polepairs);
-	writeODriveConfig(m_serial, WRITE, POLE_PAIRS_TAG, data, motor_number);
+	char data[12];
+	floatToChar(data, limit);
+	writeODriveConfig(m_serial, WRITE, VELOCITY_LIMIT , data, motor_number);
+}
+
+void RovesODriveMotor::setTrapAccelerationLimit(float limit )
+{
+	char data[12];
+	floatToChar(data, limit);
+	writeODriveConfig(m_serial, WRITE, ACCELERATION_LIMIT , data, motor_number);
+}
+
+void RovesODriveMotor::setTrapDecelerationLimit(float limit )
+{
+	char data[12];
+	floatToChar(data, limit);
+	writeODriveConfig(m_serial, WRITE, DECELERATION_LIMIT , data, motor_number);
+}
+
+void RovesODriveMotor::setTrapAccelerationPerCounts(float limit )
+{
+	char data[12];
+	floatToChar(data, limit);
+	writeODriveConfig(m_serial, WRITE, ACCELERATION_PER_COUNTS , data, motor_number);
 }
 
 void RovesODriveMotor::setTrapTarget(int32_t target)
 {
 	char data[12];
+	float pest = 0;
 	intToChar(data, target);
-	writeODriveConfig(m_serial, WRITE, SET_CURRENT_STATE_TAG, "1", motor_number);
-	writeODriveConfig(m_serial, WRITE, SET_CURRENT_STATE_TAG, "8", motor_number);
-	writeODriveCommand(m_serial, "t", data, motor_number);
+
+	pest = requestPosEstimate();
+
+	if ( pest >= (target - 50) || pest >= (target + 50) )
+	{
+		writeODriveCommand(m_serial, "t", data, motor_number);
+	}
+	
+	else
+	{
+		writeODriveConfig(m_serial, WRITE, SET_CURRENT_STATE_TAG, "1", motor_number);
+		writeODriveConfig(m_serial, WRITE, SET_CURRENT_STATE_TAG, "8", motor_number);
+		writeODriveCommand(m_serial, "t", data, motor_number);
+	}
+}
+
+void RovesODriveMotor::posSetPoint(int32_t target)
+{
+	char data[12];
+	intToChar(data, target);
+	writeODriveCommand(m_serial, "p", data, motor_number);
 }
 
 
@@ -321,20 +226,17 @@ float RovesODriveMotor::requestPosEstimate()
 
 void RovesODriveMotor::reboot()
 {
-    Serial.println("Rebooting");
  	writeODriveCommand(m_serial, "sr", "", motor_number);
 }
 
 void RovesODriveMotor::saveConfig()
 {
-    Serial.println("Saving");
     writeODriveCommand(m_serial, "ss", "", motor_number);
 	reboot();
 }
 
 void RovesODriveMotor::eraseConfig()
 {
-    Serial.println("Erasing");
 	writeODriveCommand(m_serial, "se", "", motor_number);
 	reboot();
 }
