@@ -142,21 +142,9 @@ void RovesODriveMotor::writeControlMode(uint8_t mode)
 	writeODriveConfig(m_serial, WRITE, CONTROL_MODE_TAG, data, motor_number);
 }
 
-void RovesODriveMotor::writeControlMode()
+void RovesODriveMotor::requestControlMode()
 {
-	writeODriveConfig(m_serial, WRITE, CONTROL_MODE_TAG, "", motor_number);
-}
-
-void RovesODriveMotor::writeVelSetpoint(int16_t setpoint)
-{
-	char data[6];
-	intToChar(data, setpoint);
-	writeODriveConfig(m_serial, WRITE, VELOCITY_SETPOINT_TAG, data, motor_number);
-}
-
-void RovesODriveMotor::requestVelSetpoint()
-{
-	writeODriveConfig(m_serial, READ, VELOCITY_SETPOINT_TAG, "", motor_number);
+	writeODriveConfig(m_serial, READ, CONTROL_MODE_TAG, "", motor_number);
 }
 
 void RovesODriveMotor::setTrapVelocityLimit(float limit )
@@ -208,7 +196,7 @@ void RovesODriveMotor::setTrapTarget(int32_t target)
 	}
 }
 
-void RovesODriveMotor::posSetPoint(int32_t target)
+void RovesODriveMotor::setPosSetPoint(int32_t target)
 {
 	char data[12];
 	intToChar(data, target);
