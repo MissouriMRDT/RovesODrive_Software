@@ -121,19 +121,11 @@ void boolToChar(char* output, int value);
 
 void floatToChar(char* output, int value, uint8_t precision);
 
-void writeODriveConfig(HardwareSerial* mySerial, bool write_request, char* id, char* value, uint8_t axis);
+void writeODriveConfig(HardwareSerial* mySerial, bool write_request, char* id, char* value1, char* value2, char* value3, uint8_t axis);
 
 void writeODriveCommand(HardwareSerial* mySerial, char* id, char* value, uint8_t axis);
 
-
-
-struct ODrivePacket
-{
-	uint8_t length;
-	String data[];
-};
-	
-class RovesODriveMotor
+class RovesODriveMotor //TODO: Create a constructor for this
 {
 	public:
 		String getSerial();
@@ -162,9 +154,11 @@ class RovesODriveMotor
 
 		void setTrapTarget(int32_t target);
 
-		void aetPosSetPoint(int32_t target);
+		void setPosSetPoint(int32_t target1, int32_t target2, int32_t target3);
 
 		float requestPosEstimate();
+
+		int32_t m_position = 0;
 
 		uint8_t motor_number;
 
