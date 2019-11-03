@@ -156,6 +156,18 @@ class RovesODriveMotor //TODO: Create a constructor for this
 
 		void setPosSetPoint(int32_t target1, int32_t target2, int32_t target3);
 
+		void setVelocityGain(float target);
+
+		void readVelocityGain();
+
+		void setPositionGain(float target);
+
+		void readPositionGain();
+
+		void setVelocityIntegratorGain(float target);
+
+		void readVelocityIntegratorGain();
+
 		float requestPosEstimate();
 
 		int32_t m_position = 0;

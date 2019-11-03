@@ -155,14 +155,14 @@ void RovesODriveMotor::setTrapVelocityLimit(float limit )
 {
 	char data[12];
 	floatToChar(data, limit, 12);
-	writeODriveConfig(m_serial, WRITE, VELOCITY_LIMIT , data, motor_number);
+	writeODriveConfig(m_serial, WRITE, "trap_traj.config.vel_limit" , data, motor_number);
 }
 
-void RovesODriveMotor::setTrapAccelerationLimit(float limit )
+void RovesODriveMotor::setTrapAccelerationLimit(float limit)
 {
 	char data[12];
 	floatToChar(data, limit, 12);
-	writeODriveConfig(m_serial, WRITE, ACCELERATION_LIMIT , data, motor_number);
+	writeODriveConfig(m_serial, WRITE, "trap_traj.config.accel_limit", data, motor_number);
 }
 
 void RovesODriveMotor::setTrapDecelerationLimit(float limit )
@@ -182,18 +182,16 @@ void RovesODriveMotor::setTrapAccelerationPerCounts(float limit )
 void RovesODriveMotor::setTrapTarget(int32_t target)
 {
 	char data[12];
-	float pest = 0;
 	intToChar(data, target);
 
-	pest = requestPosEstimate();
 
 	//TODO: Fix this so we only move if we are move than 50 away from target
 	//and also don't move if the new target is within 50 of the current target
 	//have the RovesODriveMotor class have an attribute that provides the current target
-	if ( pest <= (m_position - 50) || pest >= (m_position + 50) )
+	if ( target <= (m_position - 50) || target >= (m_position + 50) )
 	{
-		writeODriveConfig(m_serial, WRITE, SET_CURRENT_STATE_TAG, "1", motor_number);
-		writeODriveConfig(m_serial, WRITE, SET_CURRENT_STATE_TAG, "8", motor_number);
+		writeODriveConfig(m_serial, WRITE, "controller.config.control_mode", "3", motor_number);
+		//writeODriveConfig(m_serial, WRITE, SET_CURRENT_STATE_TAG, "8", motor_number);
 		writeODriveCommand(m_serial, "t", data, "", "", motor_number);
 		m_position = target;
 	}
@@ -269,4 +267,40 @@ Error_Controller RovesODriveMotor::checkControllerErrors()
 	writeODriveConfig(m_serial, READ, "controller.error", "", motor_number);
 	error = getSerial();
 	return (Error_Controller)error.toInt();
+}
+
+void RovesODriveMotor::setVelocityGain(float target)
+{
+	char data[12];
+	floatToChar(data, target, 12);
+	writeODriveConfig(m_serial, WRITE, "controller.config.vel_gain", data, motor_number);
+}
+
+void RovesODriveMotor::readVelocityGain()
+{
+	writeODriveConfig(m_serial, READ, "controller.config.vel_gain", "", motor_number);
+}
+
+void RovesODriveMotor::setPositionGain(float target)
+{
+	char data[12];
+	floatToChar(data, target, 12);
+	writeODriveConfig(m_serial, WRITE, "controller.config.pos_gain", data, motor_number);
+}
+
+void RovesODriveMotor::readPositionGain()
+{
+	writeODriveConfig(m_serial, READ, "controller.config.pos_gain", "", motor_number);
+}
+
+void RovesODriveMotor::setVelocityIntegratorGain(float target)
+{
+	char data[12];
+	floatToChar(data, target, 12);
+	writeODriveConfig(m_serial, WRITE, "controller.config.vel_integrator_gain", data, motor_number);
+}
+
+void RovesODriveMotor::readVelocityIntegratorGain()
+{
+	writeODriveConfig(m_serial, READ, "controller.config.vel_integrator_gain", "", motor_number);
 }
