@@ -3,7 +3,7 @@
 RovesODrive Drive1(&Serial7);
 String target;
 float posEst, tvLimit, trapAPC, taLimit, tdLimit, vGain, pGain, viGain; 
-int command, pos1, pos2, pos3;
+int command, pos1, pos2, pos3, vel1, vel2;
 
 Axis_State state;
 Control_Mode crtlMode;
@@ -596,6 +596,33 @@ void loop()
         {
             Serial.println("Reading Velocity Integrator Gain...");
             Drive1.motor[0].readVelocityIntegratorGain();
+        }
+
+        else if(target == "velSetP")
+        {
+            Serial.println("Enter target Velocity");
+            target = "";
+            while (!Serial.available()); 
+            while (Serial.available()) 
+            {
+                char c = Serial.read();  
+                target += c; 
+                delay(2);  
+            }
+            vel1 = target.toInt();
+
+            Serial.println("Enter Second Value");
+            target = "";
+            while (!Serial.available()); 
+            while (Serial.available()) 
+            {
+                char c = Serial.read();  
+                target += c; 
+                delay(2);  
+            }
+            vel2 = target.toInt();
+            Serial.println("Setting Velocity Set Point...");
+            Drive1.motor[0].writeVelocitySetpoint(vel1, vel2);
         }
 
         else 
