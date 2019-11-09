@@ -67,7 +67,7 @@ void floatToChar(char* output, float value, uint8_t precision)
 
 void writeODriveConfig(HardwareSerial* mySerial, bool write_read, char* id, char* param, uint8_t axis)
 {
-	char output[255];
+	char output[MAX_STRING_CHARS];
 
 	sprintf(output, "%s ", (write_read == WRITE)? "w":"r");
 
@@ -79,7 +79,7 @@ void writeODriveConfig(HardwareSerial* mySerial, bool write_read, char* id, char
 
 void writeODriveCommand(HardwareSerial* mySerial, char* id, char* param1, char* param2, char* param3, uint8_t axis) //TODO: add two additional parameters for commands
 {
-	char output[255];
+	char output[MAX_STRING_CHARS];
 
 	sprintf(output, "%s", id);
 
@@ -124,7 +124,7 @@ void RovesODrive::begin()
 	Serial.println("Drive Serial Init");
 }
 
-void RovesODriveMotor::writeState(Axis_State state)
+void RovesODriveMotor::writeState(Axis_State state) 
 {
 	char data[2];
 	intToChar(data, state);
@@ -200,7 +200,7 @@ void RovesODriveMotor::writeTrapTarget(int32_t target)
 {
 	char data[12];
 	intToChar(data, target);
-	if ( target <= (m_position - 50) || target >= (m_position + 50) )
+	if ( target <= (m_position - 50) || target >= (m_position + 50) ) // checks if the new target is far enough from the prevois position to move
 	{
 		writeODriveConfig(m_serial, WRITE, CONTROL_MODE, "3", motor_number);
 		writeODriveCommand(m_serial, MOTOR_TRAJ, data, "", "", motor_number);
@@ -213,7 +213,7 @@ void RovesODriveMotor::writeTrapTarget(int32_t target)
 	
 }
 
-void RovesODriveMotor::writePosSetPoint(int32_t position, int32_t velFF, int32_t crrtFF)
+void RovesODriveMotor::writePosSetPoint(int32_t position, int32_t velFF, int32_t crrtFF) // Sets the position setpoint and receives a position, velocity feed, and current feed parameters
 {
 	char data1[12], data2[12], data3[12];
 	intToChar(data1, position);
@@ -223,7 +223,7 @@ void RovesODriveMotor::writePosSetPoint(int32_t position, int32_t velFF, int32_t
 }
 
 
-float RovesODriveMotor::readPosEstimate()
+float RovesODriveMotor::readPosEstimate() // returns the Position estimate of the motor
 {
 	String position = "";
 	writeODriveConfig(m_serial, READ, POS_ESTIMATE, "", motor_number);
@@ -236,7 +236,7 @@ void RovesODriveMotor::reboot()
  	writeODriveCommand(m_serial, SYSTEM_REBOOT, "", "", "", motor_number);
 }
 
-void RovesODriveMotor::saveConfig()
+void RovesODriveMotor::saveConfig() 
 {
     writeODriveCommand(m_serial, SAVE_CONFIG, "", "", "", motor_number);
 }
@@ -246,7 +246,7 @@ void RovesODriveMotor::eraseConfig()
 	writeODriveCommand(m_serial, ERASE_CONFIG, "", "", "", motor_number);
 }
 
-Error_Axis RovesODriveMotor::checkAxisErrors()
+Error_Axis RovesODriveMotor::checkAxisErrors() 
 {
 	String error = "";
 	writeODriveConfig(m_serial, READ, AXIS_ERRORS, "", motor_number);
@@ -410,14 +410,14 @@ void RovesODriveMotor::readEncoderCPR()
 	writeODriveConfig(m_serial, READ, CPR, "", motor_number);
 }
 
-void RovesODriveMotor::moveToPos(float pos)
+void RovesODriveMotor::moveToPos(float pos) // moves the motor to an absolute positon
 {
 	char data[12];
 	floatToChar(data, pos, 12);
 	writeODriveConfig(m_serial, WRITE, MOVE_TO_POS, data, motor_number);
 }
 
-void RovesODriveMotor::moveIncremental(float incr)
+void RovesODriveMotor::moveIncremental(float incr) // moves the motor to a positon based off its current position
 {
 	char data[12];
 	floatToChar(data, incr, 12);
@@ -476,7 +476,7 @@ void RovesODriveMotor::writeCPRSetpoint(bool state)
 	writeODriveConfig(m_serial, WRITE, CPR_SETPOINT, data, motor_number);
 }
 
-float RovesODriveMotor::readPosCPR()
+float RovesODriveMotor::readPosCPR() // returns position cpr estimate
 {
 	String position = "";
 	writeODriveConfig(m_serial, READ, POS_CPR, "", motor_number);

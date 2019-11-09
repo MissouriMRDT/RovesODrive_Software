@@ -22,7 +22,6 @@ void setup()
     Serial.println("ODriveArduino");
     Serial.println("Setting state to closed loop control...");    
 
-    //Drive1.motor[0].writeState(AXIS_STATE_CLOSED_LOOP_CONTROL);
     Serial7.write("w axis0.requested_state 8 \n");
 
     Serial.println("Initialised");
