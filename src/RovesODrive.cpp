@@ -65,7 +65,7 @@ void floatToChar(char* output, float value, uint8_t precision)
 	}
 }
 
-void writeODriveConfig(HardwareSerial* mySerial, bool write_read, char* id, char* value, uint8_t axis)
+void writeODriveConfig(HardwareSerial* mySerial, bool write_read, char* id, char* param, uint8_t axis)
 {
 	char output[255];
 
@@ -73,11 +73,11 @@ void writeODriveConfig(HardwareSerial* mySerial, bool write_read, char* id, char
 
 	sprintf(output, "%s%s%d.", output, "axis", axis);
 
-	sprintf(output, "%s%s %s\n", output, id, value);
+	sprintf(output, "%s%s %s\n", output, id, param);
 	mySerial->write(output);
 }
 
-void writeODriveCommand(HardwareSerial* mySerial, char* id, char* value1, char* value2, char* value3, uint8_t axis) //TODO: add two additional parameters for commands
+void writeODriveCommand(HardwareSerial* mySerial, char* id, char* param1, char* param2, char* param3, uint8_t axis) //TODO: add two additional parameters for commands
 {
 	char output[255];
 
@@ -85,11 +85,11 @@ void writeODriveCommand(HardwareSerial* mySerial, char* id, char* value1, char* 
 
 	sprintf(output, "%s %d", output, axis);
 
-	sprintf(output, "%s %s", output, value1);
+	sprintf(output, "%s %s", output, param1);
 
-	sprintf(output, "%s %s", output, value2);
+	sprintf(output, "%s %s", output, param2);
 
-	sprintf(output, "%s %s \n", output, value3);
+	sprintf(output, "%s %s \n", output, param3);
 
 	Serial.println(output);
 	mySerial->write(output);
@@ -124,74 +124,85 @@ void RovesODrive::begin()
 	Serial.println("Drive Serial Init");
 }
 
-
-///////////////////////////////////////////////////////////////
 void RovesODriveMotor::writeState(Axis_State state)
 {
 	char data[2];
 	intToChar(data, state);
-	Serial.println(data);
 	writeODriveConfig(m_serial, WRITE, SET_CURRENT_STATE_TAG, data, motor_number);
 }
 
-void RovesODriveMotor::requestState()
+void RovesODriveMotor::readState()
 {
 	writeODriveConfig(m_serial, READ, GET_CURRENT_STATE_TAG, "", motor_number);
 }
 
-void RovesODriveMotor::writeControlMode(uint8_t mode)
+void RovesODriveMotor::writeControlMode(Control_Mode mode)
 {
 	char data[2];
 	intToChar(data, mode);
 	writeODriveConfig(m_serial, WRITE, CONTROL_MODE_TAG, data, motor_number);
 }
 
-void RovesODriveMotor::requestControlMode()
+void RovesODriveMotor::readControlMode()
 {
 	writeODriveConfig(m_serial, READ, CONTROL_MODE_TAG, "", motor_number);
 }
 
-void RovesODriveMotor::setTrapVelocityLimit(float limit )
+void RovesODriveMotor::writeTrapVelocityLimit(float limit)
 {
 	char data[12];
 	floatToChar(data, limit, 12);
-	writeODriveConfig(m_serial, WRITE, "trap_traj.config.vel_limit" , data, motor_number);
+	writeODriveConfig(m_serial, WRITE, VELOCITY_LIMIT , data, motor_number);
 }
 
-void RovesODriveMotor::setTrapAccelerationLimit(float limit)
+void RovesODriveMotor::readTrapVelocityLimit()
+{
+	writeODriveConfig(m_serial, READ, VELOCITY_LIMIT , "", motor_number);
+}
+
+void RovesODriveMotor::writeTrapAccelerationLimit(float limit)
 {
 	char data[12];
 	floatToChar(data, limit, 12);
-	writeODriveConfig(m_serial, WRITE, "trap_traj.config.accel_limit", data, motor_number);
+	writeODriveConfig(m_serial, WRITE, ACCELERATION_LIMIT, data, motor_number);
 }
 
-void RovesODriveMotor::setTrapDecelerationLimit(float limit )
+void RovesODriveMotor::readTrapAccelerationLimit()
+{
+	writeODriveConfig(m_serial, READ, ACCELERATION_LIMIT , "", motor_number);
+}
+
+void RovesODriveMotor::writeTrapDecelerationLimit(float limit )
 {
 	char data[12];
 	floatToChar(data, limit, 12);
 	writeODriveConfig(m_serial, WRITE, DECELERATION_LIMIT , data, motor_number);
 }
 
-void RovesODriveMotor::setTrapAccelerationPerCounts(float limit )
+void RovesODriveMotor::readTrapDecelerationLimit()
+{
+	writeODriveConfig(m_serial, READ, DECELERATION_LIMIT , "", motor_number);
+}
+
+void RovesODriveMotor::writeTrapAccelerationPerCounts(float limit )
 {
 	char data[12];
 	floatToChar(data, limit, 12);
 	writeODriveConfig(m_serial, WRITE, ACCELERATION_PER_COUNTS , data, motor_number);
 }
 
-void RovesODriveMotor::setTrapTarget(int32_t target)
+void RovesODriveMotor::readTrapAccelerationPerCounts()
+{
+	writeODriveConfig(m_serial, READ, ACCELERATION_PER_COUNTS , "", motor_number);
+}
+
+void RovesODriveMotor::writeTrapTarget(int32_t target)
 {
 	char data[12];
 	intToChar(data, target);
-
-
-	//TODO: Fix this so we only move if we are move than 50 away from target
-	//and also don't move if the new target is within 50 of the current target
-	//have the RovesODriveMotor class have an attribute that provides the current target
 	if ( target <= (m_position - 50) || target >= (m_position + 50) )
 	{
-		writeODriveConfig(m_serial, WRITE, "controller.config.control_mode", "3", motor_number);
-		//writeODriveConfig(m_serial, WRITE, SET_CURRENT_STATE_TAG, "8", motor_number);
+		writeODriveConfig(m_serial, WRITE, CONTROL_MODE_TAG, "3", motor_number);
 		writeODriveCommand(m_serial, "t", data, "", "", motor_number);
 		m_position = target;
 	}
@@ -202,7 +213,7 @@ void RovesODriveMotor::setTrapTarget(int32_t target)
 	
 }
 
-void RovesODriveMotor::setPosSetPoint(int32_t target1, int32_t target2, int32_t target3)
+void RovesODriveMotor::writePosSetPoint(int32_t target1, int32_t target2, int32_t target3)
 {
 	char data1[12], data2[12], data3[12];
 	intToChar(data1, target1);
@@ -212,7 +223,7 @@ void RovesODriveMotor::setPosSetPoint(int32_t target1, int32_t target2, int32_t 
 }
 
 
-float RovesODriveMotor::requestPosEstimate()
+float RovesODriveMotor::readPosEstimate()
 {
 	String position = "";
 	writeODriveConfig(m_serial, READ, "encoder.pos_estimate", "", motor_number);
@@ -228,13 +239,11 @@ void RovesODriveMotor::reboot()
 void RovesODriveMotor::saveConfig()
 {
     writeODriveCommand(m_serial, "ss", "", "", "", motor_number);
-	reboot();
 }
 
 void RovesODriveMotor::eraseConfig()
 {
 	writeODriveCommand(m_serial, "se", "", "", "", motor_number);
-	reboot();
 }
 
 Error_Axis RovesODriveMotor::checkAxisErrors()
@@ -269,7 +278,17 @@ Error_Controller RovesODriveMotor::checkControllerErrors()
 	return (Error_Controller)error.toInt();
 }
 
-void RovesODriveMotor::setVelocityGain(float target)
+String[] RovesODriveMotor::checkAllErrors()
+{
+	String errors[4];
+	errors[0] = checkAxisErrors();
+	errors[1] = checkMotorErrors();
+	errors[2] = checkEncoderErrors();
+	errors[3] = checkControllerErrors();
+	return errors;
+}
+
+void RovesODriveMotor::writeVelocityGain(float target)
 {
 	char data[12];
 	floatToChar(data, target, 12);
@@ -281,7 +300,7 @@ void RovesODriveMotor::readVelocityGain()
 	writeODriveConfig(m_serial, READ, "controller.config.vel_gain", "", motor_number);
 }
 
-void RovesODriveMotor::setPositionGain(float target)
+void RovesODriveMotor::writePositionGain(float target)
 {
 	char data[12];
 	floatToChar(data, target, 12);
@@ -293,7 +312,7 @@ void RovesODriveMotor::readPositionGain()
 	writeODriveConfig(m_serial, READ, "controller.config.pos_gain", "", motor_number);
 }
 
-void RovesODriveMotor::setVelocityIntegratorGain(float target)
+void RovesODriveMotor::writeVelocityIntegratorGain(float target)
 {
 	char data[12];
 	floatToChar(data, target, 12);
@@ -304,3 +323,176 @@ void RovesODriveMotor::readVelocityIntegratorGain()
 {
 	writeODriveConfig(m_serial, READ, "controller.config.vel_integrator_gain", "", motor_number);
 }
+
+void RovesODriveMotor::writeVelocityControlMode()
+{
+	Control_Mode mode = 1;
+	writeControlMode(mode);
+}
+
+void RovesODriveMotor::writeVelocitySetpoint(float velPoint, float currentFF)
+{
+	char data1[12], data2[12];
+	intToChar(data1, velPoint);
+	intToChar(data2, currentFF);
+	writeODriveCommand(m_serial, "v", data1, data2, "", motor_number);
+}
+
+void RovesODriveMotor::writeCurrentLimit(float limit)
+{
+	char data[12];
+	floatToChar(data, limit, 12);
+	writeODriveConfig(m_serial, WRITE, "motor.config.current_lim", data, motor_number);
+}
+
+void RovesODriveMotor::readCurrentLimit()
+{
+	writeODriveConfig(m_serial, READ, "motor.config.current_lim", "", motor_number);
+}
+
+void RovesODriveMotor::writeVelocityLimit(float limit)
+{
+	char data[12];
+	floatToChar(data, limit, 12);
+	writeODriveConfig(m_serial, WRITE, "controller.config.vel_limit", data, motor_number);
+}
+
+void RovesODriveMotor::readVelocityLimit()
+{
+	writeODriveConfig(m_serial, READ, "controller.config.vel_limit", "", motor_number);
+}
+
+void RovesODriveMotor::writeCurrentCalibration(float limit)
+{
+	char data[12];
+	floatToChar(data, limit, 12);
+	writeODriveConfig(m_serial, WRITE, "motor.config.calibration_current", data, motor_number);
+}
+
+void RovesODriveMotor::readCurrentCalibration()
+{
+	writeODriveConfig(m_serial, READ, "motor.config.calibration_current", "", motor_number);
+}
+
+void RovesODriveMotor::writeBrakeResistance(float bResist)
+{
+	char data[12];
+	floatToChar(data, bResist, 12);
+	writeODriveConfig(m_serial, WRITE, "config.brake_resistance", data, motor_number);
+}
+
+void RovesODriveMotor::readBrakeResistance()
+{
+	writeODriveConfig(m_serial, READ, "config.brake_resistance", "", motor_number);
+}
+
+void RovesODriveMotor::writePolePairs(int32_t pairs)
+{
+	char data[12];
+	inttToChar(data, pairs);
+	writeODriveConfig(m_serial, WRITE, "motor.config.pole_pairs", data, motor_number);
+}
+
+void RovesODriveMotor::readPolePairs()
+{
+	writeODriveConfig(m_serial, READ, "motor.config.pole_pairs", "", motor_number);
+}
+
+void RovesODriveMotor::writeEncoderCPR(float cpr)
+{
+	char data[12];
+	floatToChar(data, cpr, 12);
+	writeODriveConfig(m_serial, WRITE, "encoder.config.cpr", data, motor_number);
+}
+
+void RovesODriveMotor::readEncoderCPR()
+{
+	writeODriveConfig(m_serial, READ, "encoder.config.cpr", "", motor_number);
+}
+
+void RovesODriveMotor::moveToPos(float pos)
+{
+	char data[12];
+	floatToChar(data, pos, 12);
+	writeODriveConfig(m_serial, WRITE, "controller.move_to_pos", data, motor_number);
+}
+
+void RovesODriveMotor::moveIncremental(float incr)
+{
+	char data[12];
+	floatToChar(data, incr, 12);
+	writeODriveConfig(m_serial, WRITE, "controller.move_incremental", data, motor_number);
+}
+
+void RovesODriveMotor::writeVelocityRampRate(float rRate)
+{
+	char data[12];
+	floatToChar(data, rRate, 12);
+	writeODriveConfig(m_serial, WRITE, "controller.config.vel_ramp_rate", data, motor_number);
+}
+
+void RovesODriveMotor::readVelocityRampRate()
+{
+	writeODriveConfig(m_serial, READ, "controller.config.vel_ramp_rate", "", motor_number);
+}
+
+void RovesODriveMotor::writeCurrentSetPoint(float point)
+{
+	char data[12];
+	floatToChar(data, point, 12);
+	writeODriveCommand(m_serial, "c", data, "", "", motor_number);
+}
+
+void RovesODriveMotor::writeVelocityRampTarget(float target)
+{
+	char data[12];
+	floatToChar(data, target, 12);
+	writeVelocityRampEnable(true);
+	writeODriveConfig(m_serial, WRITE, "controller.vel_ramp_target", data, motor_number);
+}
+
+void RovesODriveMotor::readVelocityRampTarget()
+{
+	writeVelocityRampEnable(true);
+	writeODriveConfig(m_serial, READ, "controller.vel_ramp_target", "", motor_number);
+}
+
+void RovesODriveMotor::writeVelocityRampEnable(bool state)
+{
+	char data[12];
+	boolToChar(data, state);
+	writeODriveConfig(m_serial, WRITE, "controller.vel_ramp_enable", state, motor_number);
+}
+
+void RovesODriveMotor::readVelocityRampEnable()
+{
+	writeODriveConfig(m_serial, READ, "controller.vel_ramp_enable", "", motor_number);
+}
+
+void RovesODriveMotor::writeCPRSetpoint(bool state)
+{
+	char data[12];
+	boolToChar(data, state);
+	writeODriveConfig(m_serial, WRITE, "controller.config.setpoints_in_cpr", data, motor_number);
+}
+
+float RovesODriveMotor::readPosCPR()
+{
+	String position = "";
+	writeODriveConfig(m_serial, READ, "encoder.pos_cpr", "", motor_number);
+	position = getSerial();
+	return position.toFloat();
+}
+
+void RovesODriveMotor::writeWatchdogTimeout(int32_t time)
+{
+	char data[12];
+	boolToChar(data, time);
+	writeODriveConfig(m_serial, WRITE, "config.watchdog_timeout", data, motor_number);
+}
+
+void RovesODriveMotor::readWatchdogTimeout()
+{
+	writeODriveConfig(m_serial, READ, "config.watchdog_timeout", "", motor_number);
+}
+

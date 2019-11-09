@@ -11,18 +11,17 @@
 #define	READ	false
 
 //Axis Data Tags
+
 //configs
 #define GET_CURRENT_STATE_TAG			"current_state"							//int
 #define SET_CURRENT_STATE_TAG			"requested_state"						//int
 #define CONTROL_MODE_TAG				"controller.config.control_mode"		//int	
 
 //Trap Trajectory
- #define VELOCITY_LIMIT  				"trap_traj.config.vel_limit" //float
- #define ACCELERATION_LIMIT				"trap_traj.config.accel_limit" //float
- #define DECELERATION_LIMIT				"trap_traj.config.decel_limit" //float
- #define ACCELERATION_PER_COUNTS		"trap_traj.config.A_per_css" //float
- #define CURRENT_LIMIT					"motor.config.current_lim" //float
- #define VELOCITY_LIMIT_CONFIG			"controller.config.vel_limit" //float 
+ #define VELOCITY_LIMIT  				"trap_traj.config.vel_limit" 			//float
+ #define ACCELERATION_LIMIT				"trap_traj.config.accel_limit" 			//float
+ #define DECELERATION_LIMIT				"trap_traj.config.decel_limit" 			//float
+ #define ACCELERATION_PER_COUNTS		"trap_traj.config.A_per_css" 			//float
 
 enum Axis_State
 {
@@ -138,13 +137,23 @@ class RovesODriveMotor //TODO: Create a constructor for this
 
 		Error_Controller checkControllerErrors();
 
-		void setTrapVelocityLimit(float limit);
+		String[] checkAllErrors();
 
-		void setTrapAccelerationLimit(float limit);
+		void writeTrapVelocityLimit(float limit);
 
-		void setTrapDecelerationLimit(float limit);
+		void readTrapVelocityLimit();
 
-		void setTrapAccelerationPerCounts(float limit);
+		void writeTrapAccelerationLimit(float limit);
+
+		void readTrapAccelerationLimit();
+
+		void writeTrapDecelerationLimit(float limit);
+
+		void readTrapDecelerationLimit();
+
+		void writeTrapAccelerationPerCounts(float limit);
+
+		void readTrapAccelerationPerCounts();
 
 		void reboot();
 
@@ -152,23 +161,23 @@ class RovesODriveMotor //TODO: Create a constructor for this
 
 		void eraseConfig();
 
-		void setTrapTarget(int32_t target);
+		void writeTrapTarget(int32_t target);
 
-		void setPosSetPoint(int32_t target1, int32_t target2, int32_t target3);
+		void writePosSetPoint(int32_t target1, int32_t target2, int32_t target3);
 
-		void setVelocityGain(float target);
+		void writeVelocityGain(float target);
 
 		void readVelocityGain();
 
-		void setPositionGain(float target);
+		void writePositionGain(float target);
 
 		void readPositionGain();
 
-		void setVelocityIntegratorGain(float target);
+		void writeVelocityIntegratorGain(float target);
 
 		void readVelocityIntegratorGain();
 
-		float requestPosEstimate();
+		float readPosEstimate();
 
 		int32_t m_position = 0;
 
@@ -176,13 +185,67 @@ class RovesODriveMotor //TODO: Create a constructor for this
 
 		HardwareSerial* m_serial;
 
-		void requestState();
+		void readState();
 
-		void requestControlMode();
+		void readControlMode();
+
+		void writeVelocityControlMode();
+
+		void writeVelocitySetpoint(float velPoint, float currentFF);
+
+		void writeCurrentLimit(float limit);
+
+		void readCurrentLimit();
+
+		void writeVelocityLimit(float limit);
+
+		void readVelocityLimit();
+
+		void writeCurrentCalibration(float limit);
+
+		void readCurrentCalibration();
+
+		void writeBrakeResistance(float bResist);
+
+		void readBrakeResistance();
+
+		void writePolePairs(int32_t pairs);
+
+		void readPolePairs();
+
+		void writeEncoderCPR(float cpr);
+
+		void readEncoderCPR();
+
+		void moveToPos(float pos);
+
+		void moveIncremental(float incr);
+
+		void writeVelocityRampEnable(bool state);
+
+		void readVelocityRampEnable();
+
+		void writeVelocityRampRate(float rRate);
+
+		void readVelocityRampRate();
+
+		void writeCurrentSetPoint(float point);
+
+		void writeVelocityRampTarget(float target);
+
+		void readVelocityRampTarget();
+
+		void writeCPRSetpoint(bool state);
+
+		float readPosCPR();
+
+		void writeWatchdogTimeout(int32_t time);
+
+		void readWatchdogTimeout();
 
 		void writeState(Axis_State state);
 		
-		void writeControlMode(uint8_t mode);		
+		void writeControlMode(Control_Mode mode);		
 };
 
 class RovesODrive
