@@ -278,13 +278,13 @@ Error_Controller RovesODriveMotor::checkControllerErrors()
 	return (Error_Controller)error.toInt();
 }
 
-String[] RovesODriveMotor::checkAllErrors()
+String* RovesODriveMotor::checkAllErrors(String error[4])
 {
-	String errors[4];
-	errors[0] = checkAxisErrors();
-	errors[1] = checkMotorErrors();
-	errors[2] = checkEncoderErrors();
-	errors[3] = checkControllerErrors();
+	String* errors = error;
+	error[0] = checkAxisErrors();
+	error[1] = checkMotorErrors();
+	error[2] = checkEncoderErrors();
+	error[3] = checkControllerErrors();
 	return errors;
 }
 
@@ -326,7 +326,7 @@ void RovesODriveMotor::readVelocityIntegratorGain()
 
 void RovesODriveMotor::writeVelocityControlMode()
 {
-	Control_Mode mode = 1;
+	Control_Mode mode = CTRL_MODE_VELOCITY_CONTROL;
 	writeControlMode(mode);
 }
 
@@ -389,7 +389,7 @@ void RovesODriveMotor::readBrakeResistance()
 void RovesODriveMotor::writePolePairs(int32_t pairs)
 {
 	char data[12];
-	inttToChar(data, pairs);
+	intToChar(data, pairs);
 	writeODriveConfig(m_serial, WRITE, "motor.config.pole_pairs", data, motor_number);
 }
 
@@ -461,7 +461,7 @@ void RovesODriveMotor::writeVelocityRampEnable(bool state)
 {
 	char data[12];
 	boolToChar(data, state);
-	writeODriveConfig(m_serial, WRITE, "controller.vel_ramp_enable", state, motor_number);
+	writeODriveConfig(m_serial, WRITE, "controller.vel_ramp_enable", data, motor_number);
 }
 
 void RovesODriveMotor::readVelocityRampEnable()
@@ -487,7 +487,7 @@ float RovesODriveMotor::readPosCPR()
 void RovesODriveMotor::writeWatchdogTimeout(int32_t time)
 {
 	char data[12];
-	boolToChar(data, time);
+	intToChar(data, time);
 	writeODriveConfig(m_serial, WRITE, "config.watchdog_timeout", data, motor_number);
 }
 

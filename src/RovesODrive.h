@@ -137,7 +137,7 @@ class RovesODriveMotor //TODO: Create a constructor for this
 
 		Error_Controller checkControllerErrors();
 
-		String[] checkAllErrors();
+		String* checkAllErrors(String error[4]);
 
 		void writeTrapVelocityLimit(float limit);
 
