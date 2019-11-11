@@ -147,19 +147,6 @@ enum Serial_Status
 	SerialFault = 1,
 };
 
-//Char Converstions
-int charToInt(char input[]);
-
-float charToFloat(char input[]);
-
-bool charToBool(char input[]);
-
-void intToChar(char* output, int value);
-
-void boolToChar(char* output, int value);
-
-void floatToChar(char* output, int value, uint8_t precision);
-
 //Serial Command and Config
 void writeODriveConfig(HardwareSerial* mySerial, bool write_read, char* id, char* param, uint8_t axis);
 
