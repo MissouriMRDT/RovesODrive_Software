@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <Energia.h>
 #include <HardwareSerial.h>
+#include <RovesOUtilities.h>
 
 #define MAX_STRING_CHARS 255
 
