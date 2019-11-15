@@ -16,6 +16,7 @@ void boolToChar(char* output, int value);
 
 void floatToChar(char* output, int value, uint8_t precision);
 
+// Definitions
 int charToInt(char input[])
 {
 	int value = 0;

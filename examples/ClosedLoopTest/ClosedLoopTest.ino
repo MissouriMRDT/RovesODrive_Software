@@ -625,6 +625,12 @@ void loop()
             Drive1.motor[0].writeVelocitySetpoint(vel1, vel2);
         }
 
+        else if(target == "rVelP")
+        {
+            Serial.println("Reading Velocity Setpoint...");
+            Drive1.motor[0].readVelocitySetpoint();
+        }
+
         else 
         {
             command = target.toInt();

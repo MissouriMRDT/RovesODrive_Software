@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <Energia.h>
 #include <HardwareSerial.h>
-#include <RovesOUtilities.h>
 
 #define MAX_STRING_CHARS 255
 
@@ -29,6 +28,7 @@
 #define VELOCITY_RAMP_ENABLE			"controller.vel_ramp_enable"			//bool
 #define VELOCITY_RAMP_RATE				"controller.config.vel_ramp_rate"		//float
 #define VELOCITY_RAMP_TARGET			"controller.vel_ramp_target"			//float
+#define VELOCITY_SETPOINT				"controller.vel_setpoint"				//float
 
 //Encoder 
 #define CPR								"encoder.config.cpr"					//float
@@ -229,6 +229,8 @@ class RovesODriveMotor
 		void writeVelocityControlMode();
 
 		void writeVelocitySetpoint(float velPoint, float currentFF);
+
+		void readVelocitySetpoint();
 
 		void writeCurrentLimit(float limit);
 

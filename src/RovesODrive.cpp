@@ -1,6 +1,7 @@
-#include "RovesODrive.h"
+#include <RovesODrive.h>
 #include <Energia.h>
 #include <HardwareSerial.h>
+#include <RovesOUtilities.h>
 
 void writeODriveConfig(HardwareSerial* mySerial, bool write_read, char* id, char* param, uint8_t axis)
 {
@@ -273,6 +274,11 @@ void RovesODriveMotor::writeVelocitySetpoint(float velPoint, float currentFF)
 	intToChar(data1, velPoint);
 	intToChar(data2, currentFF);
 	writeODriveCommand(m_serial, MOTOR_VEL, data1, data2, "", motor_number);
+}
+
+void RovesODriveMotor::readVelocitySetpoint()
+{
+	writeODriveConfig(m_serial, READ, VELOCITY_SETPOINT, "", motor_number);
 }
 
 void RovesODriveMotor::writeCurrentLimit(float limit)
