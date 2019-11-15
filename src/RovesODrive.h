@@ -188,19 +188,19 @@ class RovesODriveMotor
 
 		void writeTrapVelocityLimit(float limit);
 
-		void readTrapVelocityLimit();
+		float readTrapVelocityLimit();
 
 		void writeTrapAccelerationLimit(float limit);
 
-		void readTrapAccelerationLimit();
+		float readTrapAccelerationLimit();
 
 		void writeTrapDecelerationLimit(float limit);
 
-		void readTrapDecelerationLimit();
+		float readTrapDecelerationLimit();
 
 		void writeTrapAccelerationPerCounts(float limit);
 
-		void readTrapAccelerationPerCounts();
+		float readTrapAccelerationPerCounts();
 
 		void reboot();
 
@@ -212,69 +212,69 @@ class RovesODriveMotor
 
 		void writeVelocityGain(float target);
 
-		void readVelocityGain();
+		float readVelocityGain();
 
 		void writePositionGain(float target);
 
-		void readPositionGain();
+		float readPositionGain();
 
 		void writeVelocityIntegratorGain(float target);
 
-		void readVelocityIntegratorGain();
+		float readVelocityIntegratorGain();
 
-		void readState();
+		Axis_State readState();
 
-		void readControlMode();
+		Control_Mode readControlMode();
 
 		void writeVelocityControlMode();
 
 		void writeVelocitySetpoint(float velPoint, float currentFF);
 
-		void readVelocitySetpoint();
+		float readVelocitySetpoint();
 
 		void writeCurrentLimit(float limit);
 
-		void readCurrentLimit();
+		float readCurrentLimit();
 
 		void writeVelocityLimit(float limit);
 
-		void readVelocityLimit();
+		float readVelocityLimit();
 
 		void writeCurrentCalibration(float limit);
 
-		void readCurrentCalibration();
+		float readCurrentCalibration();
 
 		void writeBrakeResistance(float bResist);
 
-		void readBrakeResistance();
+		float readBrakeResistance();
 
 		void writePolePairs(int32_t pairs);
 
-		void readPolePairs();
+		int32_t readPolePairs();
 
 		void writeEncoderCPR(float cpr);
 
-		void readEncoderCPR();
+		float readEncoderCPR();
 
 		void writeVelocityRampEnable(bool state);
 
-		void readVelocityRampEnable();
+		bool readVelocityRampEnable();
 
 		void writeVelocityRampRate(float rRate);
 
-		void readVelocityRampRate();
+		float readVelocityRampRate();
 
 		void writeCurrentSetPoint(float point);
 
 		void writeVelocityRampTarget(float target);
 
-		void readVelocityRampTarget();
+		float readVelocityRampTarget();
 
 		void writeCPRSetpoint(bool state);
 
 		void writeWatchdogTimeout(int32_t time);
 
-		void readWatchdogTimeout();
+		int32_t readWatchdogTimeout();
 
 		void writeState(Axis_State state);
 		

@@ -2,7 +2,7 @@
 
 RovesODrive Drive1(&Serial7);
 String target;
-float posEst, tvLimit, trapAPC, taLimit, tdLimit, vGain, pGain, viGain; 
+float posEst, tvLimit, trapAPC, taLimit, tdLimit, vGain, pGain, viGain, vSetPoint; 
 int command, pos1, pos2, pos3, vel1, vel2;
 
 Axis_State state;
@@ -54,6 +54,7 @@ void loop()
         {
             Serial.println("Rebooting");
             Drive1.motor[0].reboot();
+            Serial.println("Done");
         }
 
         else if (target == "pestimate")
@@ -62,6 +63,7 @@ void loop()
             posEst =  Drive1.motor[0].readPosEstimate();
             Serial.println(posEst);
             posEst = 0;
+            Serial.println("Done");
         }
 
         else if(target == "loop")
@@ -359,6 +361,7 @@ void loop()
             Serial.println("Saving Configuration...");
             Serial.println("Rebooting");
             Drive1.motor[0].saveConfig();
+            Serial.println("Done");
         }
 
         else if (target == "eraseConfig")
@@ -366,6 +369,7 @@ void loop()
             Serial.println("Erasing Configuration...");
             Serial.println("Rebooting");
             Drive1.motor[0].eraseConfig();
+            Serial.println("Done");
         }
 
         else if (target == "p")
@@ -405,9 +409,13 @@ void loop()
 
             Serial.println("Setting Position Set Point...");
             Drive1.motor[0].writePosSetPoint(pos1, pos2, pos3);
+            pos1 = 0;
+            pos2 = 0;
+            pos3 = 0;
+            Serial.println("Done");
         }
 
-        else if (target == "trapVLimit")
+        else if (target == "wTrapVLimit")
         {
             Serial.println("Enter Trap Velocity Limit");
             target = "";
@@ -421,14 +429,24 @@ void loop()
 
             Serial.println("Setting Trap Velocity Limit...");
             tvLimit = target.toFloat();
-            Serial.println(tvLimit);
-
             Drive1.motor[0].writeTrapVelocityLimit(tvLimit);
+            
+            Serial.println(tvLimit);
+            tvLimit = 0;
             Serial.println("Done");
 
         }
 
-        else if (target == "trapALimit")
+        else if(target == "rTrapVLimit")
+        {
+            Serial.println("Requesting Trap Velocity Limit...");
+            tvLimit = Drive1.motor[0].readTrapVelocityLimit();
+            Serial.println(tvLimit);
+            tvLimit = 0;
+            Serial.println("Done");
+        }
+
+        else if (target == "wTrapALimit")
         {
             Serial.println("Enter Trap Acceleration Limit");
             while (!Serial.available()); 
@@ -443,9 +461,20 @@ void loop()
             Serial.println("Setting Trap Acceleration Limit...");
             taLimit = target.toFloat();
             Drive1.motor[0].writeTrapAccelerationLimit(taLimit);
+            taLimit = 0;
+            Serial.println("Done");
         }
 
-        else if (target == "trapDLimit")
+        else if (target == "rTrapALimit")
+        {
+            Serial.println("Requesting Trap Acceleration Limit...");
+            taLimit = Drive1.motor[0].readTrapAccelerationLimit();
+            Serial.println(taLimit);
+            taLimit = 0;
+            Serial.println("Done");
+        }
+
+        else if (target == "wTrapDLimit")
         {
             Serial.println("Enter Trap Deceleration Limit");
             target = "";
@@ -460,9 +489,20 @@ void loop()
             Serial.println("Setting Trap Deceleration Limit...");
             tdLimit = target.toFloat();
             Drive1.motor[0].writeTrapDecelerationLimit(tdLimit);
-        }        
+            tdLimit = 0;
+            Serial.println("Done");
+        }       
 
-        else if (target == "trapAPC")
+        else if(target == "rTrapDLimit") 
+        {
+            Serial.println("Requesting Trap Deceleration Limit...");
+            tdLimit = Drive1.motor[0].readTrapDecelerationLimit();
+            Serial.println(tdLimit);
+            tdLimit = 0;
+            Serial.println("Done");
+        }
+
+        else if (target == "wTrapAPC")
         {
             Serial.println("Enter Trap Acceleration Per Counts");
             target = "";
@@ -477,18 +517,33 @@ void loop()
             Serial.println("Setting Trap Acceleration Per Counts...");
             trapAPC = target.toFloat();
             Drive1.motor[0].writeTrapAccelerationPerCounts(trapAPC);
+            trapAPC = 0;
+            Serial.println("Done");
+        }
+
+        else if(target == "rTrapAPC")
+        {
+            Serial.println("Requesting Trap Acceleration Per Counts...");
+            trapAPC = Drive1.motor[0].readTrapAccelerationPerCounts();
+            Serial.println(trapAPC);
+            trapAPC = 0;
+            Serial.println("Done");
         }
 
         else if (target == "rControlMode")
         {
             Serial.println("Requesting Control Mode...");
-            Drive1.motor[0].readControlMode();
+            crtlMode = Drive1.motor[0].readControlMode();
+            Serial.println(crtlMode);
+            crtlMode = CTRL_MODE_POSITION_CONTROL;
+            Serial.println("Done");
         }
 
         else if (target == "wControlMode")
         {
             Serial.println("Enter Control Mode");
             target = "";
+            while (!Serial.available());
             while (Serial.available()) 
             {
                 char c = Serial.read();  
@@ -499,12 +554,17 @@ void loop()
             Serial.println("Setting Control Mode...");
             crtlMode = (Control_Mode)target.toInt();
             Drive1.motor[0].writeControlMode(crtlMode);
+            crtlMode = CTRL_MODE_POSITION_CONTROL;
+            Serial.println("Done");
         }
 
         else if (target == "rState")
         {
             Serial.println("Requesting State...");
-            Drive1.motor[0].readState();
+            state = Drive1.motor[0].readState();
+            Serial.println(state);
+            state = AXIS_STATE_IDLE;
+            Serial.println("Done");
         }
 
         else if (target == "wState")
@@ -522,6 +582,8 @@ void loop()
             Serial.println("Setting State...");
             state = (Axis_State)target.toInt();
             Drive1.motor[0].writeState(state);
+            state = AXIS_STATE_IDLE;
+            Serial.println("Done");
         }
 
         else if(target == "vGain")
@@ -539,15 +601,19 @@ void loop()
             Serial.println("Setting Velocity Gain...");
             Serial.println(target);
             vGain = target.toFloat();
-            Serial.println(vGain, 6);
-
             Drive1.motor[0].writeVelocityGain(vGain);
+            Serial.println(vGain);
+            vGain = 0;
+            Serial.println("Done");
         }
 
         else if (target == "rvGain")
         {
             Serial.println("Reading Velocity Gain...");
-            Drive1.motor[0].readVelocityGain();
+            vGain = Drive1.motor[0].readVelocityGain();
+            Serial.println(vGain);
+            vGain = 0;
+            Serial.println("Done");
         }
 
         else if (target == "pGain")
@@ -566,12 +632,17 @@ void loop()
             Serial.println(target);
             pGain = target.toFloat();
             Drive1.motor[0].writePositionGain(pGain);
+            pGain = 0;
+            Serial.println("Done");
         }
 
         else if (target == "rpGain")
         {
             Serial.println("Reading Position Gain...");
-            Drive1.motor[0].readPositionGain();
+            pGain = Drive1.motor[0].readPositionGain();
+            Serial.println(pGain);
+            pGain = 0;
+            Serial.println("Done");
         }
 
         else if (target == "viGain")
@@ -590,12 +661,17 @@ void loop()
             Serial.println(target);
             viGain = target.toFloat();
             Drive1.motor[0].writeVelocityIntegratorGain(viGain);
+            viGain = 0;
+            Serial.println("Done");
         }
 
         else if(target == "rviGain")
         {
             Serial.println("Reading Velocity Integrator Gain...");
-            Drive1.motor[0].readVelocityIntegratorGain();
+            viGain = Drive1.motor[0].readVelocityIntegratorGain();
+            Serial.println(viGain);
+            viGain = 0;
+            Serial.println("Done");
         }
 
         else if(target == "velSetP")
@@ -623,12 +699,18 @@ void loop()
             vel2 = target.toInt();
             Serial.println("Setting Velocity Set Point...");
             Drive1.motor[0].writeVelocitySetpoint(vel1, vel2);
+            vel1 = 0;
+            vel2 = 0;
+            Serial.println("Done");
         }
 
         else if(target == "rVelP")
         {
             Serial.println("Reading Velocity Setpoint...");
-            Drive1.motor[0].readVelocitySetpoint();
+            vSetPoint = Drive1.motor[0].readVelocitySetpoint();
+            Serial.println(vSetPoint);
+            vSetPoint = 0;
+            Serial.println("Done");
         }
 
         else 
@@ -637,6 +719,8 @@ void loop()
 
             Serial.println("Setting Trap Target...");
             Drive1.motor[0].writeTrapTarget(command);
+            command = 0;
+            Serial.println("Done");
         }
         target = "";
     }
