@@ -24,7 +24,6 @@
 #define WATCHDOG						"config.watchdog_timeout"				//int
 
 //Controller
-#define MOVE_TO_POS						"controller.move_to_pos"				//float
 #define VELOCITY_RAMP_ENABLE			"controller.vel_ramp_enable"			//bool
 #define VELOCITY_RAMP_RATE				"controller.config.vel_ramp_rate"		//float
 #define VELOCITY_RAMP_TARGET			"controller.vel_ramp_target"			//float
@@ -151,7 +150,10 @@ enum Serial_Status
 //Serial Command and Config
 void writeODriveConfig(HardwareSerial* mySerial, bool write_read, char* id, char* param, uint8_t axis);
 
+void writeODriveConfig(HardwareSerial* mySerial, bool write_read, char* id, float& param, uint8_t axis);
+
 void writeODriveCommand(HardwareSerial* mySerial, char* id, char* param1, char* param2, char* param3, uint8_t axis);
+
 
 class RovesODriveMotor 
 {
@@ -181,10 +183,6 @@ class RovesODriveMotor
 		String getSerial();
 
 		void eraseConfig();
-
-		void moveIncremental(float incr);
-
-		void moveToPos(float pos);
 
 		void writeTrapVelocityLimit(float limit);
 

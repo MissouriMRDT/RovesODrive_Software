@@ -13,7 +13,24 @@ void writeODriveConfig(HardwareSerial* mySerial, bool write_read, char* id, char
 
 	sprintf(output, "%s%s %s\n", output, id, param);
 	mySerial->write(output);
+	return;
+
 }
+
+void writeODriveConfig(HardwareSerial* mySerial, bool write_read, char* id, float& param, uint8_t axis)
+{
+	char output[MAX_STRING_CHARS];
+
+	sprintf(output, "%s ", (write_read == WRITE)? "w":"r");
+
+	sprintf(output, "%s%s%d.", output, "axis", axis);
+
+	sprintf(output, "%s%s %f\n", output, id, param);
+	mySerial->write(output);
+	return;
+
+}
+
 
 void writeODriveCommand(HardwareSerial* mySerial, char* id, char* param1, char* param2, char* param3, uint8_t axis) //TODO: add two additional parameters for commands
 {
@@ -94,9 +111,13 @@ Control_Mode RovesODriveMotor::readControlMode()
 
 void RovesODriveMotor::writeTrapVelocityLimit(float limit)
 {
-	char data[12];
-	floatToChar(data, limit, 12);
-	writeODriveConfig(m_serial, WRITE, TRAP_VELOCITY_LIMIT , data, motor_number);
+	//m_serial->write("w axis0.trap_traj.config.vel_limit 22000.0 \n");
+	//char data[6];
+	//floatToChar(data, limit, 6);
+	//m_serial->write("w axis0.controller.config.vel_limit 22000.0\n");
+	//saveConfig();
+	writeODriveConfig(m_serial, WRITE, TRAP_VELOCITY_LIMIT , limit, motor_number);
+	//Serial.println("Done with function");
 }
 
 float RovesODriveMotor::readTrapVelocityLimit()
@@ -399,20 +420,6 @@ float RovesODriveMotor::readEncoderCPR()
 	writeODriveConfig(m_serial, READ, CPR, "", motor_number);
 	enCPR = getSerial();
 	return enCPR.toFloat();
-}
-
-void RovesODriveMotor::moveToPos(float pos) // moves the motor to an absolute positon
-{
-	char data[12];
-	floatToChar(data, pos, 12);
-	writeODriveConfig(m_serial, WRITE, MOVE_TO_POS, data, motor_number);
-}
-
-void RovesODriveMotor::moveIncremental(float incr) // moves the motor to a positon based off its current position
-{
-	char data[12];
-	floatToChar(data, incr, 12);
-	writeODriveConfig(m_serial, WRITE, MOVE_TO_POS, data, motor_number);
 }
 
 void RovesODriveMotor::writeVelocityRampRate(float rRate)
