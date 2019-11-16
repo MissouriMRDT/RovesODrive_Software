@@ -21,11 +21,15 @@ void writeODriveConfig(HardwareSerial* mySerial, bool write_read, char* id, floa
 {
 	char output[MAX_STRING_CHARS];
 
+	char data[20];
+
+	floatToChar(data, param, 4);
+
 	sprintf(output, "%s ", (write_read == WRITE)? "w":"r");
 
 	sprintf(output, "%s%s%d.", output, "axis", axis);
 
-	sprintf(output, "%s%s %f\n", output, id, param);
+	sprintf(output, "%s%s %s\n", output, id, data);
 	mySerial->write(output);
 	return;
 

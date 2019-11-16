@@ -65,6 +65,7 @@ void boolToChar(char* output, bool value)
 	sprintf(output, "%d", value);
 }
 
+//size of output should be sizeof(int) + precision * sizeof(int)
 void floatToChar(char* output, float value, uint8_t precision)
 {
 	float frac_part, int_part;
