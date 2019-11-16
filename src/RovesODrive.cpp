@@ -111,13 +111,7 @@ Control_Mode RovesODriveMotor::readControlMode()
 
 void RovesODriveMotor::writeTrapVelocityLimit(float limit)
 {
-	//m_serial->write("w axis0.trap_traj.config.vel_limit 22000.0 \n");
-	//char data[6];
-	//floatToChar(data, limit, 6);
-	//m_serial->write("w axis0.controller.config.vel_limit 22000.0\n");
-	//saveConfig();
 	writeODriveConfig(m_serial, WRITE, TRAP_VELOCITY_LIMIT , limit, motor_number);
-	//Serial.println("Done with function");
 }
 
 float RovesODriveMotor::readTrapVelocityLimit()
@@ -130,9 +124,7 @@ float RovesODriveMotor::readTrapVelocityLimit()
 
 void RovesODriveMotor::writeTrapAccelerationLimit(float limit)
 {
-	char data[12];
-	floatToChar(data, limit, 12);
-	writeODriveConfig(m_serial, WRITE, TRAP_ACCELERATION_LIMIT, data, motor_number);
+	writeODriveConfig(m_serial, WRITE, TRAP_ACCELERATION_LIMIT, limit, motor_number);
 }
 
 float RovesODriveMotor::readTrapAccelerationLimit()
@@ -145,9 +137,7 @@ float RovesODriveMotor::readTrapAccelerationLimit()
 
 void RovesODriveMotor::writeTrapDecelerationLimit(float limit )
 {
-	char data[12];
-	floatToChar(data, limit, 12);
-	writeODriveConfig(m_serial, WRITE, TRAP_DECELERATION_LIMIT , data, motor_number);
+	writeODriveConfig(m_serial, WRITE, TRAP_DECELERATION_LIMIT , limit, motor_number);
 }
 
 float RovesODriveMotor::readTrapDecelerationLimit()
@@ -160,9 +150,7 @@ float RovesODriveMotor::readTrapDecelerationLimit()
 
 void RovesODriveMotor::writeTrapAccelerationPerCounts(float limit )
 {
-	char data[12];
-	floatToChar(data, limit, 12);
-	writeODriveConfig(m_serial, WRITE, TRAP_ACCELERATION_PER_COUNTS , data, motor_number);
+	writeODriveConfig(m_serial, WRITE, TRAP_ACCELERATION_PER_COUNTS , limit, motor_number);
 }
 
 float RovesODriveMotor::readTrapAccelerationPerCounts()
@@ -267,9 +255,7 @@ String* RovesODriveMotor::checkAllErrors()
 
 void RovesODriveMotor::writeVelocityGain(float target)
 {
-	char data[12];
-	floatToChar(data, target, 12);
-	writeODriveConfig(m_serial, WRITE, VELOCITY_GAIN, data, motor_number);
+	writeODriveConfig(m_serial, WRITE, VELOCITY_GAIN, target, motor_number);
 }
 
 float RovesODriveMotor::readVelocityGain()
@@ -282,9 +268,7 @@ float RovesODriveMotor::readVelocityGain()
 
 void RovesODriveMotor::writePositionGain(float target)
 {
-	char data[12];
-	floatToChar(data, target, 12);
-	writeODriveConfig(m_serial, WRITE, POSITION_GAIN, data, motor_number);
+	writeODriveConfig(m_serial, WRITE, POSITION_GAIN, target, motor_number);
 }
 
 float RovesODriveMotor::readPositionGain()
@@ -297,9 +281,7 @@ float RovesODriveMotor::readPositionGain()
 
 void RovesODriveMotor::writeVelocityIntegratorGain(float target)
 {
-	char data[12];
-	floatToChar(data, target, 12);
-	writeODriveConfig(m_serial, WRITE, VELOCITY_iNTEGRATOR_GAIN, data, motor_number);
+	writeODriveConfig(m_serial, WRITE, VELOCITY_iNTEGRATOR_GAIN, target, motor_number);
 }
 
 float RovesODriveMotor::readVelocityIntegratorGain()
@@ -334,9 +316,7 @@ float RovesODriveMotor::readVelocitySetpoint()
 
 void RovesODriveMotor::writeCurrentLimit(float limit)
 {
-	char data[12];
-	floatToChar(data, limit, 12);
-	writeODriveConfig(m_serial, WRITE, CURRENT_LIMIT, data, motor_number);
+	writeODriveConfig(m_serial, WRITE, CURRENT_LIMIT, limit, motor_number);
 }
 
 float RovesODriveMotor::readCurrentLimit()
@@ -349,9 +329,7 @@ float RovesODriveMotor::readCurrentLimit()
 
 void RovesODriveMotor::writeVelocityLimit(float limit)
 {
-	char data[12];
-	floatToChar(data, limit, 12);
-	writeODriveConfig(m_serial, WRITE, VELOCITY_LIMIT, data, motor_number);
+	writeODriveConfig(m_serial, WRITE, VELOCITY_LIMIT, limit, motor_number);
 }
 
 float RovesODriveMotor::readVelocityLimit()
@@ -364,9 +342,7 @@ float RovesODriveMotor::readVelocityLimit()
 
 void RovesODriveMotor::writeCurrentCalibration(float limit)
 {
-	char data[12];
-	floatToChar(data, limit, 12);
-	writeODriveConfig(m_serial, WRITE, CALIBRATION_CURRENT, data, motor_number);
+	writeODriveConfig(m_serial, WRITE, CALIBRATION_CURRENT, limit, motor_number);
 }
 
 float RovesODriveMotor::readCurrentCalibration()
@@ -379,9 +355,7 @@ float RovesODriveMotor::readCurrentCalibration()
 
 void RovesODriveMotor::writeBrakeResistance(float bResist)
 {
-	char data[12];
-	floatToChar(data, bResist, 12);
-	writeODriveConfig(m_serial, WRITE, BRAKE_RESISTANCE, data, motor_number);
+	writeODriveConfig(m_serial, WRITE, BRAKE_RESISTANCE, bResist, motor_number);
 }
 
 float RovesODriveMotor::readBrakeResistance()
@@ -409,9 +383,7 @@ int32_t RovesODriveMotor::readPolePairs()
 
 void RovesODriveMotor::writeEncoderCPR(float cpr)
 {
-	char data[12];
-	floatToChar(data, cpr, 12);
-	writeODriveConfig(m_serial, WRITE, CPR, data, motor_number);
+	writeODriveConfig(m_serial, WRITE, CPR, cpr, motor_number);
 }
 
 float RovesODriveMotor::readEncoderCPR()
@@ -424,9 +396,7 @@ float RovesODriveMotor::readEncoderCPR()
 
 void RovesODriveMotor::writeVelocityRampRate(float rRate)
 {
-	char data[12];
-	floatToChar(data, rRate, 12);
-	writeODriveConfig(m_serial, WRITE, VELOCITY_RAMP_RATE, data, motor_number);
+	writeODriveConfig(m_serial, WRITE, VELOCITY_RAMP_RATE, rRate, motor_number);
 }
 
 float RovesODriveMotor::readVelocityRampRate()
@@ -446,10 +416,8 @@ void RovesODriveMotor::writeCurrentSetPoint(float point)
 
 void RovesODriveMotor::writeVelocityRampTarget(float target)
 {
-	char data[12];
-	floatToChar(data, target, 12);
 	writeVelocityRampEnable(true);
-	writeODriveConfig(m_serial, WRITE, VELOCITY_RAMP_TARGET, data, motor_number);
+	writeODriveConfig(m_serial, WRITE, VELOCITY_RAMP_TARGET, target, motor_number);
 }
 
 float RovesODriveMotor::readVelocityRampTarget()
