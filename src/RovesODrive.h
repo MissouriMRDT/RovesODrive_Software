@@ -24,6 +24,7 @@
 #define WATCHDOG						"config.watchdog_timeout"				//int
 
 //Controller
+#define CURRENT_SETPOINT				"controller.current_setpoint"			//float
 #define VELOCITY_RAMP_ENABLE			"controller.vel_ramp_enable"			//bool
 #define VELOCITY_RAMP_RATE				"controller.config.vel_ramp_rate"		//float
 #define VELOCITY_RAMP_TARGET			"controller.vel_ramp_target"			//float
@@ -199,6 +200,8 @@ class RovesODriveMotor
 		void writeTrapAccelerationPerCounts(float limit);
 
 		float readTrapAccelerationPerCounts();
+
+		float readCurrentSetPoint();
 
 		void reboot();
 

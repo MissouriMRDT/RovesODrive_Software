@@ -418,6 +418,14 @@ void RovesODriveMotor::writeCurrentSetPoint(float point)
 	writeODriveCommand(m_serial, MOTOR_CURRENT, data, "", "", motor_number);
 }
 
+float RovesODriveMotor::readCurrentSetPoint()
+{
+	String cSP = "";
+	writeODriveConfig(m_serial, READ, CURRENT_SETPOINT, "", motor_number);
+	cSP = getSerial();
+	return cSP.toFloat();
+}
+
 void RovesODriveMotor::writeVelocityRampTarget(float target)
 {
 	writeVelocityRampEnable(true);

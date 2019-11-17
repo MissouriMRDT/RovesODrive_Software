@@ -2,8 +2,9 @@
 
 RovesODrive Drive1(&Serial7);
 String target;
-float posEst, tvLimit, trapAPC, taLimit, tdLimit, vGain, pGain, viGain, vSetPoint; 
-int command, pos1, pos2, pos3, vel1, vel2;
+float posEst, tvLimit, trapAPC, taLimit, tdLimit, vGain, pGain, viGain, vSetPoint, cLimit, vLimit, cCal, bRes, eCPR, vRR, cSP, vRT, wT, cprSP; 
+int command, pos1, pos2, pos3, vel1, vel2, pPairs;
+bool vRE = false;
 
 Axis_State state;
 Control_Mode crtlMode;
@@ -710,6 +711,362 @@ void loop()
             vSetPoint = Drive1.motor[0].readVelocitySetpoint();
             Serial.println(vSetPoint);
             vSetPoint = 0;
+            Serial.println("Done");
+        }
+
+        else if(target == "vCtrlM")
+        {
+            Serial.println("Setting Velocity Control Mode...");
+            Drive1.motor[0].writeVelocityControlMode();
+            Serial.println("Done");
+        }
+
+        else if (target == "wCL")
+        {
+            Serial.println("Enter Current Limit");
+            target = "";
+            while (!Serial.available()); 
+            while (Serial.available()) 
+            {
+                char c = Serial.read();  
+                target += c; 
+                delay(2);  
+            }
+
+            Serial.println("Setting Current Limit...");
+            Serial.println(target);
+            cLimit = target.toFloat();
+            Drive1.motor[0].writeCurrentLimit(cLimit);
+            cLimit = 0;
+            Serial.println("Done");
+        }
+
+        else if(target == "rCL")
+        {
+            Serial.println("Reading Current Limit...");
+            cLimit = Drive1.motor[0].readCurrentLimit();
+            Serial.println(cLimit);
+            cLimit = 0;
+            Serial.println("Done");
+        }
+
+        else if (target == "wVL")
+        {
+            Serial.println("Enter Velocity Limit");
+            target = "";
+            while (!Serial.available()); 
+            while (Serial.available()) 
+            {
+                char c = Serial.read();  
+                target += c; 
+                delay(2);  
+            }
+
+            Serial.println("Setting Velocity Limit...");
+            Serial.println(target);
+            vLimit = target.toFloat();
+            Drive1.motor[0].writeVelocityLimit(vLimit);
+            vLimit = 0;
+            Serial.println("Done");
+        }
+
+        else if(target == "rVL")
+        {
+            Serial.println("Reading Velocity Limit...");
+            vLimit = Drive1.motor[0].readVelocityLimit();
+            Serial.println(vLimit);
+            vLimit = 0;
+            Serial.println("Done");
+        }
+
+        else if (target == "wCC")
+        {
+            Serial.println("Enter Current Calibration");
+            target = "";
+            while (!Serial.available()); 
+            while (Serial.available()) 
+            {
+                char c = Serial.read();  
+                target += c; 
+                delay(2);  
+            }
+
+            Serial.println("Setting Current Calibration...");
+            Serial.println(target);
+            cCal = target.toFloat();
+            Drive1.motor[0].writeCurrentCalibration(cCal);
+            cCal = 0;
+            Serial.println("Done");
+        }
+
+        else if(target == "rCC")
+        {
+            Serial.println("Reading Current Calibration...");
+            cCal = Drive1.motor[0].readCurrentCalibration();
+            Serial.println(cCal);
+            cCal = 0;
+            Serial.println("Done");
+        }
+
+        else if (target == "wBR") // does not work 
+        {
+            Serial.println("Enter Brake Resistance");
+            target = "";
+            while (!Serial.available()); 
+            while (Serial.available()) 
+            {
+                char c = Serial.read();  
+                target += c; 
+                delay(2);  
+            }
+
+            Serial.println("Setting Brake Resistance...");
+            Serial.println(target);
+            bRes = target.toFloat();
+            Drive1.motor[0].writeBrakeResistance(bRes);
+            bRes = 0;
+            Serial.println("Done");
+        }
+
+        else if(target == "rBR")
+        {
+            Serial.println("Reading Brake Resistance...");
+            bRes = Drive1.motor[0].readBrakeResistance();
+            Serial.println(bRes);
+            bRes = 0;
+            Serial.println("Done");
+        }
+
+        else if (target == "wPP")
+        {
+            Serial.println("Enter Pole Pairs");
+            target = "";
+            while (!Serial.available()); 
+            while (Serial.available()) 
+            {
+                char c = Serial.read();  
+                target += c; 
+                delay(2);  
+            }
+
+            Serial.println("Setting Pole Pairs...");
+            Serial.println(target);
+            pPairs = target.toFloat();
+            Drive1.motor[0].writePolePairs(pPairs);
+            pPairs = 0;
+            Serial.println("Done");
+        }
+
+        else if(target == "rPP")
+        {
+            Serial.println("Reading Pole Pairs...");
+            pPairs = Drive1.motor[0].readPolePairs();
+            Serial.println(pPairs);
+            pPairs = 0;
+            Serial.println("Done");
+        }
+
+        else if (target == "wECPR")
+        {
+            Serial.println("Enter Encoder CPR");
+            target = "";
+            while (!Serial.available()); 
+            while (Serial.available()) 
+            {
+                char c = Serial.read();  
+                target += c; 
+                delay(2);  
+            }
+
+            Serial.println("Setting Encoder CPR...");
+            Serial.println(target);
+            eCPR = target.toFloat();
+            Drive1.motor[0].writeEncoderCPR(eCPR);
+            eCPR = 0;
+            Serial.println("Done");
+        }
+
+        else if(target == "rECPR")
+        {
+            Serial.println("Reading Encoder CPR...");
+            eCPR = Drive1.motor[0].readEncoderCPR();
+            Serial.println(eCPR);
+            eCPR = 0;
+            Serial.println("Done");
+        }
+
+        else if (target == "wVRR")
+        {
+            Serial.println("Enter Velocity RR");
+            target = "";
+            while (!Serial.available()); 
+            while (Serial.available()) 
+            {
+                char c = Serial.read();  
+                target += c; 
+                delay(2);  
+            }
+
+            Serial.println("Setting Velocity RR...");
+            Serial.println(target);
+            vRR = target.toFloat();
+            Drive1.motor[0].writeVelocityRampRate(vRR);
+            vRR = 0;
+            Serial.println("Done");
+        }
+
+        else if(target == "rVRR")
+        {
+            Serial.println("Reading Velocity RR...");
+            vRR = Drive1.motor[0].readVelocityRampRate();
+            Serial.println(vRR);
+            vRR = 0;
+            Serial.println("Done");
+        }
+
+        else if (target == "wCSP")
+        {
+            Serial.println("Enter Current SetPoint");
+            target = "";
+            while (!Serial.available()); 
+            while (Serial.available()) 
+            {
+                char c = Serial.read();  
+                target += c; 
+                delay(2);  
+            }
+
+            Serial.println("Setting Current SetPoint...");
+            Serial.println(target);
+            cSP = target.toFloat();
+            Drive1.motor[0].writeCurrentSetPoint(cSP);
+            cSP = 0;
+            Serial.println("Done");
+        }
+
+        else if(target == "rCSP")
+        {
+            Serial.println("Reading Current SetPoint...");
+            cSP = Drive1.motor[0].readCurrentSetPoint();
+            Serial.println(cSP);
+            cSP = 0;
+            Serial.println("Done");
+        }
+
+        else if (target == "wVRT")
+        {
+            Serial.println("Enter Velocity Ramp Target");
+            target = "";
+            while (!Serial.available()); 
+            while (Serial.available()) 
+            {
+                char c = Serial.read();  
+                target += c; 
+                delay(2);  
+            }
+
+            Serial.println("Setting Velocity Ramp Target...");
+            Serial.println(target);
+            vRT = target.toFloat();
+            Drive1.motor[0].writeVelocityRampTarget(vRT);
+            vRT = 0;
+            Serial.println("Done");
+        }
+
+        else if(target == "rVRT")
+        {
+            Serial.println("Reading Velocity Ramp Target...");
+            vRT = Drive1.motor[0].readVelocityRampTarget();
+            Serial.println(vRT);
+            vRT = 0;
+            Serial.println("Done");
+        }
+
+        else if (target == "wVRE") // I do not know why I have this
+        {
+            Serial.println("Enter Velocity Ramp Enable");
+            target = "";
+            while (!Serial.available()); 
+            while (Serial.available()) 
+            {
+                char c = Serial.read();  
+                target += c; 
+                delay(2);  
+            }
+
+            Serial.println("Setting Velocity Ramp Enable...");
+            Serial.println(target);
+            if (target != "")
+                vRE = true;
+            Drive1.motor[0].writeVelocityRampEnable(vRE);
+            vRE = false;
+            Serial.println("Done");
+        }
+
+        else if(target == "rVRE")
+        {
+            Serial.println("Reading Velocity Ramp Enable...");
+            vRE = Drive1.motor[0].readVelocityRampEnable();
+            Serial.println(vRE);
+            vRE = false;
+            Serial.println("Done");
+        }
+
+        else if (target == "wWT")
+        {
+            Serial.println("Enter Watchdog Timeout");
+            target = "";
+            while (!Serial.available()); 
+            while (Serial.available()) 
+            {
+                char c = Serial.read();  
+                target += c; 
+                delay(2);  
+            }
+
+            Serial.println("Setting Watchdog Timeout...");
+            Serial.println(target);
+            wT = target.toFloat();
+            Drive1.motor[0].writeWatchdogTimeout(wT);
+            wT = 0;
+            Serial.println("Done");
+        }
+
+        else if(target == "rWT")
+        {
+            Serial.println("Reading Watchdog Timeout...");
+            wT = Drive1.motor[0].readWatchdogTimeout();
+            Serial.println(wT);
+            wT = 0;
+            Serial.println("Done");
+        }
+
+        else if (target == "wCPRSP")
+        {
+            Serial.println("Enter CPR SetPoint");
+            target = "";
+            while (!Serial.available()); 
+            while (Serial.available()) 
+            {
+                char c = Serial.read();  
+                target += c; 
+                delay(2);  
+            }
+
+            Serial.println("Setting CPR SetPoint...");
+            Serial.println(target);
+            cprSP = target.toFloat();
+            Drive1.motor[0].writeCPRSetpoint(cprSP);
+            cprSP = 0;
+            Serial.println("Done");
+        }
+
+        else if(target == "rPCPR")
+        {
+            Serial.println("Reading Position CPR...");
+            cprSP = Drive1.motor[0].readPosCPR();
+            Serial.println(cprSP);
+            cprSP = 0;
             Serial.println("Done");
         }
 
