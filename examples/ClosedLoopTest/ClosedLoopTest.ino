@@ -54,14 +54,14 @@ void loop()
         if (target == "reboot")
         {
             Serial.println("Rebooting");
-            Drive1.motor[0].reboot();
+            Drive1.left.reboot();
             Serial.println("Done");
         }
 
         else if (target == "pestimate")
         {
             Serial.println("Requesting Position Estimate...");
-            posEst =  Drive1.motor[0].readPosEstimate();
+            posEst =  Drive1.left.readPosEstimate();
             Serial.println(posEst);
             posEst = 0;
             Serial.println("Done");
@@ -72,16 +72,16 @@ void loop()
             Serial.println("We have initiated loop protocol");
             while(true)
             {
-                Drive1.motor[0].writePosSetPoint(-819315, 2, 0);
+                Drive1.left.writePosSetPoint(-819315, 2, 0);
                 do
                 {
-                    posEst = Drive1.motor[0].readPosEstimate();
+                    posEst = Drive1.left.readPosEstimate();
                 }while(posEst > (-819315+10000));
 
-                Drive1.motor[0].writePosSetPoint(819315, 2, 0);
+                Drive1.left.writePosSetPoint(819315, 2, 0);
                 do
                 {
-                    posEst = Drive1.motor[0].readPosEstimate();
+                    posEst = Drive1.left.readPosEstimate();
                 }while(posEst < (819315-10000));
             }
 
@@ -90,7 +90,7 @@ void loop()
         else if (target == "axisError")
         {
             Serial.println("Checking Axis Errors...");
-            axError =  Drive1.motor[0].checkAxisErrors();
+            axError =  Drive1.left.checkAxisErrors();
             switch (axError)
             {
             case 0:
@@ -100,70 +100,70 @@ void loop()
             case 1:
                 Serial.println("ERROR_INVALID_STATE");
                 Serial.println("Rebooting");
-                Drive1.motor[0].reboot();
+                Drive1.left.reboot();
                 axError = ERROR_NONE_A;
                 break;
 
             case 2:
                 Serial.println("ERROR_DC_BUS_UNDER_VOLTAGE");
                 Serial.println("Rebooting");
-                Drive1.motor[0].reboot();
+                Drive1.left.reboot();
                 axError = ERROR_NONE_A;
                 break;
 
             case 3:
                 Serial.println("ERROR_DC_BUS_OVER_VOLTAGE");
                 Serial.println("Rebooting");
-                Drive1.motor[0].reboot();
+                Drive1.left.reboot();
                 axError = ERROR_NONE_A;
                 break;
 
             case 4:
                 Serial.println("ERROR_CURRENT_MEASUREMENT_TIMEOUT");
                 Serial.println("Rebooting");
-                Drive1.motor[0].reboot();
+                Drive1.left.reboot();
                 axError = ERROR_NONE_A;
                 break;
 
             case 5:
                 Serial.println("ERROR_BRAKE_RESISTOR_DISARMED");
                 Serial.println("Rebooting");
-                Drive1.motor[0].reboot();
+                Drive1.left.reboot();
                 axError = ERROR_NONE_A;
                 break;
 
             case 6:
                 Serial.println("ERROR_MOTOR_DISARMED");
                 Serial.println("Rebooting");
-                Drive1.motor[0].reboot();
+                Drive1.left.reboot();
                 axError = ERROR_NONE_A;
                 break;
 
             case 7:
                 Serial.println("ERROR_MOTOR_FAILED");
                 Serial.println("Rebooting");
-                Drive1.motor[0].reboot();
+                Drive1.left.reboot();
                 axError = ERROR_NONE_A;
                 break;
 
             case 8:
                 Serial.println("ERROR_SENSORLESS_ESTIMATOR_FAILED");
                 Serial.println("Rebooting");
-                Drive1.motor[0].reboot();
+                Drive1.left.reboot();
                 axError = ERROR_NONE_A;
                 break;
 
             case 9:
                 Serial.println("ERROR_ENCODER_FAILED");
                 Serial.println("Rebooting");
-                Drive1.motor[0].reboot();
+                Drive1.left.reboot();
                 axError = ERROR_NONE_A;
                 break;
 
             case 10:
                 Serial.println("ERROR_CONTROLLER_FAILED");
                 Serial.println("Rebooting");
-                Drive1.motor[0].reboot();
+                Drive1.left.reboot();
                 axError = ERROR_NONE_A;
                 break;
             
@@ -175,7 +175,7 @@ void loop()
         else if (target == "motorError")
         {
             Serial.println("Checking Motor Errors");
-            mError =  Drive1.motor[0].checkMotorErrors();
+            mError =  Drive1.left.checkMotorErrors();
             switch (mError)
             {
             case 0:
@@ -185,91 +185,91 @@ void loop()
             case 1:
                 Serial.println("ERROR_PHASE_RESISTANCE_OUT_OF_RANGE");
                 Serial.println("Rebooting");
-                Drive1.motor[0].reboot();
+                Drive1.left.reboot();
                 mError = ERROR_NONE_M;
                 break;
 
             case 2:
                 Serial.println("ERROR_PHASE_INDUCTANCE_OUT_OF_RANGE");
                 Serial.println("Rebooting");
-                Drive1.motor[0].reboot();
+                Drive1.left.reboot();
                 mError = ERROR_NONE_M;
                 break;
 
             case 3:
                 Serial.println("ERROR_ADC_FAILED");
                 Serial.println("Rebooting");
-                Drive1.motor[0].reboot();
+                Drive1.left.reboot();
                 mError = ERROR_NONE_M;
                 break;
 
             case 4:
                 Serial.println("ERROR_DRV_FAULT");
                 Serial.println("Rebooting");
-                Drive1.motor[0].reboot();
+                Drive1.left.reboot();
                 mError = ERROR_NONE_M;
                 break;
 
             case 5:
                 Serial.println("ERROR_CONTROL_DEADLINE_MISSED");
                 Serial.println("Rebooting");
-                Drive1.motor[0].reboot();
+                Drive1.left.reboot();
                 mError = ERROR_NONE_M;
                 break;
 
             case 6:
                 Serial.println("ERROR_NOT_IMPLEMENTED_MOTOR_TYPE");
                 Serial.println("Rebooting");
-                Drive1.motor[0].reboot();
+                Drive1.left.reboot();
                 mError = ERROR_NONE_M;
                 break;
 
             case 7:
                 Serial.println("ERROR_BRAKE_CURRENT_OUT_OF_RANGE");
                 Serial.println("Rebooting");
-                Drive1.motor[0].reboot();
+                Drive1.left.reboot();
                 mError = ERROR_NONE_M;
                 break;
 
             case 8:
                 Serial.println("ERROR_MODULATION_MAGNITUDE");
                 Serial.println("Rebooting");
-                Drive1.motor[0].reboot();
+                Drive1.left.reboot();
                 mError = ERROR_NONE_M;
                 break;
 
             case 9:
                 Serial.println("ERROR_BRAKE_DEADTIME_VIOLATION");
                 Serial.println("Rebooting");
-                Drive1.motor[0].reboot();
+                Drive1.left.reboot();
                 mError = ERROR_NONE_M;
                 break;
 
             case 10:
                 Serial.println("ERROR_UNEXPECTED_TIMER_CALLBACK");
                 Serial.println("Rebooting");
-                Drive1.motor[0].reboot();
+                Drive1.left.reboot();
                 mError = ERROR_NONE_M;
                 break;
             
             case 11:
                 Serial.println("ERROR_CURRENT_SENSE_SATURATION");
                 Serial.println("Rebooting");
-                Drive1.motor[0].reboot();
+                Drive1.left.reboot();
                 mError = ERROR_NONE_M;
                 break;
 
             case 12:
                 Serial.println("ERROR_INVERTER_OVER_TEMP");
                 Serial.println("Rebooting");
-                Drive1.motor[0].reboot();
+                Drive1.left.reboot();
                 mError = ERROR_NONE_M;
                 break;
 
             case 13:
                 Serial.println("ERROR_CURRENT_UNSTABLE");
                 Serial.println("Rebooting");
-                Drive1.motor[0].reboot();
+                Drive1.left.reboot();
                 mError = ERROR_NONE_M;
                 break;
 
@@ -281,7 +281,7 @@ void loop()
         else if (target == "encoderError")
         {
             Serial.println("Checking Encoder Errors...");
-            enError =  Drive1.motor[0].checkEncoderErrors();
+            enError =  Drive1.left.checkEncoderErrors();
             switch (enError)
             {
             case 0:
@@ -291,42 +291,42 @@ void loop()
             case 1:
                 Serial.println("ERROR_UNSTABLE_GAIN");
                 Serial.println("Rebooting");
-                Drive1.motor[0].reboot();
+                Drive1.left.reboot();
                 enError = ERROR_NONE_E;
                 break;
 
             case 2:
                 Serial.println("ERROR_CPR_OUT_OF_RANGE");
                 Serial.println("Rebooting");
-                Drive1.motor[0].reboot();
+                Drive1.left.reboot();
                 enError = ERROR_NONE_E;
                 break;
 
             case 3:
                 Serial.println("ERROR_NO_RESPONSE");
                 Serial.println("Rebooting");
-                Drive1.motor[0].reboot();
+                Drive1.left.reboot();
                 enError = ERROR_NONE_E;
                 break;
 
             case 4:
                 Serial.println("ERROR_UNSUPPORTED_ENCODER_MODE");
                 Serial.println("Rebooting");
-                Drive1.motor[0].reboot();
+                Drive1.left.reboot();
                 enError = ERROR_NONE_E;
                 break;
 
             case 5:
                 Serial.println("ERROR_ILLEGAL_HALL_STATE");
                 Serial.println("Rebooting");
-                Drive1.motor[0].reboot();
+                Drive1.left.reboot();
                 enError = ERROR_NONE_E;
                 break;
 
             case 6:
                 Serial.println("ERROR_INDEX_NOT_FOUND_YET");
                 Serial.println("Rebooting");
-                Drive1.motor[0].reboot();
+                Drive1.left.reboot();
                 enError = ERROR_NONE_E;
                 break;
             
@@ -338,7 +338,7 @@ void loop()
         else if (target == "controllerError")
         {
             Serial.println("Checking Controller Errors");
-            cError =  Drive1.motor[0].checkControllerErrors();
+            cError =  Drive1.left.checkControllerErrors();
             switch (cError)
             {
             case 0:
@@ -348,7 +348,7 @@ void loop()
             case 1:
                 Serial.println("ERROR_OVERSPEED");
                 Serial.println("Rebooting");
-                Drive1.motor[0].reboot();
+                Drive1.left.reboot();
                 cError = ERROR_NONE_C;
                 break;
             
@@ -361,7 +361,7 @@ void loop()
         {
             Serial.println("Saving Configuration...");
             Serial.println("Rebooting");
-            Drive1.motor[0].saveConfig();
+            Drive1.left.saveConfig();
             Serial.println("Done");
         }
 
@@ -369,7 +369,7 @@ void loop()
         {
             Serial.println("Erasing Configuration...");
             Serial.println("Rebooting");
-            Drive1.motor[0].eraseConfig();
+            Drive1.left.eraseConfig();
             Serial.println("Done");
         }
 
@@ -409,7 +409,7 @@ void loop()
             pos3 = target.toInt();
 
             Serial.println("Setting Position Set Point...");
-            Drive1.motor[0].writePosSetPoint(pos1, pos2, pos3);
+            Drive1.left.writePosSetPoint(pos1, pos2, pos3);
             pos1 = 0;
             pos2 = 0;
             pos3 = 0;
@@ -430,7 +430,7 @@ void loop()
 
             Serial.println("Setting Trap Velocity Limit...");
             tvLimit = target.toFloat();
-            Drive1.motor[0].writeTrapVelocityLimit(tvLimit);
+            Drive1.left.writeTrapVelocityLimit(tvLimit);
             
             Serial.println(tvLimit);
             tvLimit = 0;
@@ -441,7 +441,7 @@ void loop()
         else if(target == "rTrapVLimit")
         {
             Serial.println("Requesting Trap Velocity Limit...");
-            tvLimit = Drive1.motor[0].readTrapVelocityLimit();
+            tvLimit = Drive1.left.readTrapVelocityLimit();
             Serial.println(tvLimit);
             tvLimit = 0;
             Serial.println("Done");
@@ -461,7 +461,7 @@ void loop()
 
             Serial.println("Setting Trap Acceleration Limit...");
             taLimit = target.toFloat();
-            Drive1.motor[0].writeTrapAccelerationLimit(taLimit);
+            Drive1.left.writeTrapAccelerationLimit(taLimit);
             taLimit = 0;
             Serial.println("Done");
         }
@@ -469,7 +469,7 @@ void loop()
         else if (target == "rTrapALimit")
         {
             Serial.println("Requesting Trap Acceleration Limit...");
-            taLimit = Drive1.motor[0].readTrapAccelerationLimit();
+            taLimit = Drive1.left.readTrapAccelerationLimit();
             Serial.println(taLimit);
             taLimit = 0;
             Serial.println("Done");
@@ -489,7 +489,7 @@ void loop()
 
             Serial.println("Setting Trap Deceleration Limit...");
             tdLimit = target.toFloat();
-            Drive1.motor[0].writeTrapDecelerationLimit(tdLimit);
+            Drive1.left.writeTrapDecelerationLimit(tdLimit);
             tdLimit = 0;
             Serial.println("Done");
         }       
@@ -497,7 +497,7 @@ void loop()
         else if(target == "rTrapDLimit") 
         {
             Serial.println("Requesting Trap Deceleration Limit...");
-            tdLimit = Drive1.motor[0].readTrapDecelerationLimit();
+            tdLimit = Drive1.left.readTrapDecelerationLimit();
             Serial.println(tdLimit);
             tdLimit = 0;
             Serial.println("Done");
@@ -517,7 +517,7 @@ void loop()
 
             Serial.println("Setting Trap Acceleration Per Counts...");
             trapAPC = target.toFloat();
-            Drive1.motor[0].writeTrapAccelerationPerCounts(trapAPC);
+            Drive1.left.writeTrapAccelerationPerCounts(trapAPC);
             trapAPC = 0;
             Serial.println("Done");
         }
@@ -525,7 +525,7 @@ void loop()
         else if(target == "rTrapAPC")
         {
             Serial.println("Requesting Trap Acceleration Per Counts...");
-            trapAPC = Drive1.motor[0].readTrapAccelerationPerCounts();
+            trapAPC = Drive1.left.readTrapAccelerationPerCounts();
             Serial.println(trapAPC);
             trapAPC = 0;
             Serial.println("Done");
@@ -534,7 +534,7 @@ void loop()
         else if (target == "rControlMode")
         {
             Serial.println("Requesting Control Mode...");
-            crtlMode = Drive1.motor[0].readControlMode();
+            crtlMode = Drive1.left.readControlMode();
             Serial.println(crtlMode);
             crtlMode = CTRL_MODE_POSITION_CONTROL;
             Serial.println("Done");
@@ -554,7 +554,7 @@ void loop()
 
             Serial.println("Setting Control Mode...");
             crtlMode = (Control_Mode)target.toInt();
-            Drive1.motor[0].writeControlMode(crtlMode);
+            Drive1.left.writeControlMode(crtlMode);
             crtlMode = CTRL_MODE_POSITION_CONTROL;
             Serial.println("Done");
         }
@@ -562,9 +562,9 @@ void loop()
         else if (target == "rState")
         {
             Serial.println("Requesting State...");
-            state = Drive1.motor[0].readState();
+            state = Drive1.left.readState();
             Serial.println(state);
-            state = AXIS_STATE_IDLE;
+            //state = AXIS_STATE_IDLE;
             Serial.println("Done");
         }
 
@@ -582,8 +582,8 @@ void loop()
 
             Serial.println("Setting State...");
             state = (Axis_State)target.toInt();
-            Drive1.motor[0].writeState(state);
-            state = AXIS_STATE_IDLE;
+            Drive1.left.writeState(state);
+            //state = AXIS_STATE_IDLE;
             Serial.println("Done");
         }
 
@@ -602,7 +602,7 @@ void loop()
             Serial.println("Setting Velocity Gain...");
             Serial.println(target);
             vGain = target.toFloat();
-            Drive1.motor[0].writeVelocityGain(vGain);
+            Drive1.left.writeVelocityGain(vGain);
             Serial.println(vGain);
             vGain = 0;
             Serial.println("Done");
@@ -611,7 +611,7 @@ void loop()
         else if (target == "rvGain")
         {
             Serial.println("Reading Velocity Gain...");
-            vGain = Drive1.motor[0].readVelocityGain();
+            vGain = Drive1.left.readVelocityGain();
             Serial.println(vGain);
             vGain = 0;
             Serial.println("Done");
@@ -632,7 +632,7 @@ void loop()
             Serial.println("Setting Position Gain...");
             Serial.println(target);
             pGain = target.toFloat();
-            Drive1.motor[0].writePositionGain(pGain);
+            Drive1.left.writePositionGain(pGain);
             pGain = 0;
             Serial.println("Done");
         }
@@ -640,7 +640,7 @@ void loop()
         else if (target == "rpGain")
         {
             Serial.println("Reading Position Gain...");
-            pGain = Drive1.motor[0].readPositionGain();
+            pGain = Drive1.left.readPositionGain();
             Serial.println(pGain);
             pGain = 0;
             Serial.println("Done");
@@ -661,7 +661,7 @@ void loop()
             Serial.println("Setting Velocity Integrator Gain...");
             Serial.println(target);
             viGain = target.toFloat();
-            Drive1.motor[0].writeVelocityIntegratorGain(viGain);
+            Drive1.left.writeVelocityIntegratorGain(viGain);
             viGain = 0;
             Serial.println("Done");
         }
@@ -669,7 +669,7 @@ void loop()
         else if(target == "rviGain")
         {
             Serial.println("Reading Velocity Integrator Gain...");
-            viGain = Drive1.motor[0].readVelocityIntegratorGain();
+            viGain = Drive1.left.readVelocityIntegratorGain();
             Serial.println(viGain);
             viGain = 0;
             Serial.println("Done");
@@ -699,16 +699,16 @@ void loop()
             }
             vel2 = target.toInt();
             Serial.println("Setting Velocity Set Point...");
-            Drive1.motor[0].writeVelocitySetpoint(vel1, vel2);
-            vel1 = 0;
-            vel2 = 0;
+            Drive1.left.writeVelocitySetpoint(vel1, vel2);
+            //vel1 = 0;
+            //vel2 = 0;
             Serial.println("Done");
         }
 
         else if(target == "rVelP")
         {
             Serial.println("Reading Velocity Setpoint...");
-            vSetPoint = Drive1.motor[0].readVelocitySetpoint();
+            vSetPoint = Drive1.left.readVelocitySetpoint();
             Serial.println(vSetPoint);
             vSetPoint = 0;
             Serial.println("Done");
@@ -717,7 +717,7 @@ void loop()
         else if(target == "vCtrlM")
         {
             Serial.println("Setting Velocity Control Mode...");
-            Drive1.motor[0].writeVelocityControlMode();
+            Drive1.left.writeVelocityControlMode();
             Serial.println("Done");
         }
 
@@ -736,7 +736,7 @@ void loop()
             Serial.println("Setting Current Limit...");
             Serial.println(target);
             cLimit = target.toFloat();
-            Drive1.motor[0].writeCurrentLimit(cLimit);
+            Drive1.left.writeCurrentLimit(cLimit);
             cLimit = 0;
             Serial.println("Done");
         }
@@ -744,7 +744,7 @@ void loop()
         else if(target == "rCL")
         {
             Serial.println("Reading Current Limit...");
-            cLimit = Drive1.motor[0].readCurrentLimit();
+            cLimit = Drive1.left.readCurrentLimit();
             Serial.println(cLimit);
             cLimit = 0;
             Serial.println("Done");
@@ -765,7 +765,7 @@ void loop()
             Serial.println("Setting Velocity Limit...");
             Serial.println(target);
             vLimit = target.toFloat();
-            Drive1.motor[0].writeVelocityLimit(vLimit);
+            Drive1.left.writeVelocityLimit(vLimit);
             vLimit = 0;
             Serial.println("Done");
         }
@@ -773,7 +773,7 @@ void loop()
         else if(target == "rVL")
         {
             Serial.println("Reading Velocity Limit...");
-            vLimit = Drive1.motor[0].readVelocityLimit();
+            vLimit = Drive1.left.readVelocityLimit();
             Serial.println(vLimit);
             vLimit = 0;
             Serial.println("Done");
@@ -794,7 +794,7 @@ void loop()
             Serial.println("Setting Current Calibration...");
             Serial.println(target);
             cCal = target.toFloat();
-            Drive1.motor[0].writeCurrentCalibration(cCal);
+            Drive1.left.writeCurrentCalibration(cCal);
             cCal = 0;
             Serial.println("Done");
         }
@@ -802,7 +802,7 @@ void loop()
         else if(target == "rCC")
         {
             Serial.println("Reading Current Calibration...");
-            cCal = Drive1.motor[0].readCurrentCalibration();
+            cCal = Drive1.left.readCurrentCalibration();
             Serial.println(cCal);
             cCal = 0;
             Serial.println("Done");
@@ -823,7 +823,7 @@ void loop()
             Serial.println("Setting Brake Resistance...");
             Serial.println(target);
             bRes = target.toFloat();
-            Drive1.motor[0].writeBrakeResistance(bRes);
+            Drive1.left.writeBrakeResistance(bRes);
             bRes = 0;
             Serial.println("Done");
         }
@@ -831,7 +831,7 @@ void loop()
         else if(target == "rBR")
         {
             Serial.println("Reading Brake Resistance...");
-            bRes = Drive1.motor[0].readBrakeResistance();
+            bRes = Drive1.left.readBrakeResistance();
             Serial.println(bRes);
             bRes = 0;
             Serial.println("Done");
@@ -852,7 +852,7 @@ void loop()
             Serial.println("Setting Pole Pairs...");
             Serial.println(target);
             pPairs = target.toFloat();
-            Drive1.motor[0].writePolePairs(pPairs);
+            Drive1.left.writePolePairs(pPairs);
             pPairs = 0;
             Serial.println("Done");
         }
@@ -860,7 +860,7 @@ void loop()
         else if(target == "rPP")
         {
             Serial.println("Reading Pole Pairs...");
-            pPairs = Drive1.motor[0].readPolePairs();
+            pPairs = Drive1.left.readPolePairs();
             Serial.println(pPairs);
             pPairs = 0;
             Serial.println("Done");
@@ -881,7 +881,7 @@ void loop()
             Serial.println("Setting Encoder CPR...");
             Serial.println(target);
             eCPR = target.toFloat();
-            Drive1.motor[0].writeEncoderCPR(eCPR);
+            Drive1.left.writeEncoderCPR(eCPR);
             eCPR = 0;
             Serial.println("Done");
         }
@@ -889,7 +889,7 @@ void loop()
         else if(target == "rECPR")
         {
             Serial.println("Reading Encoder CPR...");
-            eCPR = Drive1.motor[0].readEncoderCPR();
+            eCPR = Drive1.left.readEncoderCPR();
             Serial.println(eCPR);
             eCPR = 0;
             Serial.println("Done");
@@ -910,7 +910,7 @@ void loop()
             Serial.println("Setting Velocity RR...");
             Serial.println(target);
             vRR = target.toFloat();
-            Drive1.motor[0].writeVelocityRampRate(vRR);
+            Drive1.left.writeVelocityRampRate(vRR);
             vRR = 0;
             Serial.println("Done");
         }
@@ -918,7 +918,7 @@ void loop()
         else if(target == "rVRR")
         {
             Serial.println("Reading Velocity RR...");
-            vRR = Drive1.motor[0].readVelocityRampRate();
+            vRR = Drive1.left.readVelocityRampRate();
             Serial.println(vRR);
             vRR = 0;
             Serial.println("Done");
@@ -939,7 +939,7 @@ void loop()
             Serial.println("Setting Current SetPoint...");
             Serial.println(target);
             cSP = target.toFloat();
-            Drive1.motor[0].writeCurrentSetPoint(cSP);
+            Drive1.left.writeCurrentSetPoint(cSP);
             cSP = 0;
             Serial.println("Done");
         }
@@ -947,7 +947,7 @@ void loop()
         else if(target == "rCSP")
         {
             Serial.println("Reading Current SetPoint...");
-            cSP = Drive1.motor[0].readCurrentSetPoint();
+            cSP = Drive1.left.readCurrentSetPoint();
             Serial.println(cSP);
             cSP = 0;
             Serial.println("Done");
@@ -968,7 +968,7 @@ void loop()
             Serial.println("Setting Velocity Ramp Target...");
             Serial.println(target);
             vRT = target.toFloat();
-            Drive1.motor[0].writeVelocityRampTarget(vRT);
+            Drive1.left.writeVelocityRampTarget(vRT);
             vRT = 0;
             Serial.println("Done");
         }
@@ -976,7 +976,7 @@ void loop()
         else if(target == "rVRT")
         {
             Serial.println("Reading Velocity Ramp Target...");
-            vRT = Drive1.motor[0].readVelocityRampTarget();
+            vRT = Drive1.left.readVelocityRampTarget();
             Serial.println(vRT);
             vRT = 0;
             Serial.println("Done");
@@ -998,7 +998,7 @@ void loop()
             Serial.println(target);
             if (target != "")
                 vRE = true;
-            Drive1.motor[0].writeVelocityRampEnable(vRE);
+            Drive1.left.writeVelocityRampEnable(vRE);
             vRE = false;
             Serial.println("Done");
         }
@@ -1006,7 +1006,7 @@ void loop()
         else if(target == "rVRE")
         {
             Serial.println("Reading Velocity Ramp Enable...");
-            vRE = Drive1.motor[0].readVelocityRampEnable();
+            vRE = Drive1.left.readVelocityRampEnable();
             Serial.println(vRE);
             vRE = false;
             Serial.println("Done");
@@ -1027,7 +1027,7 @@ void loop()
             Serial.println("Setting Watchdog Timeout...");
             Serial.println(target);
             wT = target.toFloat();
-            Drive1.motor[0].writeWatchdogTimeout(wT);
+            Drive1.left.writeWatchdogTimeout(wT);
             wT = 0;
             Serial.println("Done");
         }
@@ -1035,7 +1035,7 @@ void loop()
         else if(target == "rWT")
         {
             Serial.println("Reading Watchdog Timeout...");
-            wT = Drive1.motor[0].readWatchdogTimeout();
+            wT = Drive1.left.readWatchdogTimeout();
             Serial.println(wT);
             wT = 0;
             Serial.println("Done");
@@ -1056,7 +1056,7 @@ void loop()
             Serial.println("Setting CPR SetPoint...");
             Serial.println(target);
             cprSP = target.toFloat();
-            Drive1.motor[0].writeCPRSetpoint(cprSP);
+            Drive1.left.writeCPRSetpoint(cprSP);
             cprSP = 0;
             Serial.println("Done");
         }
@@ -1064,7 +1064,7 @@ void loop()
         else if(target == "rPCPR")
         {
             Serial.println("Reading Position CPR...");
-            cprSP = Drive1.motor[0].readPosCPR();
+            cprSP = Drive1.left.readPosCPR();
             Serial.println(cprSP);
             cprSP = 0;
             Serial.println("Done");
@@ -1075,7 +1075,7 @@ void loop()
             command = target.toInt();
 
             Serial.println("Setting Trap Target...");
-            Drive1.motor[0].writeTrapTarget(command);
+            Drive1.left.writeTrapTarget(command);
             command = 0;
             Serial.println("Done");
         }

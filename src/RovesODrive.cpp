@@ -85,7 +85,7 @@ void RovesODrive::begin()
 
 void RovesODriveMotor::writeState(Axis_State state) 
 {
-	char data[2];
+	char data[10];
 	intToChar(data, state);
 	writeODriveConfig(m_serial, WRITE, WRITE_CURRENT_STATE, data, motor_number);
 }
@@ -304,7 +304,7 @@ void RovesODriveMotor::writeVelocityControlMode()
 
 void RovesODriveMotor::writeVelocitySetpoint(float velPoint, float currentFF)
 {
-	char data1[12], data2[12];
+	char data1[30], data2[30];
 	intToChar(data1, velPoint);
 	intToChar(data2, currentFF);
 	writeODriveCommand(m_serial, MOTOR_VEL, data1, data2, "", motor_number);

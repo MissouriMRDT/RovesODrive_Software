@@ -78,11 +78,11 @@ enum Axis_State
 
 enum Control_Mode
 {
-	CTRL_MODE_POSITION_CONTROL = 0,
-	CTRL_MODE_VELOCITY_CONTROL = 1,
-	CTRL_MODE_CURRENT_CONTROL = 2,
-	CTRL_MODE_VOLTAGE_CONTROL = 3,
-	CTRL_MODE_SENSORLESS_VELOCITY_CONTROL = 4,
+	CTRL_MODE_VOLTAGE_CONTROL = 0,
+	CTRL_MODE_CURRENT_CONTROL = 1,
+	CTRL_MODE_VELOCITY_CONTROL = 2,
+	CTRL_MODE_POSITION_CONTROL = 3,
+	CTRL_MODE_TRAJECTORY_CONTROL = 4,
 };
 enum Error_Axis
 {
@@ -288,10 +288,10 @@ class RovesODrive
 		RovesODrive(HardwareSerial* mySerial)
 		{
 			m_serial = mySerial;
-			this->motor[0].motor_number = 0;
-			this->motor[0].m_serial = mySerial;
-			this->motor[1].motor_number = 1;
-			this->motor[1].m_serial = mySerial;
+			this->left.motor_number = 0;
+			this->left.m_serial = mySerial;
+			this->right.motor_number = 1;
+			this->right.m_serial = mySerial;
 		}
 
 		void begin();
@@ -300,7 +300,7 @@ class RovesODrive
 
 		void read();
 		
-		RovesODriveMotor motor[2];
+		RovesODriveMotor left, right;
 
 	private:
 		HardwareSerial* m_serial;
