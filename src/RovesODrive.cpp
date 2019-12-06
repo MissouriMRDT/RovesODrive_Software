@@ -428,24 +428,15 @@ float RovesODriveMotor::readCurrentSetPoint()
 
 void RovesODriveMotor::writeVelocityRampTarget(float target)
 {
-	writeVelocityRampEnable(true);
 	writeODriveConfig(m_serial, WRITE, VELOCITY_RAMP_TARGET, target, motor_number);
 }
 
 float RovesODriveMotor::readVelocityRampTarget()
 {
 	String vRampTarget = "";
-	writeVelocityRampEnable(true);
 	writeODriveConfig(m_serial, READ, VELOCITY_RAMP_TARGET, "", motor_number);
 	vRampTarget = getSerial();
 	return vRampTarget.toFloat();
-}
-
-void RovesODriveMotor::writeVelocityRampEnable(bool state)
-{
-	char data[12];
-	boolToChar(data, state);
-	writeODriveConfig(m_serial, WRITE, VELOCITY_RAMP_ENABLE, data, motor_number);
 }
 
 bool RovesODriveMotor::readVelocityRampEnable()

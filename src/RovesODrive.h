@@ -257,8 +257,6 @@ class RovesODriveMotor
 
 		float readEncoderCPR();
 
-		void writeVelocityRampEnable(bool state);
-
 		bool readVelocityRampEnable();
 
 		void writeVelocityRampRate(float rRate);
