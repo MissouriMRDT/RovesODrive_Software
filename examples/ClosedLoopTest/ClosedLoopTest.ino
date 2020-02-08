@@ -3,10 +3,10 @@
 RovesODrive Drive1(&Serial7);
 String target;
 float posEst, tvLimit, trapAPC, taLimit, tdLimit, vGain, pGain, viGain, vSetPoint, cLimit, vLimit, cCal, bRes, eCPR, vRR, cSP, vRT, wT, cprSP; 
-int command, pos1, pos2, pos3, vel1, vel2, pPairs;
+int command, pos1, pos2, pos3, vel1, vel2, pPairs, mSide, cFF1, cFF2;
 bool vRE = false;
 
-Axis_State state;
+Axis_State state, state2;
 Control_Mode crtlMode;
 Error_Axis axError;
 Error_Motor mError;
@@ -21,12 +21,15 @@ void setup()
     while (!Serial); // wait for Arduino Serial Monitor to open   
     
     Serial.println("ODriveArduino");
-    Serial.println("Setting state to closed loop control...");    
 
-    Serial7.write("w axis0.requested_state 8 \n");
+    Serial.println("Setting state to Full Calibration...");    
+
+    Serial7.write("w axis0.requested_state 3 \n");
+
+    Serial7.write("w axis1.requested_state 3 \n");
 
     Serial.println("Initialised");
-    delay(100);
+    delay(15000);
 }
 
 void loop()
@@ -563,7 +566,10 @@ void loop()
         {
             Serial.println("Requesting State...");
             state = Drive1.left.readState();
+            delay(100);
+            state2 = Drive1.right.readState();
             Serial.println(state);
+            Serial.println(state2);
             //state = AXIS_STATE_IDLE;
             Serial.println("Done");
         }
@@ -583,6 +589,8 @@ void loop()
             Serial.println("Setting State...");
             state = (Axis_State)target.toInt();
             Drive1.left.writeState(state);
+            delay(100);
+            Drive1.right.writeState(state);
             //state = AXIS_STATE_IDLE;
             Serial.println("Done");
         }
@@ -677,7 +685,7 @@ void loop()
 
         else if(target == "wVP")
         {
-            Serial.println("Enter target Velocity");
+            Serial.println("Enter target Velocity for left motor");
             target = "";
             while (!Serial.available()); 
             while (Serial.available()) 
@@ -688,7 +696,18 @@ void loop()
             }
             vel1 = target.toInt();
 
-            Serial.println("Enter Second Value");
+            Serial.println("Enter Second Value for left motor");
+            target = "";
+            while (!Serial.available()); 
+            while (Serial.available()) 
+            {
+                char c = Serial.read();  
+                target += c; 
+                delay(2);  
+            }
+            cFF1 = target.toInt();
+
+            Serial.println("Enter target Velocity for right motor");
             target = "";
             while (!Serial.available()); 
             while (Serial.available()) 
@@ -698,10 +717,24 @@ void loop()
                 delay(2);  
             }
             vel2 = target.toInt();
+
+            Serial.println("Enter Second Value for right motor");
+            target = "";
+            while (!Serial.available()); 
+            while (Serial.available()) 
+            {
+                char c = Serial.read();  
+                target += c; 
+                delay(2);  
+            }
+            cFF2 = target.toInt();
+
             Serial.println("Setting Velocity Set Point...");
-            Drive1.left.writeVelocitySetpoint(vel1, vel2);
-            //vel1 = 0;
-            //vel2 = 0;
+
+            Drive1.left.writeVelocitySetpoint(vel1, cFF1);
+            delay(20);
+            Drive1.right.writeVelocitySetpoint(vel2, cFF2);
+
             Serial.println("Done");
         }
 
