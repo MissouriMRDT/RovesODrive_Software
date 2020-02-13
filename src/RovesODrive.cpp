@@ -50,7 +50,6 @@ void writeODriveCommand(HardwareSerial* mySerial, char* id, char* param1, char* 
 
 	sprintf(output, "%s %s \n", output, param3);
 
-	Serial.println(output);
 	mySerial->write(output);
 }
 
@@ -76,11 +75,9 @@ String RovesODriveMotor::getSerial()
 
 void RovesODrive::begin()
 {
-	Serial.println("Beginning");
 	m_serial->begin(115200);
 	delay(10);
 	m_serial->write("\n");
-	Serial.println("Drive Serial Init");
 }
 
 void RovesODriveMotor::writeState(Axis_State state) 
@@ -169,17 +166,11 @@ void RovesODriveMotor::writeTrapTarget(int32_t target)
 {
 	char data[12];
 	intToChar(data, target);
-	if ( target <= (m_position - 50) || target >= (m_position + 50) ) // checks if the new target is far enough from the prevois position to move
+	if ( target <= (m_position - 50) || target >= (m_position + 50) ) // checks if the new target is far enough from the previous position to move
 	{
-		writeODriveConfig(m_serial, WRITE, CONTROL_MODE, "3", motor_number);
 		writeODriveCommand(m_serial, MOTOR_TRAJ, data, "", "", motor_number);
 		m_position = target;
 	}
-	else
-	{
-		Serial.println("We are going to that position already");
-	}
-	
 }
 
 void RovesODriveMotor::writePosSetPoint(int32_t position, int32_t velFF, int32_t crrtFF) // Sets the position setpoint and receives a position, velocity feed, and current feed parameters

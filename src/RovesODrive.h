@@ -283,7 +283,7 @@ class RovesODriveMotor
 class RovesODrive
 {
 	public:
-		RovesODrive(HardwareSerial* mySerial)
+		void begin(HardwareSerial* mySerial)
 		{
 			m_serial = mySerial;
 			this->left.motor_number = 0;
@@ -291,8 +291,6 @@ class RovesODrive
 			this->right.motor_number = 1;
 			this->right.m_serial = mySerial;
 		}
-
-		void begin();
 
 		bool isConnected();
 
