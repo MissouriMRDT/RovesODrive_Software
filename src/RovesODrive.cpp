@@ -53,6 +53,21 @@ void writeODriveCommand(HardwareSerial* mySerial, char* id, char* param1, char* 
 	mySerial->write(output);
 }
 
+void RovesODrive::begin(HardwareSerial* mySerial)
+{
+	//init serial and motors
+	m_serial = mySerial;
+	left.motor_number = 0;
+	left.m_serial = mySerial;
+	right.motor_number = 1;
+	right.m_serial = mySerial;
+
+	//startup serial with proper baud rate
+	m_serial->begin(115200);
+	delay(10);
+	m_serial->write("\n");
+}
+
 String RovesODriveMotor::getSerial()
 {
 	String str = "";
@@ -71,13 +86,6 @@ String RovesODriveMotor::getSerial()
         str += c;
     }
     return str;
-}
-
-void RovesODrive::begin()
-{
-	m_serial->begin(115200);
-	delay(10);
-	m_serial->write("\n");
 }
 
 void RovesODriveMotor::writeState(Axis_State state) 
