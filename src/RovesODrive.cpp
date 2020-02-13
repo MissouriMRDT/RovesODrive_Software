@@ -199,9 +199,9 @@ float RovesODriveMotor::readPosEstimate() // returns the Position estimate of th
 	return position.toFloat();
 }
 
-void RovesODriveMotor::reboot()
+void RovesODrive::reboot()
 {
- 	writeODriveCommand(m_serial, SYSTEM_REBOOT, "", "", "", motor_number);
+ 	writeODriveCommand(m_serial, SYSTEM_REBOOT, "", "", "", 0);
 }
 
 void RovesODriveMotor::saveConfig() 

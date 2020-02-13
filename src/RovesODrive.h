@@ -203,8 +203,6 @@ class RovesODriveMotor
 
 		float readCurrentSetPoint();
 
-		void reboot();
-
 		void saveConfig();
 
 		void writeTrapTarget(int32_t target);
@@ -285,9 +283,7 @@ class RovesODrive
 	public:
 		void begin(HardwareSerial* mySerial);
 
-		bool isConnected();
-
-		void read();
+		void reboot();
 		
 		RovesODriveMotor left, right;
 
