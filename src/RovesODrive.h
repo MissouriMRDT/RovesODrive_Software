@@ -87,10 +87,11 @@ enum Control_Mode
 
 enum Error_Types
 {
-	ERROR_AXIS = 0,
-	ERROR_CONTROLLER = 1,
-	ERROR_ENCODER = 2,
-	ERROR_MOTOR = 3,
+	ERROR_NONE = 0,
+	ERROR_AXIS = 1,
+	ERROR_CONTROLLER = 2,
+	ERROR_ENCODER = 3,
+	ERROR_MOTOR = 4,
 }
 enum Error_Axis
 {
