@@ -84,6 +84,14 @@ enum Control_Mode
 	CTRL_MODE_POSITION_CONTROL = 3,
 	CTRL_MODE_TRAJECTORY_CONTROL = 4,
 };
+
+enum Error_Types
+{
+	ERROR_AXIS = 0,
+	ERROR_CONTROLLER = 1,
+	ERROR_ENCODER = 2,
+	ERROR_MOTOR = 3,
+}
 enum Error_Axis
 {
 	ERROR_NONE_A = 0,
