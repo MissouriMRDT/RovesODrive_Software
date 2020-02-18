@@ -92,7 +92,8 @@ enum Error_Types
 	ERROR_CONTROLLER = 2,
 	ERROR_ENCODER = 3,
 	ERROR_MOTOR = 4,
-}
+};
+
 enum Error_Axis
 {
 	ERROR_NONE_A = 0,
