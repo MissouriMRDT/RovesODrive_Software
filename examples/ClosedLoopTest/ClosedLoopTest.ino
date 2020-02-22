@@ -24,12 +24,24 @@ void setup()
 
     Serial.println("Setting state to Closed Loop Control...");    
 
-    Serial7.write("w axis0.requested_state 8 \n");
+    Serial7.write("w axis0.requested_state 3 \n");
 
-    Serial7.write("w axis1.requested_state 8 \n");
+    Serial7.write("w axis1.requested_state 3 \n");
+
+    Drive1.left.writeWatchdogTimeout(WATCHDOG_TIMER);
+
+    Drive1.right.writeWatchdogTimeout(WATCHDOG_TIMER);
+
+    Drive1.left.updateWatchdog();
+
+    Drive1.right.updateWatchdog();
 
     Serial.println("Initialised");
     delay(100);
+
+    Drive1.left.updateWatchdog();
+
+    Drive1.right.updateWatchdog();
 }
 
 void loop()
@@ -416,6 +428,8 @@ void loop()
             pos1 = 0;
             pos2 = 0;
             pos3 = 0;
+            Drive1.left.updateWatchdog();
+            Drive1.right.updateWatchdog();
             Serial.println("Done");
         }
 
@@ -566,11 +580,11 @@ void loop()
         {
             Serial.println("Requesting State...");
             state = Drive1.left.readState();
-            delay(100);
             state2 = Drive1.right.readState();
+            Drive1.left.updateWatchdog();
+            Drive1.right.updateWatchdog();
             Serial.println(state);
             Serial.println(state2);
-            //state = AXIS_STATE_IDLE;
             Serial.println("Done");
         }
 
@@ -589,9 +603,9 @@ void loop()
             Serial.println("Setting State...");
             state = (Axis_State)target.toInt();
             Drive1.left.writeState(state);
-            delay(100);
             Drive1.right.writeState(state);
-            //state = AXIS_STATE_IDLE;
+            Drive1.left.updateWatchdog();
+            Drive1.right.updateWatchdog();
             Serial.println("Done");
         }
 
@@ -732,9 +746,9 @@ void loop()
             Serial.println("Setting Velocity Set Point...");
 
             Drive1.left.writeVelocitySetpoint(vel1, cFF1);
-            delay(20);
             Drive1.right.writeVelocitySetpoint(vel2, cFF2);
-
+            Drive1.left.updateWatchdog();
+            Drive1.right.updateWatchdog();
             Serial.println("Done");
         }
 
@@ -744,6 +758,8 @@ void loop()
             vSetPoint = Drive1.left.readVelocitySetpoint();
             Serial.println(vSetPoint);
             vSetPoint = 0;
+            Drive1.left.updateWatchdog();
+            Drive1.right.updateWatchdog();
             Serial.println("Done");
         }
 
@@ -1041,6 +1057,8 @@ void loop()
             wT = target.toFloat();
             Drive1.left.writeWatchdogTimeout(wT);
             wT = 0;
+            Drive1.left.updateWatchdog();
+            Drive1.right.updateWatchdog();
             Serial.println("Done");
         }
 
@@ -1050,6 +1068,8 @@ void loop()
             wT = Drive1.left.readWatchdogTimeout();
             Serial.println(wT);
             wT = 0;
+            Drive1.left.updateWatchdog();
+            Drive1.right.updateWatchdog();
             Serial.println("Done");
         }
 
@@ -1089,6 +1109,8 @@ void loop()
             Serial.println("Setting Trap Target...");
             Drive1.left.writeTrapTarget(command);
             command = 0;
+            Drive1.left.updateWatchdog();
+            Drive1.right.updateWatchdog();
             Serial.println("Done");
         }
         target = "";

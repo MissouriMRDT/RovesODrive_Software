@@ -465,18 +465,22 @@ float RovesODriveMotor::readPosCPR() // returns position cpr estimate
 	return position.toFloat();
 }
 
-void RovesODriveMotor::writeWatchdogTimeout(int32_t time)
+void RovesODriveMotor::writeWatchdogTimeout(float time)
 {
 	char data[12];
-	intToChar(data, time);
+	floatToChar(data, time);
 	writeODriveConfig(m_serial, WRITE, WATCHDOG, data, motor_number);
 }
 
-int32_t RovesODriveMotor::readWatchdogTimeout()
+float RovesODriveMotor::readWatchdogTimeout()
 {
 	String wTimeout = "";
 	writeODriveConfig(m_serial, READ, WATCHDOG, "", motor_number);
 	wTimeout = getSerial();
-	return wTimeout.toInt();
+	return wTimeout.toFloat();
 }
 
+void RovesODriveMotor::updateWatchdog()
+{
+	writeODriveCommand(m_serial, WATCHDOG_UPDATE, "", "", "", motor_number);
+}

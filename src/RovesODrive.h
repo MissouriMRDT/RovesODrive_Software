@@ -7,6 +7,8 @@
 
 #define MAX_STRING_CHARS 255
 
+#define WATCHDOG_TIMER .15
+
 #define WRITE	true
 #define	READ	false
 
@@ -22,6 +24,7 @@
 #define VELOCITY_LIMIT					"controller.config.vel_limit"			//float
 #define WRITE_CURRENT_STATE				"requested_state"						//int
 #define WATCHDOG						"config.watchdog_timeout"				//int
+#define WATCHDOG_UPDATE					"u"										//void
 
 //Controller
 #define CURRENT_SETPOINT				"controller.current_setpoint"			//float
@@ -269,9 +272,11 @@ class RovesODriveMotor
 
 		void writeCPRSetpoint(bool state);
 
-		void writeWatchdogTimeout(int32_t time);
+		void writeWatchdogTimeout(float time);
 
-		int32_t readWatchdogTimeout();
+		float readWatchdogTimeout();
+
+		void updateWatchdog();
 
 		void writeState(Axis_State state);
 		
