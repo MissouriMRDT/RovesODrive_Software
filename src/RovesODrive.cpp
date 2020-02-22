@@ -467,8 +467,8 @@ float RovesODriveMotor::readPosCPR() // returns position cpr estimate
 
 void RovesODriveMotor::writeWatchdogTimeout(float time)
 {
-	char data[12];
-	floatToChar(data, time);
+	char data[20];
+	floatToChar(data, time, 4);
 	writeODriveConfig(m_serial, WRITE, WATCHDOG, data, motor_number);
 }
 
