@@ -1,7 +1,7 @@
-#include <RovesODrive.h>
+#include "RovesODrive.h"
 #include <Energia.h>
 #include <HardwareSerial.h>
-#include <RovesOUtilities.h>
+#include "RovesOUtilities.h"
 
 void writeODriveConfig(HardwareSerial* mySerial, bool write_read, char* id, char* param, uint8_t axis)
 {
@@ -36,7 +36,7 @@ void writeODriveConfig(HardwareSerial* mySerial, bool write_read, char* id, floa
 }
 
 
-void writeODriveCommand(HardwareSerial* mySerial, char* id, char* param1, char* param2, char* param3, uint8_t axis) //TODO: add two additional parameters for commands
+void writeODriveCommand(HardwareSerial* mySerial, char* id, char* param1, char* param2, char* param3, uint8_t axis) 
 {
 	char output[MAX_STRING_CHARS];
 
@@ -64,14 +64,12 @@ void RovesODrive::begin(HardwareSerial* mySerial)
 
 	//startup serial with proper baud rate
 	m_serial->begin(115200);
-	delay(10);
 	m_serial->write("\n");
 }
 
 String RovesODriveMotor::getSerial()
 {
 	String str = "";
-    static const unsigned long timeout = 1000;
     unsigned long timeout_start = millis();
     while( true ) 
 	{
@@ -295,12 +293,6 @@ float RovesODriveMotor::readVelocityIntegratorGain()
 	return vIGain.toFloat();
 }
 
-void RovesODriveMotor::writeVelocityControlMode()
-{
-	Control_Mode mode = CTRL_MODE_VELOCITY_CONTROL;
-	writeControlMode(mode);
-}
-
 void RovesODriveMotor::writeVelocitySetpoint(float velPoint, float currentFF)
 {
 	char data1[30], data2[30];
@@ -311,10 +303,8 @@ void RovesODriveMotor::writeVelocitySetpoint(float velPoint, float currentFF)
 
 float RovesODriveMotor::readVelocitySetpoint()
 {
-	String setPoint = "";
 	writeODriveConfig(m_serial, READ, VELOCITY_SETPOINT, "", motor_number);
-	setPoint = getSerial();
-	return setPoint.toFloat();
+	return getSerial().toFloat();
 }
 
 void RovesODriveMotor::writeCurrentLimit(float limit)
@@ -468,7 +458,7 @@ float RovesODriveMotor::readPosCPR() // returns position cpr estimate
 void RovesODriveMotor::writeWatchdogTimeout(float time)
 {
 	char data[12];
-	floatToChar(data, time);
+	floatToChar(data, time, 12);
 	writeODriveConfig(m_serial, WRITE, WATCHDOG, data, motor_number);
 }
 

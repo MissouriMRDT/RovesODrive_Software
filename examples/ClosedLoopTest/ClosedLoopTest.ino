@@ -96,79 +96,93 @@ void loop()
             axError =  Drive1.left.checkAxisErrors();
             switch (axError)
             {
-            case 0:
+            case 0x00:
                 Serial.println("ERROR_NONE_A");
                 break;
             
-            case 1:
+            case 0x01:
                 Serial.println("ERROR_INVALID_STATE");
                 Serial.println("Rebooting");
                 Drive1.reboot();
                 axError = ERROR_NONE_A;
                 break;
 
-            case 2:
+            case 0x02:
                 Serial.println("ERROR_DC_BUS_UNDER_VOLTAGE");
                 Serial.println("Rebooting");
                 Drive1.reboot();
                 axError = ERROR_NONE_A;
                 break;
 
-            case 3:
+            case 0x04:
                 Serial.println("ERROR_DC_BUS_OVER_VOLTAGE");
                 Serial.println("Rebooting");
                 Drive1.reboot();
                 axError = ERROR_NONE_A;
                 break;
 
-            case 4:
+            case 0x08:
                 Serial.println("ERROR_CURRENT_MEASUREMENT_TIMEOUT");
                 Serial.println("Rebooting");
                 Drive1.reboot();
                 axError = ERROR_NONE_A;
                 break;
 
-            case 5:
+            case 0x10:
                 Serial.println("ERROR_BRAKE_RESISTOR_DISARMED");
                 Serial.println("Rebooting");
                 Drive1.reboot();
                 axError = ERROR_NONE_A;
                 break;
 
-            case 6:
+            case 0x20:
                 Serial.println("ERROR_MOTOR_DISARMED");
                 Serial.println("Rebooting");
                 Drive1.reboot();
                 axError = ERROR_NONE_A;
                 break;
 
-            case 7:
+            case 0x40:
                 Serial.println("ERROR_MOTOR_FAILED");
                 Serial.println("Rebooting");
                 Drive1.reboot();
                 axError = ERROR_NONE_A;
                 break;
 
-            case 8:
+            case 0x80:
                 Serial.println("ERROR_SENSORLESS_ESTIMATOR_FAILED");
                 Serial.println("Rebooting");
                 Drive1.reboot();
                 axError = ERROR_NONE_A;
                 break;
 
-            case 9:
+            case 0x100:
                 Serial.println("ERROR_ENCODER_FAILED");
                 Serial.println("Rebooting");
                 Drive1.reboot();
                 axError = ERROR_NONE_A;
                 break;
 
-            case 10:
+            case 0x200:
                 Serial.println("ERROR_CONTROLLER_FAILED");
                 Serial.println("Rebooting");
                 Drive1.reboot();
                 axError = ERROR_NONE_A;
                 break;
+
+            case 0x400:
+                Serial.println("ERROR_POS_CTRL_DURING_SENSORLESS");
+                Serial.println("Rebooting");
+                Drive1.reboot();
+                axError = ERROR_NONE_A;
+                break;
+
+            case 0x800:
+                Serial.println("ERROR_WATCHDOG_TIMER_EXPIRED");
+                Serial.println("Rebooting");
+                Drive1.reboot();
+                axError = ERROR_NONE_A;
+                break;        
             
             default:
                 break;
@@ -185,91 +199,91 @@ void loop()
                 Serial.println("ERROR_NONE_M");
                 break;
             
-            case 1:
+            case 0x0001:
                 Serial.println("ERROR_PHASE_RESISTANCE_OUT_OF_RANGE");
                 Serial.println("Rebooting");
                 Drive1.reboot();
                 mError = ERROR_NONE_M;
                 break;
 
-            case 2:
+            case 0x0002:
                 Serial.println("ERROR_PHASE_INDUCTANCE_OUT_OF_RANGE");
                 Serial.println("Rebooting");
                 Drive1.reboot();
                 mError = ERROR_NONE_M;
                 break;
 
-            case 3:
+            case 0x0004:
                 Serial.println("ERROR_ADC_FAILED");
                 Serial.println("Rebooting");
                 Drive1.reboot();
                 mError = ERROR_NONE_M;
                 break;
 
-            case 4:
+            case 0x0008:
                 Serial.println("ERROR_DRV_FAULT");
                 Serial.println("Rebooting");
                 Drive1.reboot();
                 mError = ERROR_NONE_M;
                 break;
 
-            case 5:
+            case 0x0010:
                 Serial.println("ERROR_CONTROL_DEADLINE_MISSED");
                 Serial.println("Rebooting");
                 Drive1.reboot();
                 mError = ERROR_NONE_M;
                 break;
 
-            case 6:
+            case 0x0020:
                 Serial.println("ERROR_NOT_IMPLEMENTED_MOTOR_TYPE");
                 Serial.println("Rebooting");
                 Drive1.reboot();
                 mError = ERROR_NONE_M;
                 break;
 
-            case 7:
+            case 0x0040:
                 Serial.println("ERROR_BRAKE_CURRENT_OUT_OF_RANGE");
                 Serial.println("Rebooting");
                 Drive1.reboot();
                 mError = ERROR_NONE_M;
                 break;
 
-            case 8:
+            case 0x0080:
                 Serial.println("ERROR_MODULATION_MAGNITUDE");
                 Serial.println("Rebooting");
                 Drive1.reboot();
                 mError = ERROR_NONE_M;
                 break;
 
-            case 9:
+            case 0x0100:
                 Serial.println("ERROR_BRAKE_DEADTIME_VIOLATION");
                 Serial.println("Rebooting");
                 Drive1.reboot();
                 mError = ERROR_NONE_M;
                 break;
 
-            case 10:
+            case 0x0200:
                 Serial.println("ERROR_UNEXPECTED_TIMER_CALLBACK");
                 Serial.println("Rebooting");
                 Drive1.reboot();
                 mError = ERROR_NONE_M;
                 break;
             
-            case 11:
+            case 0x0400:
                 Serial.println("ERROR_CURRENT_SENSE_SATURATION");
                 Serial.println("Rebooting");
                 Drive1.reboot();
                 mError = ERROR_NONE_M;
                 break;
 
-            case 12:
+            case 0x0800:
                 Serial.println("ERROR_INVERTER_OVER_TEMP");
                 Serial.println("Rebooting");
                 Drive1.reboot();
                 mError = ERROR_NONE_M;
                 break;
 
-            case 13:
+            case 0x1000:
                 Serial.println("ERROR_CURRENT_UNSTABLE");
                 Serial.println("Rebooting");
                 Drive1.reboot();
@@ -291,42 +305,42 @@ void loop()
                 Serial.println("ERROR_NONE_E");
                 break;
             
-            case 1:
+            case 0x01:
                 Serial.println("ERROR_UNSTABLE_GAIN");
                 Serial.println("Rebooting");
                 Drive1.reboot();
                 enError = ERROR_NONE_E;
                 break;
 
-            case 2:
+            case 0x02:
                 Serial.println("ERROR_CPR_OUT_OF_RANGE");
                 Serial.println("Rebooting");
                 Drive1.reboot();
                 enError = ERROR_NONE_E;
                 break;
 
-            case 3:
+            case 0x04:
                 Serial.println("ERROR_NO_RESPONSE");
                 Serial.println("Rebooting");
                 Drive1.reboot();
                 enError = ERROR_NONE_E;
                 break;
 
-            case 4:
+            case 0x08:
                 Serial.println("ERROR_UNSUPPORTED_ENCODER_MODE");
                 Serial.println("Rebooting");
                 Drive1.reboot();
                 enError = ERROR_NONE_E;
                 break;
 
-            case 5:
+            case 0x10:
                 Serial.println("ERROR_ILLEGAL_HALL_STATE");
                 Serial.println("Rebooting");
                 Drive1.reboot();
                 enError = ERROR_NONE_E;
                 break;
 
-            case 6:
+            case 0x20:
                 Serial.println("ERROR_INDEX_NOT_FOUND_YET");
                 Serial.println("Rebooting");
                 Drive1.reboot();
@@ -348,7 +362,7 @@ void loop()
                 Serial.println("ERROR_NONE_C");
                 break;
             
-            case 1:
+            case 0x01:
                 Serial.println("ERROR_OVERSPEED");
                 Serial.println("Rebooting");
                 Drive1.reboot();
@@ -738,13 +752,6 @@ void loop()
             vSetPoint = Drive1.left.readVelocitySetpoint();
             Serial.println(vSetPoint);
             vSetPoint = 0;
-            Serial.println("Done");
-        }
-
-        else if(target == "vCM")
-        {
-            Serial.println("Setting Velocity Control Mode...");
-            Drive1.left.writeVelocityControlMode();
             Serial.println("Done");
         }
 
