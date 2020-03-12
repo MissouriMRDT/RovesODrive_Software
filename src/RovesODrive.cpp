@@ -88,17 +88,15 @@ String RovesODriveMotor::getSerial()
 
 void RovesODriveMotor::writeState(Axis_State state) 
 {
-	char data[10];
+	char data[2];
 	intToChar(data, state);
 	writeODriveConfig(m_serial, WRITE, WRITE_CURRENT_STATE, data, motor_number);
 }
 
 Axis_State RovesODriveMotor::readState()
-{
-	String state = ""; 
+{ 
 	writeODriveConfig(m_serial, READ, READ_CURRENT_STATE, "", motor_number);
-	state = getSerial();
-	return (Axis_State)state.toInt();
+	return (Axis_State)getSerial().toInt();
 }
 
 void RovesODriveMotor::writeControlMode(Control_Mode mode)
@@ -110,10 +108,8 @@ void RovesODriveMotor::writeControlMode(Control_Mode mode)
 
 Control_Mode RovesODriveMotor::readControlMode()
 {
-	String mode = "";
 	writeODriveConfig(m_serial, READ, CONTROL_MODE, "", motor_number);
-	mode = getSerial();
-	return (Control_Mode)mode.toInt();
+	return (Control_Mode)getSerial().toInt();
 }
 
 void RovesODriveMotor::writeTrapVelocityLimit(float limit)
@@ -123,10 +119,8 @@ void RovesODriveMotor::writeTrapVelocityLimit(float limit)
 
 float RovesODriveMotor::readTrapVelocityLimit()
 {
-	String trapVLimit;
 	writeODriveConfig(m_serial, READ, TRAP_VELOCITY_LIMIT , "", motor_number);
-	trapVLimit = getSerial();
-	return trapVLimit.toFloat();
+	return getSerial().toFloat();
 }
 
 void RovesODriveMotor::writeTrapAccelerationLimit(float limit)
@@ -136,10 +130,8 @@ void RovesODriveMotor::writeTrapAccelerationLimit(float limit)
 
 float RovesODriveMotor::readTrapAccelerationLimit()
 {
-	String trapALimit = "";
 	writeODriveConfig(m_serial, READ, TRAP_ACCELERATION_LIMIT , "", motor_number);
-	trapALimit = getSerial();
-	return trapALimit.toFloat();
+	return getSerial().toFloat();
 }
 
 void RovesODriveMotor::writeTrapDecelerationLimit(float limit )
@@ -149,10 +141,8 @@ void RovesODriveMotor::writeTrapDecelerationLimit(float limit )
 
 float RovesODriveMotor::readTrapDecelerationLimit()
 {
-	String trapDLimit = "";
 	writeODriveConfig(m_serial, READ, TRAP_DECELERATION_LIMIT , "", motor_number);
-	trapDLimit = getSerial();
-	return trapDLimit.toFloat();
+	return getSerial().toFloat();
 }
 
 void RovesODriveMotor::writeTrapAccelerationPerCounts(float limit )
@@ -162,15 +152,13 @@ void RovesODriveMotor::writeTrapAccelerationPerCounts(float limit )
 
 float RovesODriveMotor::readTrapAccelerationPerCounts()
 {
-	String trapAPC = "";
 	writeODriveConfig(m_serial, READ, TRAP_ACCELERATION_PER_COUNTS , "", motor_number);
-	trapAPC = getSerial();
-	return trapAPC.toFloat();
+	return getSerial().toFloat();
 }
 
 void RovesODriveMotor::writeTrapTarget(int32_t target)
 {
-	char data[12];
+	char data[32];
 	intToChar(data, target);
 	writeODriveCommand(m_serial, MOTOR_TRAJ, data, "", "", motor_number);
 	m_position = target;
@@ -178,7 +166,7 @@ void RovesODriveMotor::writeTrapTarget(int32_t target)
 
 void RovesODriveMotor::writePosSetPoint(int32_t position, int32_t velFF, int32_t crrtFF) // Sets the position setpoint and receives a position, velocity feed, and current feed parameters
 {
-	char data1[12], data2[12], data3[12];
+	char data1[32], data2[32], data3[32];
 	intToChar(data1, position);
 	intToChar(data2, velFF);
 	intToChar(data3, crrtFF);
@@ -188,10 +176,8 @@ void RovesODriveMotor::writePosSetPoint(int32_t position, int32_t velFF, int32_t
 
 float RovesODriveMotor::readPosEstimate() // returns the Position estimate of the motor
 {
-	String position = "";
 	writeODriveConfig(m_serial, READ, POS_ESTIMATE, "", motor_number);
-	position = getSerial();
-	return position.toFloat();
+	return getSerial().toFloat();
 }
 
 void RovesODrive::reboot()
@@ -211,34 +197,26 @@ void RovesODriveMotor::eraseConfig()
 
 Error_Axis RovesODriveMotor::checkAxisErrors() 
 {
-	String error = "";
 	writeODriveConfig(m_serial, READ, AXIS_ERRORS, "", motor_number);
-	error = getSerial();
-	return (Error_Axis)error.toInt();
+	return (Error_Axis)getSerial().toInt();
 }
 
 Error_Motor RovesODriveMotor::checkMotorErrors()
 {
-	String error = "";
 	writeODriveConfig(m_serial, READ, MOTOR_ERRORS, "", motor_number);
-	error = getSerial();
-	return (Error_Motor)error.toInt();
+	return (Error_Motor)getSerial().toInt();
 }
 
 Error_Encoder RovesODriveMotor::checkEncoderErrors()
 {
-	String error = "";
 	writeODriveConfig(m_serial, READ, ENCODER_ERRORS, "", motor_number);
-	error = getSerial();
-	return (Error_Encoder)error.toInt();
+	return (Error_Encoder)getSerial().toInt();
 }
 
 Error_Controller RovesODriveMotor::checkControllerErrors()
 {
-	String error = "";
 	writeODriveConfig(m_serial, READ, CONTROLLER_ERRORS, "", motor_number);
-	error = getSerial();
-	return (Error_Controller)error.toInt();
+	return (Error_Controller)getSerial().toInt();
 }
 
 String* RovesODriveMotor::checkAllErrors()
@@ -258,10 +236,8 @@ void RovesODriveMotor::writeVelocityGain(float target)
 
 float RovesODriveMotor::readVelocityGain()
 {
-	String vGain = "";
 	writeODriveConfig(m_serial, READ, VELOCITY_GAIN, "", motor_number);
-	vGain = getSerial();
-	return vGain.toFloat();
+	return getSerial().toFloat();
 }
 
 void RovesODriveMotor::writePositionGain(float target)
@@ -271,10 +247,8 @@ void RovesODriveMotor::writePositionGain(float target)
 
 float RovesODriveMotor::readPositionGain()
 {
-	String pGain = "";
 	writeODriveConfig(m_serial, READ, POSITION_GAIN, "", motor_number);
-	pGain = getSerial();
-	return pGain.toFloat();
+	return getSerial().toFloat();
 }
 
 void RovesODriveMotor::writeVelocityIntegratorGain(float target)
@@ -284,17 +258,15 @@ void RovesODriveMotor::writeVelocityIntegratorGain(float target)
 
 float RovesODriveMotor::readVelocityIntegratorGain()
 {
-	String vIGain = "";
 	writeODriveConfig(m_serial, READ, VELOCITY_iNTEGRATOR_GAIN, "", motor_number);
-	vIGain = getSerial();
-	return vIGain.toFloat();
+	return getSerial().toFloat();
 }
 
 void RovesODriveMotor::writeVelocitySetpoint(float velPoint, float currentFF)
 {
-	char data1[30], data2[30];
-	intToChar(data1, velPoint);
-	intToChar(data2, currentFF);
+	char data1[12], data2[12];
+	floatToChar(data1, velPoint, 6);
+	floatToChar(data2, currentFF, 6);
 	writeODriveCommand(m_serial, MOTOR_VEL, data1, data2, "", motor_number);
 }
 
@@ -311,10 +283,8 @@ void RovesODriveMotor::writeCurrentLimit(float limit)
 
 float RovesODriveMotor::readCurrentLimit()
 {
-	String cLimit = "";
 	writeODriveConfig(m_serial, READ, CURRENT_LIMIT, "", motor_number);
-	cLimit = getSerial();
-	return cLimit.toFloat();
+	return getSerial().toFloat();
 }
 
 void RovesODriveMotor::writeVelocityLimit(float limit)
@@ -324,10 +294,8 @@ void RovesODriveMotor::writeVelocityLimit(float limit)
 
 float RovesODriveMotor::readVelocityLimit()
 {
-	String vLimit = "";
 	writeODriveConfig(m_serial, READ, VELOCITY_LIMIT, "", motor_number);
-	vLimit = getSerial();
-	return vLimit.toFloat();
+	return getSerial().toFloat();
 }
 
 void RovesODriveMotor::writeCurrentCalibration(float limit)
@@ -337,10 +305,8 @@ void RovesODriveMotor::writeCurrentCalibration(float limit)
 
 float RovesODriveMotor::readCurrentCalibration()
 {
-	String cCalibration = "";
 	writeODriveConfig(m_serial, READ, CALIBRATION_CURRENT, "", motor_number);
-	cCalibration = getSerial();
-	return cCalibration.toFloat();
+	return getSerial().toFloat();
 }
 
 void RovesODriveMotor::writeBrakeResistance(float bResist)
@@ -350,25 +316,21 @@ void RovesODriveMotor::writeBrakeResistance(float bResist)
 
 float RovesODriveMotor::readBrakeResistance()
 {
-	String brakeResistance = "";
 	writeODriveConfig(m_serial, READ, BRAKE_RESISTANCE, "", motor_number);
-	brakeResistance = getSerial();
-	return brakeResistance.toFloat();
+	return getSerial().toFloat();
 }
 
 void RovesODriveMotor::writePolePairs(int32_t pairs)
 {
-	char data[12];
+	char data[32];
 	intToChar(data, pairs);
 	writeODriveConfig(m_serial, WRITE, POLE_PAIRS, data, motor_number);
 }
 
 int32_t RovesODriveMotor::readPolePairs()
 {
-	String pPairs = "";
 	writeODriveConfig(m_serial, READ, POLE_PAIRS, "", motor_number);
-	pPairs = getSerial();
-	return pPairs.toInt();
+	return getSerial().toInt();
 }
 
 void RovesODriveMotor::writeEncoderCPR(float cpr)
@@ -378,10 +340,8 @@ void RovesODriveMotor::writeEncoderCPR(float cpr)
 
 float RovesODriveMotor::readEncoderCPR()
 {
-	String enCPR = "";
 	writeODriveConfig(m_serial, READ, CPR, "", motor_number);
-	enCPR = getSerial();
-	return enCPR.toFloat();
+	return getSerial().toFloat();
 }
 
 void RovesODriveMotor::writeVelocityRampRate(float rRate)
@@ -391,10 +351,8 @@ void RovesODriveMotor::writeVelocityRampRate(float rRate)
 
 float RovesODriveMotor::readVelocityRampRate()
 {
-	String vRampRate = "";
 	writeODriveConfig(m_serial, READ, VELOCITY_RAMP_RATE, "", motor_number);
-	vRampRate = getSerial();
-	return vRampRate.toFloat();
+	return getSerial().toFloat();
 }
 
 void RovesODriveMotor::writeCurrentSetPoint(float point)
@@ -406,10 +364,8 @@ void RovesODriveMotor::writeCurrentSetPoint(float point)
 
 float RovesODriveMotor::readCurrentSetPoint()
 {
-	String cSP = "";
 	writeODriveConfig(m_serial, READ, CURRENT_SETPOINT, "", motor_number);
-	cSP = getSerial();
-	return cSP.toFloat();
+	return getSerial().toFloat();
 }
 
 void RovesODriveMotor::writeVelocityRampTarget(float target)
@@ -419,18 +375,14 @@ void RovesODriveMotor::writeVelocityRampTarget(float target)
 
 float RovesODriveMotor::readVelocityRampTarget()
 {
-	String vRampTarget = "";
 	writeODriveConfig(m_serial, READ, VELOCITY_RAMP_TARGET, "", motor_number);
-	vRampTarget = getSerial();
-	return vRampTarget.toFloat();
+	return getSerial().toFloat();
 }
 
 bool RovesODriveMotor::readVelocityRampEnable()
 {
-	String vRampRateEnable = "";
 	writeODriveConfig(m_serial, READ, VELOCITY_RAMP_ENABLE, "", motor_number);
-	vRampRateEnable = getSerial();
-	if (vRampRateEnable != "")
+	if (getSerial() != "")
 		return true;
 	else
 		return false;
@@ -439,32 +391,28 @@ bool RovesODriveMotor::readVelocityRampEnable()
 
 void RovesODriveMotor::writeCPRSetpoint(bool state)
 {
-	char data[12];
+	char data[1];
 	boolToChar(data, state);
 	writeODriveConfig(m_serial, WRITE, CPR_SETPOINT, data, motor_number);
 }
 
 float RovesODriveMotor::readPosCPR() // returns position cpr estimate
 {
-	String position = "";
 	writeODriveConfig(m_serial, READ, POS_CPR, "", motor_number);
-	position = getSerial();
-	return position.toFloat();
+	return getSerial().toFloat();
 }
 
 void RovesODriveMotor::writeWatchdogTimeout(float time)
 {
-	char data[20];
+	char data[12];
 	floatToChar(data, time, 4);
 	writeODriveConfig(m_serial, WRITE, WATCHDOG, data, motor_number);
 }
 
 float RovesODriveMotor::readWatchdogTimeout()
 {
-	String wTimeout = "";
 	writeODriveConfig(m_serial, READ, WATCHDOG, "", motor_number);
-	wTimeout = getSerial();
-	return wTimeout.toFloat();
+	return getSerial().toFloat();
 }
 
 void RovesODriveMotor::updateWatchdog()

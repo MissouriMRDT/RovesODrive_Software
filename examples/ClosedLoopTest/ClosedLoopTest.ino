@@ -1083,11 +1083,14 @@ void loop()
             Serial.println("Done");
         }
 
-        else if ( target <= (m_position - 50) || target >= (m_position + 50) ) // checks if the new target is far enough from the previous position to move
+        else 
         {
             command = target.toInt();
             Serial.println("Setting Trap Target...");
-            Drive1.left.writeTrapTarget(command);
+            if ( command <= (Drive1.left.m_position - 50) || command >= (Drive1.left.m_position + 50) ) // checks if the new target is far enough from the previous position to move
+                Drive1.left.writeTrapTarget(command);
+            if ( command <= (Drive1.right.m_position - 50) || command >= (Drive1.right.m_position + 50) )
+                Drive1.right.writeTrapTarget(command);
             command = 0;
             Serial.println("Done");
         }
