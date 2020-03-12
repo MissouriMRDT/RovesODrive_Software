@@ -172,11 +172,8 @@ void RovesODriveMotor::writeTrapTarget(int32_t target)
 {
 	char data[12];
 	intToChar(data, target);
-	if ( target <= (m_position - 50) || target >= (m_position + 50) ) // checks if the new target is far enough from the previous position to move
-	{
-		writeODriveCommand(m_serial, MOTOR_TRAJ, data, "", "", motor_number);
-		m_position = target;
-	}
+	writeODriveCommand(m_serial, MOTOR_TRAJ, data, "", "", motor_number);
+	m_position = target;
 }
 
 void RovesODriveMotor::writePosSetPoint(int32_t position, int32_t velFF, int32_t crrtFF) // Sets the position setpoint and receives a position, velocity feed, and current feed parameters
