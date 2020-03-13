@@ -55,6 +55,7 @@
 #define MOTOR_POS						"p"										//float, float, float
 #define MOTOR_TRAJ						"t"										//float
 #define MOTOR_VEL						"v"										//float
+#define READ_CURRENT					"motor.current_control.Iq_measured"		//float
 
 //System Commands
 #define ERASE_CONFIG					"se"									//void
@@ -295,7 +296,9 @@ class RovesODriveMotor
 
 		void writeState(Axis_State state);
 		
-		void writeControlMode(Control_Mode mode);		
+		void writeControlMode(Control_Mode mode);	
+
+		float readCurrent();	
 };
 
 class RovesODrive

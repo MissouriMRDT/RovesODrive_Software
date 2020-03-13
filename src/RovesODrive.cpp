@@ -419,3 +419,9 @@ void RovesODriveMotor::updateWatchdog()
 {
 	writeODriveCommand(m_serial, WATCHDOG_UPDATE, "", "", "", motor_number);
 }
+
+float RovesODriveMotor::readCurrent()
+{
+	writeODriveConfig(m_serial, READ, READ_CURRENT, "", motor_number);
+	return getSerial().toFloat();
+}
