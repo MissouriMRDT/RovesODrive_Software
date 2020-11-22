@@ -7,262 +7,310 @@
 
 #define MAX_STRING_CHARS 255
 
-#define WRITE	true
-#define	REQUEST	false
+#define WATCHDOG_TIMER .15
 
-#define MAX_VELOCITY_RAMP_RATE 10000
+#define WRITE	true
+#define	READ	false
 
 //Axis Data Tags
-//configs
-#define GET_CURRENT_STATE_TAG			"current_state"							//int
-#define SET_CURRENT_STATE_TAG			"requested_state"						//int
-#define STARTUP_CLOSED_LOOP_TAG 		"config.startup_closed_loop_control"	//bool
-#define STARTUP_SENSORLESS_TAG 			"config.startup_sensorless_control"		//bool
-#define STARTUP_MOTOR_CALBRATION_TAG	"config.startup_motor_calibration"		//bool
 
-//Spinup Config
-#define SPINUP_TARGET_VEL_TAG 			"config.spin_up_target_vel"				//float
-#define SPINUP_TARGET_ACCEL_TAG 		"config.spin_up_acceleration"			//float
-#define SPINUP_CURRENT_TAG		 		"config.spin_up_current"				//float
-#define SPINUP_TIME_TAG					"config.ramp_up_time"					//float
+//Configs
+#define BRAKE_RESISTANCE				"config.brake_resistance"				//float	
+#define CALIBRATION_CURRENT				"motor.config.calibration_current"		//float
+#define CONTROL_MODE					"controller.config.control_mode"		//int
+#define CURRENT_LIMIT					"motor.config.current_lim"				//float
+#define POLE_PAIRS						"motor.config.pole_pairs"				//int
+#define READ_CURRENT_STATE				"current_state"							//int
+#define VELOCITY_LIMIT					"controller.config.vel_limit"			//float
+#define WRITE_CURRENT_STATE				"requested_state"						//int
+#define WATCHDOG						"config.watchdog_timeout"				//int
+#define WATCHDOG_UPDATE					"u"										//void
 
-//Velocity Ramp
-#define VELOCITY_RAMP_ENABLE_TAG		"controller.vel_ramp_enable"			//bool
-#define VELOCITY_RAMP_TARGET_TAG		"controller.vel_ramp_target"			//float
-#define VELOCITY_RAMP_RATE_TAG			"controller.config.vel_ramp_rate"		//float
+//Controller
+#define CURRENT_SETPOINT				"controller.current_setpoint"			//float
+#define VELOCITY_RAMP_ENABLE			"controller.vel_ramp_enable"			//bool
+#define VELOCITY_RAMP_RATE				"controller.config.vel_ramp_rate"		//float
+#define VELOCITY_RAMP_TARGET			"controller.vel_ramp_target"			//float
+#define VELOCITY_SETPOINT				"controller.vel_setpoint"				//float
 
-//Velocity Config
-#define VELOCITY_SETPOINT_TAG	 		"controller.vel_setpoint"				//float
-#define VELOCITY_INTEGRATOR_TAG			"controller.config.vel_integrator_gain"	//float
-#define VELOCITY_GAIN_TAG				"controller.config.vel_gain"			//float
-#define CONTROL_MODE_TAG				"controller.config.control_mode"		//int
-#define VELOCITY_LIMIT_TAG				"controller.config.vel_limit"			//float
+//Encoder 
+#define CPR								"encoder.config.cpr"					//float
+#define CPR_SETPOINT					"controller.config.setpoints_in_cpr"	//float
+#define POS_CPR							"encoder.pos_cpr"						//float
+#define POS_ESTIMATE					"encoder.pos_estimate"					//float
 
-//Error
-#define ERROR_TAG						"controller.error"						//int
-#define DRV_FAULT_TAG					"motor.gate_driver.drv_fault"			//int
+//Errors
+#define AXIS_ERRORS						"error"									//Error_Axis
+#define CONTROLLER_ERRORS				"controller.error"						//Error_Controller
+#define ENCODER_ERRORS					"encoder.error"							//Error_Encoder
+#define MOTOR_ERRORS					"motor.error"							//Error_Motor
 
-//current
-#define CURRENT_IGAIN_TAG				"motor.current_control.i_gain"			//float
-#define CURRENT_PGAIN_TAG				"motor.current_control.p_gain"			//float
-#define BUS_CURRENT_TAG					"motor.current_control.Ibus"			//float
-#define MAX_ALLOWED_CURRENT_TAG			"motor.current_control.max_allowed_current"	//float
-#define PHASE_B_IMEAS					"motor.TODO"
+//Gains
+#define POSITION_GAIN					"controller.config.pos_gain"			//float
+#define VELOCITY_GAIN					"controller.config.vel_gain"			//float
+#define VELOCITY_iNTEGRATOR_GAIN		"controller.config.vel_integrator_gain" //float
 
-#define PRE_CALIBRATED_TAG				"motor.config.pre_calibrated"			//bool
-#define IS_CALIBRATED_TAG				"motor.is_calibrated"					//bool
-#define POLE_PAIRS_TAG					"motor.confog.pole_pairs"				//int				
-#define PHASE_B_CURRENT_TAG				"motor.current_meas_phB"				//float
-#define PM_FLIX_LINKAGE_TAG				"sensorless_estimator.config.pm_flux_linkage"	//float
+//Motor Control
+#define MOTOR_CURRENT					"c"										//float
+#define MOTOR_POS						"p"										//float, float, float
+#define MOTOR_TRAJ						"t"										//float
+#define MOTOR_VEL						"v"										//float
+#define READ_CURRENT					"motor.current_control.Iq_measured"		//float
 
-#define CURRENT_SETPOINT_TAG			"controller.current_setpoint"		//float
-#define DIRECTION_TAG					"motor.config.direction"			//int
+//System Commands
+#define ERASE_CONFIG					"se"									//void
+#define SAVE_CONFIG						"ss"									//void
+#define SYSTEM_REBOOT					"sr"									//void
 
+//Trap Trajectory
+#define TRAP_ACCELERATION_LIMIT			"trap_traj.config.accel_limit" 			//float
+#define TRAP_ACCELERATION_PER_COUNTS	"trap_traj.config.A_per_css" 			//float
+#define TRAP_DECELERATION_LIMIT			"trap_traj.config.decel_limit" 			//float
+#define TRAP_VELOCITY_LIMIT  			"trap_traj.config.vel_limit" 			//float
 
-//Controller Data Tags
-#define SAVE_CONFIGURATION_TAG	"save_configuration"
-#define REBOOT_TAG				"reboot"
-
-//Axis states
-#define AXIS_STATE_IDLE 						1
-#define AXIS_STATE_STARTUP_SEQUENCE  			2
-#define AXIS_STATE_FULL_CALIBRATION_SEQUENCE  	3
-#define AXIS_STATE_MOTOR_CALIBRATION_SEQUENCE  	4
-#define AXIS_STATE_SENSORLESS_CONTROL   		5
-#define AXIS_STATE_ENCODER_INDEX_SEARCH   		6
-#define AXIS_STATE_ENCODER_OFFSET_CALIBRATION	7
-#define AXIS_STATE_CLOSED_LOOP_CONTROL  		8
-
-//Control modes
-#define CTRL_MODE_POSITION_CONTROL				1
-#define CTRL_MODE_VELOCITY_CONTROL				2
-#define CTRL_MODE_CURRENT_CONTROL				3
-#define CTRL_MODE_VOLTAGE_CONTROL 				4
-#define CTRL_MODE_SENSORLESS_VELOCITY_CONTROL 	5
-
-#define PM_FLUX_LINKAGE_CONST 	5.51328895422 
-
-enum PacketStatus {ValidPacket, InvalidPacket, NoPacket, OverflowPacket};
-enum SerialStatus {SerialGood, SerialFault};
-
-int charToInt(char input[]);
-float charToFloat(char input[]);
-bool charToBool(char input[]);
-void intToChar(char* output, int value);
-void boolToChar(char* output, int value);
-void floatToChar(char* output, int value, uint8_t precision);
-
-void writeODrive(HardwareSerial* mySerial, bool write_request, char* id, char* value, uint8_t axis);
-
-
-
-struct ODrivePacket
+enum Axis_State
 {
-	uint8_t length;
-	String data[];
+	AXIS_STATE_UNDEFINED = 0,
+	AXIS_STATE_IDLE = 1,
+	AXIS_STATE_STARTUP_SEQUENCE = 2,
+	AXIS_STATE_FULL_CALIBRATION_SEQUENCE = 3,
+	AXIS_STATE_MOTOR_CALIBRATION = 4,
+	AXIS_STATE_SENSORLESS_CONTROL = 5,
+	AXIS_STATE_ENCODER_INDEX_SEARCH = 6,
+	AXIS_STATE_ENCODER_OFFSET_CALIBRATION = 7,
+	AXIS_STATE_CLOSED_LOOP_CONTROL = 8,	
+	AXIS_STATE_LOCKIN_SPIN = 9,      
+    AXIS_STATE_ENCODER_DIR_FIND = 10,
 };
-	
-class RovesODriveMotor
+
+enum Control_Mode
+{
+	CTRL_MODE_VOLTAGE_CONTROL = 0,
+	CTRL_MODE_CURRENT_CONTROL = 1,
+	CTRL_MODE_VELOCITY_CONTROL = 2,
+	CTRL_MODE_POSITION_CONTROL = 3,
+	CTRL_MODE_TRAJECTORY_CONTROL = 4,
+};
+
+enum Error_Types
+{
+	ERROR_NONE = 0,
+	ERROR_AXIS = 1,
+	ERROR_CONTROLLER = 2,
+	ERROR_ENCODER = 3,
+	ERROR_MOTOR = 4,
+};
+
+enum Error_Axis
+{
+	ERROR_NONE_A = 0x00,
+    ERROR_INVALID_STATE = 0x01,
+    ERROR_DC_BUS_UNDER_VOLTAGE = 0x02,
+    ERROR_DC_BUS_OVER_VOLTAGE = 0x04,
+    ERROR_CURRENT_MEASUREMENT_TIMEOUT = 0x08,
+    ERROR_BRAKE_RESISTOR_DISARMED = 0x10, 
+    ERROR_MOTOR_DISARMED = 0x20, 
+    ERROR_MOTOR_FAILED = 0x40,
+    ERROR_SENSORLESS_ESTIMATOR_FAILED = 0x80,
+    ERROR_ENCODER_FAILED = 0x100, 
+    ERROR_CONTROLLER_FAILED = 0x200,
+    ERROR_POS_CTRL_DURING_SENSORLESS = 0x400,
+    ERROR_WATCHDOG_TIMER_EXPIRED = 0x800,
+};
+
+enum Error_Controller
+{
+	ERROR_NONE_C = 0,
+    ERROR_OVERSPEED = 0x01,
+};
+
+enum Error_Encoder
+{
+	ERROR_NONE_E = 0,
+    ERROR_UNSTABLE_GAIN = 0x01,
+    ERROR_CPR_OUT_OF_RANGE = 0x02,
+    ERROR_NO_RESPONSE = 0x04,
+    ERROR_UNSUPPORTED_ENCODER_MODE = 0x8,
+    ERROR_ILLEGAL_HALL_STATE = 0x10,
+    ERROR_INDEX_NOT_FOUND_YET = 0x20,
+};
+
+enum Error_Motor
+{
+	ERROR_NONE_M = 0,
+    ERROR_PHASE_RESISTANCE_OUT_OF_RANGE = 0x0001,
+    ERROR_PHASE_INDUCTANCE_OUT_OF_RANGE = 0x0002,
+    ERROR_ADC_FAILED = 0x0004,
+    ERROR_DRV_FAULT = 0x0008,
+    ERROR_CONTROL_DEADLINE_MISSED = 0x0010,
+    ERROR_NOT_IMPLEMENTED_MOTOR_TYPE = 0x0020,
+    ERROR_BRAKE_CURRENT_OUT_OF_RANGE = 0x0040,
+    ERROR_MODULATION_MAGNITUDE = 0x0080,
+    ERROR_BRAKE_DEADTIME_VIOLATION = 0x0100,
+    ERROR_UNEXPECTED_TIMER_CALLBACK = 0x0200,
+    ERROR_CURRENT_SENSE_SATURATION = 0x0400,
+    ERROR_INVERTER_OVER_TEMP = 0x0800,
+    ERROR_CURRENT_UNSTABLE = 0x1000,
+};
+
+enum Packet_Status 
+{
+	ValidPacket = 0, 
+	InvalidPacket = 1, 
+	NoPacket = 2, 
+	OverflowPacket = 3,
+};
+
+enum Serial_Status 
+{
+	SerialGood = 0, 
+	SerialFault = 1,
+};
+
+//Serial Command and Config
+void writeODriveConfig(HardwareSerial* mySerial, bool write_read, char* id, char* param, uint8_t axis);
+
+void writeODriveConfig(HardwareSerial* mySerial, bool write_read, char* id, float& param, uint8_t axis);
+
+void writeODriveCommand(HardwareSerial* mySerial, char* id, char* param1, char* param2, char* param3, uint8_t axis);
+
+
+class RovesODriveMotor 
 {
 	public:
-		PacketStatus getSerial(char packet[]);
-
-		SerialStatus checkSerial();
-
-		void setControlMode(uint8_t mode);
-		void setSpeed(int16_t speed);
-		PacketStatus getSpeed(int16_t &speed);
-		int16_t getSpeed();
-		void setRampValue(int16_t value);
-		void setPolePairs(uint8_t pole_pairs);
-		void setKV(uint16_t KV);
-
-		void calibrate();
-
-		void writeConfig();
-
-		bool speedLow(int16_t speed);
-
-		uint8_t motor_number;
+		//class member variables
 		HardwareSerial* m_serial;
 
-		void requestState();
+		int32_t m_position = 0;
 
-		void setRamp(uint16_t rate);
+		uint8_t motor_number;
 
-		void setSpinupAccleleration(uint16_t acceleration);
+		static const unsigned long timeout = 1000;
 
-		void setRampRate(uint16_t rate);
+		// member functions
+		Error_Axis checkAxisErrors();
 
-		void idleMotor();
+		Error_Controller checkControllerErrors();
 
-		
-		
-	private:
-		void setDirection(int8_t direction);
+		Error_Encoder checkEncoderErrors();
 
-		//Startup and states
-		void writeState(uint8_t state);
-		
-		void writeControlMode(uint8_t mode);
-		void requestControlMode();
-		void writeStartupClosedLoop(bool b_startup);
-		void requestStartupClosedLoop();
-		void writeStartupSensorless(bool b_startup);
-		void requestStartupSensorless();
-		void writeStartupCalibrate(bool b_startup);
-		void requestStartupCalibrate();
+		Error_Motor checkMotorErrors();
 
-		void writeSpinUpAcceleration(int16_t acceleration);
-		void requestSpinUpAcceleration();
-		void writeSpinUpTargetVel(int16_t speed);
-		void requestSpinUpTargetVel();
-		void writeSpinUpCurrent(uint16_t current);
-		void requestSpinUpCurrent();
-		void writeSpinUpTime(float time);
+		float readPosCPR();
 
-		void writeDirection(int8_t value);
+		float readPosEstimate();
 
-		void writeCurrentSetopint(uint16_t setpoint);
-		
-		void writeVelRampTarget(int16_t target);
-		void requestVelRampTarget();
-		void writeVelRampRate(int16_t rate);
-		void requestVelRampRate();
-		void writeVelrampEnable(bool enabled);
-		void requestVelrampEnable();
+		String* checkAllErrors();
 
-		void writeVelSetpoint(int16_t setpoint);
-		void requestVelSetpoint();
-		
-		void writePolepairs(uint8_t kv);
-		void requestPolepairs();
-		void writeKV(uint16_t kv);
-		void requestKV();
-		
-		void writeVelocityGain(float gain);
-		void requestVelocityGain();
-		void writeVelocityIntegratorGain(float gain);
-		void requestVelocityIntegratorGain();
-		void writeVelocityLimit(float limit);
-		void requestVelocityLimit();
+		String getSerial();
 
-		void writeCurrentGain(float gain);
-		void requestCurrentGain();
-		void writeCurrentIntegratorGain(float gain);
-		void requestCurrentIntegratorGain();
+		void eraseConfig();
+
+		void writeTrapVelocityLimit(float limit);
+
+		float readTrapVelocityLimit();
+
+		void writeTrapAccelerationLimit(float limit);
+
+		float readTrapAccelerationLimit();
+
+		void writeTrapDecelerationLimit(float limit);
+
+		float readTrapDecelerationLimit();
+
+		void writeTrapAccelerationPerCounts(float limit);
+
+		float readTrapAccelerationPerCounts();
+
+		float readCurrentSetPoint();
+
+		void saveConfig();
+
+		void writeTrapTarget(int32_t target);
+
+		void writePosSetPoint(int32_t position, int32_t velFF, int32_t crrtFF);
+
+		void writeVelocityGain(float target);
+
+		float readVelocityGain();
+
+		void writePositionGain(float target);
+
+		float readPositionGain();
+
+		void writeVelocityIntegratorGain(float target);
+
+		float readVelocityIntegratorGain();
+
+		Axis_State readState();
+
+		Control_Mode readControlMode();
+
+		void writeVelocitySetpoint(float velPoint, float currentFF);
+
+		float readVelocitySetpoint();
+
 		void writeCurrentLimit(float limit);
-		void requestCurrentLimit();
 
-		void requestPhaseCurrent();
-		void requestBusCurrent();
+		float readCurrentLimit();
 
-		void writePMFluxLinkage(float linkage);
-		void requestPMFluxLinkage();
+		void writeVelocityLimit(float limit);
 
-		void requestError();
-		void requestDRVError();
-		void requestIsPreCalibrated();
-		void requestIsCalibrated();
+		float readVelocityLimit();
+
+		void writeCurrentCalibration(float limit);
+
+		float readCurrentCalibration();
+
+		void writeBrakeResistance(float bResist);
+
+		float readBrakeResistance();
+
+		void writePolePairs(int32_t pairs);
+
+		int32_t readPolePairs();
+
+		void writeEncoderCPR(float cpr);
+
+		float readEncoderCPR();
+
+		bool readVelocityRampEnable();
+
+		void writeVelocityRampRate(float rRate);
+
+		float readVelocityRampRate();
+
+		void writeCurrentSetPoint(float point);
+
+		void writeVelocityRampTarget(float target);
+
+		float readVelocityRampTarget();
+
+		void writeCPRSetpoint(bool state);
+
+		void writeWatchdogTimeout(float time);
+
+		float readWatchdogTimeout();
+
+		void updateWatchdog();
+
+		void writeState(Axis_State state);
 		
-		//State vars
-		uint8_t m_control_mode;
+		void writeControlMode(Control_Mode mode);	
 
-		int8_t m_direction = 1;
-		//Member Vars
-		
-		int16_t vel_shutoff_threshold = 100;
-		
-		int16_t vel_setpoint = 0;
-		
-		//Spin Up parameters
-		int16_t spin_up_acceleration = 200;
-		int16_t spin_up_target_vel = 200;
-		int16_t spin_up_current = 20;
-
-		int16_t current_setpoint = 100;
-
-		bool do_current_ramp = true;
-		int16_t current_ramp_start = 30;
-		int16_t current_ramp_end = 100;
-		int16_t current_ramp_inc = 5;
-
-		int16_t idle_current = 20;
-		
-		//Ramp Parameters
-		int16_t vel_ramp_target;
-		int16_t vel_ramp_rate = 200;
-		
-		//Motor Parameters
-		uint8_t motor_pole_pairs;
-		uint16_t motor_kv;
-
-		
+		float readCurrent();	
 };
 
 class RovesODrive
 {
 	public:
-		RovesODrive(HardwareSerial* mySerial)
-		{
-			m_serial = mySerial;
-			this->motor[0].motor_number = 0;
-			this->motor[0].m_serial = mySerial;
-			this->motor[1].motor_number = 1;
-			this->motor[1].m_serial = mySerial;
-		}
+		void begin(HardwareSerial* mySerial);
 
-		void begin();
-		void read();
-		bool isConnected();
+		void reboot();
 		
-		RovesODriveMotor motor[2];
+		RovesODriveMotor left, right;
 
 	private:
-		void saveConfiguration();
-		void eraseConfiguration();
-		void ping();
-		
 		HardwareSerial* m_serial;
 };
 
